@@ -1,0 +1,62 @@
+schema_version: 1
+case_id: ec1xt240_straight2d_vented
+status: specification_only
+
+geometry:
+  source_layout: inputs/layouts/SIM-EC1XT240.OAS
+  interpretation: explicit_white_channel_between_pink_solid_walls
+  spatial_dimension: 2
+  channel_width_m: 1.20e-7
+  wall_width_m: 1.20e-7
+  pitch_m: 2.40e-7
+  channel_depth_m: 1.00e-4
+  reservoir_height_m: null
+  bottom_state: null
+
+phases:
+  phase_field_liquid_value: 1.0
+  phase_field_gas_value: 0.0
+  initial_channel_phase: gas
+  initial_reservoir_phase: liquid
+
+materials:
+  temperature_K: null
+  liquid_name: null
+  wall_material: null
+  liquid_density_kg_m3: null
+  liquid_dynamic_viscosity_Pa_s: null
+  gas_name: air
+  gas_density_kg_m3: null
+  gas_dynamic_viscosity_Pa_s: null
+  surface_tension_N_m: null
+  contact_angle_deg_liquid_side: null
+
+driving:
+  type: pressure_ramp
+  inlet_gauge_pressure_Pa: null
+  ramp_duration_s: null
+  outlet_pressure_Pa: null
+
+resistance:
+  representation: resolved_solid_walls
+  additional_darcy_enabled: false
+  permeability_m2: null
+  inverse_permeability_m_2: null
+
+numerics:
+  method: conservative_phase_field_two_lattice
+  momentum_descriptor: D2Q9
+  phase_descriptor: D2Q9
+  target_phys_delta_x_m: 5.0e-9
+  interface_width_cells: 6
+  lattice_relaxation_time_liquid: null
+  phase_field_relaxation_time: null
+  max_phys_time_s: null
+
+outputs:
+  front_position: true
+  filling_fraction: true
+  residual_gas_fraction: true
+  phase_inventory_error: true
+  max_lattice_mach: true
+  pressure_drop: true

@@ -1,0 +1,20 @@
+schema_version: 1
+
+confirmed_materials:
+  status: unknown
+  note: Actual liquid, wall material, temperature and contact angle must be confirmed before physical runs.
+
+openfoam_350_reference_candidates:
+  status: reference_only
+  liquid_label: Immersion Liquid 5095
+  liquid_density_kg_m3: 1510.0
+  liquid_dynamic_viscosity_Pa_s: 1.0e-3
+  gas_label: air
+  gas_dynamic_viscosity_Pa_s: 1.5e-5
+  surface_tension_N_m: 3.09e-2
+  contact_angle_deg_liquid_side: null
+  reuse_condition: Only if the new experiment uses the same liquid, gas, temperature and wall material.
+
+openlb_tutorial_values:
+  status: api_test_only
+  note: Values from gasStorage2d or bubbleChannel2d are not project material properties.

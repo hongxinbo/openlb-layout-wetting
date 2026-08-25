@@ -1,0 +1,45 @@
+# macOS and editor files
+.DS_Store
+*.swp
+*.swo
+
+# Local machine configuration
+config/local_paths.yaml
+.env
+
+# Native build products
+build/
+**/build/
+*.o
+*.d
+*.so
+*.dylib
+*.out
+
+# OpenLB/ParaView outputs
+vtkData/
+tmp/
+logs/
+*.log
+*.vti
+*.vtp
+*.vtu
+*.pvti
+*.pvd
+*.vtk
+
+# Large and generated topology exports
+*_topo.txt
+*.raw
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.venv/
+.python_deps/
+
+# Generated result fields; compact summaries remain trackable
+results/**
+!results/README.md
+!results/summaries/
+!results/summaries/**

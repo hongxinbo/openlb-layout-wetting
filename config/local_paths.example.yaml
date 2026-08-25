@@ -1,0 +1,4 @@
+openlb_root: /path/to/openlb
+raw_data_root: /path/to/openlb-layout-wetting/raw
+openfoam_350_case: /path/to/git_template_3r5cBoard_350
+klayout_app: /Applications/KLayout/klayout.app
