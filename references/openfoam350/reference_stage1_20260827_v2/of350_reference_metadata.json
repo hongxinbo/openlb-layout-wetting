@@ -1,0 +1,27 @@
+{
+  "columns": {
+    "of350_reference_boundaries.csv": "One flux row per output time and patch, containing liquid, total, and inferred gas volumetric flux.",
+    "of350_reference_global.csv": "One all-domain QoI row per output time.",
+    "of350_reference_regions.csv": "One QoI row per output time and one of the 16 source cellZones; plan_area_m2 is included."
+  },
+  "flux": {
+    "inferred_gas_volume_flux": "phi - alphaPhi.liquid; an inferred residual volumetric flux, not a separately written gas mass flux.",
+    "sign": "OpenFOAM patch-face orientation: positive is outward from the computational domain.",
+    "source_fields": [
+      "alphaPhi.liquid",
+      "phi"
+    ],
+    "unit": "m3/s"
+  },
+  "geometry_reconstruction": "mean_top_displacement_m = mean(2*cellDisplacement_z); mean_layer_height_m = mean(1 um + 2*cellDisplacement_z).",
+  "pressure": "p field is absolute pressure in Pa (dimensions [1 -1 -2 0 0 0 0]), not p_rgh/gauge pressure.",
+  "reference_role": "authoritative_numerical_regression_reference_not_experimental_truth",
+  "schema_version": 1,
+  "spatial_averaging": {
+    "gas_dominant": "cells with alpha.liquid < 0.01; gas density is recovered from rho_mix = alpha*rho_liquid + (1-alpha)*rho_gas.",
+    "liquid_weighted": "sum(q_i * alpha_liquid_i * V_i) / sum(alpha_liquid_i * V_i).",
+    "volume_weighted": "sum(q_i * V_i) / sum(V_i), with V_i = 1e-10 m2 * reconstructed local layer height."
+  },
+  "units": "SI",
+  "velocity": "mean_speed_m_s is the volume-weighted mean of |U|; max_speed_m_s is the cell maximum of |U|."
+}
