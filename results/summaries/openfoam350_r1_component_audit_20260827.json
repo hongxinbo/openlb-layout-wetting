@@ -1,0 +1,19 @@
+{
+  "scope": "R1 mapping components only; not an OpenLB350 solver",
+  "openlb_unit_converter_exercised": true,
+  "C0_unit_conversion": "PASS",
+  "C2_darcy_dimensional_law": "PASS",
+  "C3_moving_layer_conservation": "PASS",
+  "C4_perfect_gas_eos": "PASS",
+  "liquid_dt_s_tau_0_8": 1.5100000000000006e-05,
+  "reference_mean_speed_lattice": 0.0053149876363838841,
+  "reference_max_speed_lattice": 0.10726081648867015,
+  "reference_max_speed_mach": 0.18578118381969827,
+  "reference_max_speed_low_mach_screen": "FAIL",
+  "darcy_max_analytic_residual_Pa_m_1": 1.2456318291555971e-13,
+  "moving_layer_relative_balance_residual": 2.2214323091023692e-15,
+  "perfect_gas_roundtrip_relative_residual": 2.2204460492503131e-16,
+  "ideal_air_sound_speed_m_s": 290.33668440522405,
+  "dt_for_ideal_air_acoustics_s": 1.9885543239992912e-08,
+  "steps_per_physical_second_for_ideal_air_acoustics": 50287788.86909385
+}
