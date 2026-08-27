@@ -3,13 +3,14 @@
 ## 状态与适用边界
 
 本准则在任何 OpenLB350 结果出现前冻结。比较对象是
-`references/openfoam350/reference_stage1_20260827/` 的 OpenFOAM 350 数值回归
+`references/openfoam350/reference_stage1_1_20260827/` 的 OpenFOAM 350 数值回归
 参考，不是实验真值。它不要求逐格或逐时间步相同。
 
-尚未证明 OpenLB 的物理时间映射。因此默认共同坐标是实际
-`mean_top_displacement_m` 或 `normalized_plate_state`。只有 R1 的单位、移动层
-守恒和气体映射均通过后，才可将 `time_s` 升为强比较坐标；在此之前，`t50` 和
-`t90` 不得作为 PASS 指标。
+尚未证明 OpenLB 的物理时间映射。因此**唯一主共同坐标**是实际
+`mean_top_displacement_m`，它由 OF350 `cellDisplacement` 字段重建。
+`normalized_plate_state` 仅保留为名义五次运动的辅助诊断，绝不替代实际位移坐标。
+只有 R1 的单位、移动层守恒和气体映射均通过后，才可将 `time_s` 升为强比较坐标；
+在此之前，`t50` 和 `t90` 不得作为 PASS 指标。
 
 ## 预冻结 QoI
 
@@ -23,7 +24,7 @@
 | 速度 | `mean_speed_m_s` 与 `max_speed_m_s` | 体积加权 `abs(U)` 与单元最大值 | 平均速度为主，最大值诊断 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE / SOFT_DIAGNOSTIC |
 | 压板位移 | `mean_top_displacement_m`，由实际 `cellDisplacement` 重建 | 由 OpenLB 移动层状态重建 | 对齐共同回归状态；不以名义时间替代实际状态 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE |
 | 等效层厚 | `mean_layer_height_m = mean(1 um + 2*cellDisplacement_z)` | 同一深度平均层厚 | 绝对值与相对差 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE |
-| 边界液相通量 | `alphaPhi.liquid`，patch 外向为正 | 相同 patch、外向为正 | 各 patch 与净通量，位移状态对齐 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE |
+| 边界液相通量 | `alphaPhi.liquid`，patch 外向为正 | 映射审查后定义可同义的边界集合 | 当前先保留各 patch 与净通量；二维模型的top/bottom分类由R1决定 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE (lateral/net pending mapping); top/bottom MAPPING_DIAGNOSTIC_PENDING |
 | 守恒残差 | 库存变化联合液相边界通量；现有0.05 s梯形积分仅诊断 | 使用 OpenLB 实际步长的库存/边界通量残差 | 分别报告，不能把开放边界库存变化叫质量错误 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE |
 | 气体压缩 | `gas_dominant_*`（`alpha<0.01`，混合rho反演）及EOS残差 | 已定义的气体EOS/储气近似 | 压力-密度响应和对主QoI的影响 | `TOLERANCE_PENDING_JUSTIFICATION` | HARD_GATE |
 | 推断气相体积通量 | `phi-alphaPhi.liquid` | 仅在 OpenLB 可定义可比量时 | 定性/趋势检查 | `NOT_A_STANDALONE_TARGET` | INFORMATION_ONLY |
@@ -47,3 +48,5 @@ R1 必须先提供：单位转换测试、单相区域阻力压降测试、局�
 - 0.05 s快照的通量积分只能做自洽诊断，不能当作每求解器时间步的严格守恒证明。
 - 对 16 个区域，实际 `cellDisplacement` 字段是回归坐标的权威记录；它优先于用
   名义五次函数反算的近似值。
+- 在 R1 映射审查完成前，不预设二维深度平均模型具有与 OF350 `top`/`bottom` 同义
+  的独立边界；侧边界与净通量的最终 HARD_GATE 定义必须连同模型映射一并冻结。

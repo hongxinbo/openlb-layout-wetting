@@ -28,6 +28,16 @@ SOURCE_CONFIG_FILES = (
     "constant/phaseProperties", "constant/g", "0.org/p_rgh", "0.org/U", "0.org/alpha.liquid",
     "0.org/T", "0.org/pointDisplacement", "constant/polyMesh/cellZones",
 )
+FIELD_SPECS = {
+    "alpha.liquid": {"class": "volScalarField", "dimensions": "[]", "kind": "scalar"},
+    "p": {"class": "volScalarField", "dimensions": "[1 -1 -2 0 0 0 0]", "kind": "scalar"},
+    "U": {"class": "volVectorField", "dimensions": "[0 1 -1 0 0 0 0]", "kind": "vector"},
+    "rho": {"class": "volScalarField", "dimensions": "[1 -3 0 0 0 0 0]", "kind": "scalar"},
+    "T": {"class": "volScalarField", "dimensions": "[0 0 0 1 0 0 0]", "kind": "scalar"},
+    "cellDisplacement": {"class": "volVectorField", "dimensions": "[0 1 0 0 0 0 0]", "kind": "vector"},
+    "alphaPhi.liquid": {"class": "surfaceScalarField", "dimensions": "[0 3 -1 0 0 0 0]", "kind": "scalar"},
+    "phi": {"class": "surfaceScalarField", "dimensions": "[0 3 -1 0 0 0 0]", "kind": "scalar"},
+}
 
 
 def tname(value: float) -> str:
@@ -40,6 +50,29 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def normalized_dimensions(value: str) -> str:
+    return " ".join(value.strip()[1:-1].split())
+
+
+def validate_field_header(path: Path, field_name: str) -> None:
+    """Assert the OpenFOAM class and dimensions before interpreting values."""
+    spec = FIELD_SPECS[field_name]
+    with path.open("r", encoding="utf-8") as handle:
+        header = handle.read(4096)
+    class_match = re.search(r"\bclass\s+(\w+)\s*;", header)
+    dimensions_match = re.search(r"\bdimensions\s+(\[[^]]*\])\s*;", header)
+    if not class_match or not dimensions_match:
+        raise ValueError(f"Missing class or dimensions header in {path}")
+    actual_class = class_match.group(1)
+    actual_dimensions = normalized_dimensions(dimensions_match.group(1))
+    expected_dimensions = normalized_dimensions(spec["dimensions"])
+    if actual_class != spec["class"] or actual_dimensions != expected_dimensions:
+        raise ValueError(
+            f"Field header mismatch for {path}: class={actual_class}, dimensions=[{actual_dimensions}]; "
+            f"expected class={spec['class']}, dimensions=[{expected_dimensions}]"
+        )
 
 
 def parse_internal(path: Path, expected_kind: str):
@@ -234,6 +267,10 @@ def metadata() -> dict:
         "schema_version": 1,
         "reference_role": "authoritative_numerical_regression_reference_not_experimental_truth",
         "units": "SI",
+        "field_header_contract": {
+            name: {"class": spec["class"], "dimensions": spec["dimensions"]}
+            for name, spec in FIELD_SPECS.items()
+        },
         "spatial_averaging": {
             "volume_weighted": "sum(q_i * V_i) / sum(V_i), with V_i = 1e-10 m2 * reconstructed local layer height.",
             "liquid_weighted": "sum(q_i * alpha_liquid_i * V_i) / sum(alpha_liquid_i * V_i).",
@@ -252,6 +289,11 @@ def metadata() -> dict:
             "of350_reference_global.csv": "One all-domain QoI row per output time.",
             "of350_reference_regions.csv": "One QoI row per output time and one of the 16 source cellZones; plan_area_m2 is included.",
             "of350_reference_boundaries.csv": "One flux row per output time and patch, containing liquid, total, and inferred gas volumetric flux.",
+        },
+        "regression_coordinates": {
+            "primary": "mean_top_displacement_m reconstructed from the actual cellDisplacement field",
+            "secondary_diagnostic": "normalized_plate_state from the nominal quintic smoothstep; never substitutes for the actual displacement coordinate",
+            "conditional": "physical time only after OpenLB physical-time mapping passes",
         },
     }
 
@@ -287,8 +329,10 @@ def main() -> None:
         missing = [str(path) for path in fields.values() if not path.is_file()]
         if missing:
             raise FileNotFoundError(f"Missing fields at {time_s} s: {missing}")
-        alpha, pressure, velocity = parse_internal(fields["alpha.liquid"], "scalar"), parse_internal(fields["p"], "scalar"), parse_internal(fields["U"], "vector")
-        density, temperature, displacement = parse_internal(fields["rho"], "scalar"), parse_internal(fields["T"], "scalar"), parse_internal(fields["cellDisplacement"], "vector")
+        for field_name, path in fields.items():
+            validate_field_header(path, field_name)
+        alpha, pressure, velocity = parse_internal(fields["alpha.liquid"], FIELD_SPECS["alpha.liquid"]["kind"]), parse_internal(fields["p"], FIELD_SPECS["p"]["kind"]), parse_internal(fields["U"], FIELD_SPECS["U"]["kind"])
+        density, temperature, displacement = parse_internal(fields["rho"], FIELD_SPECS["rho"]["kind"]), parse_internal(fields["T"], FIELD_SPECS["T"]["kind"]), parse_internal(fields["cellDisplacement"], FIELD_SPECS["cellDisplacement"]["kind"])
         if {len(field) for field in (alpha, pressure, velocity, density, temperature, displacement)} != {expected_cell_count}:
             raise ValueError(f"Unexpected field size at t={time_s}")
         global_rows.append({"time_s": time_s, "normalized_plate_state": state, **qoi(range(expected_cell_count), alpha, pressure, velocity, density, temperature, displacement, area_m2=area_m2, initial_height_m=initial_height_m, liquid_density_kg_m3=expected["liquid_density_kg_m3"], gas_constant=gas_constant, expected_final_displacement_m=sum(zone["displacement_m"] * len(zones[name]) for name, zone in expected["zones"].items()) / expected_cell_count, normalized_state=state)})
@@ -323,12 +367,12 @@ def main() -> None:
     (output / filenames["metadata"]).write_text(json.dumps(metadata(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
     summary = {
         "schema_version": 1, "status": "OF350_REFERENCE_DATA_PASS", "stage2_release": "BLOCKED_PENDING_MODEL_MAPPING_REVIEW",
-        "reference_role": "authoritative_numerical_regression_reference_not_experimental_truth", "source_case": str(source), "authoritative_config": str(config),
+        "reference_role": "authoritative_numerical_regression_reference_not_experimental_truth", "source_case_role": "external_of350_authoritative", "authoritative_config_repository_path": str(config.relative_to(Path(__file__).resolve().parents[1])),
         "openfoam_header_version": re.search(r"Version:\s*([^\n]+)", (source / "0.05/p").read_text(encoding="utf-8")).group(1).strip(),
         "time_count": len(TIMES), "times_s": list(TIMES), "cell_count": expected_cell_count, "region_count": len(zones), "region_names": list(zones),
         "boundary_patches": list(PATCHES), "fields_read": ["alpha.liquid", "p", "U", "rho", "T", "cellDisplacement", "alphaPhi.liquid", "phi"],
-        "qoi_coordinate_options": ["physical_time_s", "mean_top_displacement_m", "normalized_plate_state"], "physical_time_regression_status": "PENDING_MODEL_MAPPING_REVIEW", "t50_t90_status": "FORBIDDEN_UNTIL_PHYSICAL_TIME_MAPPING_PASS",
-        "availability": {"all_20_times_all_8_fields": True, "missing_or_corrupt_states": []},
+        "regression_coordinates": {"primary": "mean_top_displacement_m", "secondary_diagnostic": "normalized_plate_state", "conditional": "physical_time_s_after_mapping_pass"}, "physical_time_regression_status": "PENDING_MODEL_MAPPING_REVIEW", "t50_t90_status": "FORBIDDEN_UNTIL_PHYSICAL_TIME_MAPPING_PASS",
+        "availability": {"all_20_times_all_8_fields": True, "missing_or_corrupt_states": [], "field_header_contract_status": "PASS"},
         "global_ranges": {key: range_of(global_rows, key) for key in ("liquid_volume_m3", "phase_fraction_volume_weighted", "mean_pressure_Pa", "pressure_min_Pa", "pressure_max_Pa", "mean_speed_m_s", "max_speed_m_s", "mean_top_displacement_m", "mean_layer_height_m", "gas_dominant_mean_pressure_Pa", "gas_dominant_mean_density_kg_m3")},
         "ec1xt240_final": next(row for row in reversed(region_rows) if row["region"] == "EC1XT240OASZone"),
         "self_consistency": {

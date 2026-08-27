@@ -1,0 +1,197 @@
+{
+  "authoritative_config_repository_path": "config/openfoam350_authoritative.yaml",
+  "availability": {
+    "all_20_times_all_8_fields": true,
+    "field_header_contract_status": "PASS",
+    "missing_or_corrupt_states": []
+  },
+  "boundary_patches": [
+    "top",
+    "bottom",
+    "left",
+    "right",
+    "front",
+    "back"
+  ],
+  "cell_count": 157500,
+  "ec1xt240_final": {
+    "alpha_max": 1.0,
+    "alpha_min": 8.74913e-13,
+    "cell_count": 10000,
+    "cell_mean_alpha_legacy_fill_rate": 0.6899381708459231,
+    "expected_top_displacement_m": -9.35e-07,
+    "gas_dominant_density_max_kg_m3": 5.306763130884121,
+    "gas_dominant_density_min_kg_m3": 1.1881834677154244,
+    "gas_dominant_mean_density_kg_m3": 4.097085128214335,
+    "gas_dominant_mean_pressure_Pa": 345365.91508563916,
+    "gas_dominant_pressure_max_Pa": 447453.0,
+    "gas_dominant_pressure_min_Pa": 100181.0,
+    "gas_dominant_volume_m3": 1.679661154622259e-14,
+    "gas_ideal_eos_relative_residual_rms": 2.373667596316257e-06,
+    "liquid_mass_kg": 6.772019468821735e-11,
+    "liquid_volume_m3": 4.4847811051799575e-14,
+    "liquid_weighted_mean_Ux_m_s": 9.37223789295593e-06,
+    "liquid_weighted_mean_Uy_m_s": 4.788296342194643e-05,
+    "liquid_weighted_mean_Uz_m_s": -9.498884778094898e-10,
+    "liquid_weighted_mean_pressure_Pa": 322230.3554105962,
+    "liquid_weighted_mean_speed_m_s": 8.351564297489093e-05,
+    "max_speed_m_s": 0.004815856808311001,
+    "mean_Ux_m_s": 1.2037531658708788e-05,
+    "mean_Uy_m_s": -0.00026705920874255134,
+    "mean_Uz_m_s": 2.6095428285298346e-09,
+    "mean_layer_height_m": 6.501346780000666e-08,
+    "mean_pressure_Pa": 328477.1244673609,
+    "mean_speed_m_s": 0.00037639630853898156,
+    "mean_top_displacement_m": -9.349865321999512e-07,
+    "normalized_plate_state": 1.0,
+    "phase_fraction_volume_weighted": 0.689823394589084,
+    "plan_area_m2": 1.0000000000000002e-06,
+    "pressure_max_Pa": 447453.0,
+    "pressure_min_Pa": 98727.3,
+    "region": "EC1XT240OASZone",
+    "time_s": 1.0,
+    "top_displacement_difference_from_quintic_m": 1.3467800048812008e-11,
+    "total_volume_m3": 6.501346779999343e-14
+  },
+  "fields_read": [
+    "alpha.liquid",
+    "p",
+    "U",
+    "rho",
+    "T",
+    "cellDisplacement",
+    "alphaPhi.liquid",
+    "phi"
+  ],
+  "global_ranges": {
+    "gas_dominant_mean_density_kg_m3": [
+      1.1867114478679817,
+      3.6189251599393484
+    ],
+    "gas_dominant_mean_pressure_Pa": [
+      100033.10479690798,
+      305213.26514994004
+    ],
+    "liquid_volume_m3": [
+      8.935941814194114e-13,
+      1.191962484061538e-12
+    ],
+    "max_speed_m_s": [
+      0.019341145268057525,
+      0.07103365330375505
+    ],
+    "mean_layer_height_m": [
+      9.341206349231287e-08,
+      9.989500584934543e-07
+    ],
+    "mean_pressure_Pa": [
+      100072.97234265007,
+      454217.9617969276
+    ],
+    "mean_speed_m_s": [
+      0.0003200788487117027,
+      0.003519859361843631
+    ],
+    "mean_top_displacement_m": [
+      -9.065879365083657e-07,
+      -1.0499415071223812e-09
+    ],
+    "phase_fraction_volume_weighted": [
+      0.07551268876228871,
+      0.6100913976594369
+    ],
+    "pressure_max_Pa": [
+      101896.0,
+      1115360.0
+    ],
+    "pressure_min_Pa": [
+      98727.3,
+      99985.9
+    ]
+  },
+  "known_limits": [
+    "No cell-by-cell cross-solver target is defined.",
+    "Inferred gas flux is not a separately output gas mass flux.",
+    "Physical-time comparison and t50/t90 remain blocked pending OpenLB scale and model mapping review."
+  ],
+  "next_gate": "OF350_TO_OPENLB_MODEL_MAPPING_REVIEW",
+  "openfoam_header_version": "13",
+  "physical_time_regression_status": "PENDING_MODEL_MAPPING_REVIEW",
+  "reference_role": "authoritative_numerical_regression_reference_not_experimental_truth",
+  "region_count": 16,
+  "region_names": [
+    "channelZone",
+    "R123OASZone",
+    "HOAS1Zone",
+    "R113OASZone",
+    "HOAS2Zone",
+    "R15OASZone",
+    "EC1XT400OASZone",
+    "EC1XT350OASZone",
+    "EC1XT300OASZone",
+    "EC1XT280OASZone",
+    "EC1XT240OASZone",
+    "K400OASZone",
+    "K350OASZone",
+    "K300OASZone",
+    "K280OASZone",
+    "K240OASZone"
+  ],
+  "regression_coordinates": {
+    "conditional": "physical_time_s_after_mapping_pass",
+    "primary": "mean_top_displacement_m",
+    "secondary_diagnostic": "normalized_plate_state"
+  },
+  "schema_version": 1,
+  "self_consistency": {
+    "flux_balance_interpretation": "0.05 s trapezoidal integration is diagnostic only and is not a strict conservation proof.",
+    "max_abs_coarse_liquid_flux_balance_residual_relative": 0.015238873692435982,
+    "max_abs_motion_difference_from_quintic_m": 1.6992258001106735e-09,
+    "max_gas_ideal_eos_relative_residual_rms": 4.1266217163170885e-06,
+    "pressure_trend": {
+      "adjacent_direction_reversals": 1,
+      "interpretation": "20 output snapshots only; this is a trend diagnostic, not a numerical-oscillation pass/fail test.",
+      "max_abs_adjacent_step": 130047.99187738466,
+      "range": [
+        100072.97234265007,
+        454217.9617969276
+      ]
+    },
+    "velocity_trend": {
+      "adjacent_direction_reversals": 1,
+      "interpretation": "20 output snapshots only; this is a trend diagnostic, not a numerical-oscillation pass/fail test.",
+      "max_abs_adjacent_step": 0.0009788328640920768,
+      "range": [
+        0.0003200788487117027,
+        0.003519859361843631
+      ]
+    }
+  },
+  "source_case_role": "external_of350_authoritative",
+  "stage2_release": "BLOCKED_PENDING_MODEL_MAPPING_REVIEW",
+  "status": "OF350_REFERENCE_DATA_PASS",
+  "t50_t90_status": "FORBIDDEN_UNTIL_PHYSICAL_TIME_MAPPING_PASS",
+  "time_count": 20,
+  "times_s": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95,
+    1.0
+  ]
+}

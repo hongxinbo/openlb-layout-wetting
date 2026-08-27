@@ -1,0 +1,13 @@
+{
+  "generated_by": "scripts/extract_openfoam350_reference.py",
+  "outputs": {
+    "of350_reference_boundaries.csv": "781385bef50beca6ac50822167ed39ae21b0ad5d2704ddd04e319d36d6ba2913",
+    "of350_reference_global.csv": "ac054f0e337e9327092b554d829a16dbded4176f66e90785d294b930dff0f882",
+    "of350_reference_input_sha256.json": "a187e0a5779965c1825e45d87be5024abcb4d38425d67d403f680c8adddb9c65",
+    "of350_reference_metadata.json": "979a5e53b897e966abff0fb7e40fb7b5919c07c5da37bad648edbd3b8fe4516d",
+    "of350_reference_regions.csv": "6519b872c79054c887045219b29d07199aca66bb3eff6c32da2123e8388ce948",
+    "of350_reference_summary.json": "1f0b4d49b59c403094984111e724bd8d42f30ce898f08e43eb6521d4b4e2c40b"
+  },
+  "schema_version": 1,
+  "source_mutated": false
+}
