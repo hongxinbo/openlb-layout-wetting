@@ -5,11 +5,14 @@
 `R1_TRANSLATION_HOLD`
 
 This is a scientific hold, not a failure of the frozen OF350 reference or a
-request to rerun it.  The direct physical-time D2Q9 scale fails its low-Mach
-screen at the frozen maximum velocity, and OpenLB 1.9 has no inspected
-two-phase/open-boundary `perfectGas` implementation compatible with the
-required gas-storage response.  Therefore C5 and C6 cannot be honestly run,
-and no full-board or 3-D work was started.
+request to rerun it. The prior acoustic-time liquid relaxation value was
+corrected to `tau=0.500395077`; the low-Mach screen now correctly tests Mach,
+not lattice velocity. A liquid-only `Ma=0.1` candidate is computationally
+plausible (`dt=8.12784e-6 s`, `tau=0.66148`), so cost is no longer presented as
+the decisive blocker. The hold is instead the unimplemented coupling of the
+project-owned gas mass/EOS primitive, moving depth, phase field and open
+boundary. C5/C6 cannot yet be honestly run, and no full-board or 3-D work was
+started.
 
 The full governing-equation mapping, candidates, approximations, QoI effects,
 test matrix and release conditions are in
@@ -19,6 +22,7 @@ test matrix and release conditions are in
 
 - `src/openfoam350_r1_components/Makefile`
 - `src/openfoam350_r1_components/r1ComponentAudit.cpp`
+- `src/openfoam350_r1_components/r1IsothermalGasClosure.h`
 - `src/openfoam350_r1_components/README.md`
 - `results/summaries/openfoam350_r1_component_audit_20260827.json`
 - `docs/OF350_TO_OPENLB_R1_MAPPING_REVIEW.md`
@@ -53,8 +57,10 @@ not a calibrated OpenLB350 run.
 | C0 conversion | `PASS`; `dt=1.51e-5 s`; max-speed Mach `0.185781` -> direct-time screen `FAIL` |
 | C1 low-Mach skeleton | `PASS` pipeline only |
 | C2 Darcy equation contract | `PASS_PRE_DYNAMICS`, residual `1.2456e-13 Pa m-1` |
+| C2b EC1 zero-direction Darcy | `PASS_PRE_DYNAMICS`, y/z acceleration exactly zero |
 | C3 depth conservation | `PASS_PRE_DYNAMICS`, relative residual `2.2214e-15` |
-| C4 perfect-gas algebra | `PASS_EOS_ONLY`, residual `2.2204e-16` |
+| C3b two-zone depth jump | `PASS_PRE_DYNAMICS`, relative residual `2.3224e-15` |
+| C4 project-owned gas mass/EOS | `PASS_PRE_COUPLING`; EOS residual `2.2204e-16`; open mass residual `8.3387e-15` |
 | C5 two-phase/gas/open boundary | `BLOCKED` |
 | C6 EC1 equivalent region | `BLOCKED` |
 

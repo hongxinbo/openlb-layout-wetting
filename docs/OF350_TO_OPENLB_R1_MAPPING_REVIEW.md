@@ -1,6 +1,6 @@
 # OF350 to OpenLB350 — R1 mapping review
 
-**Decision: `R1_TRANSLATION_HOLD` (2026-08-27).**  The OF350 inputs and
+**Decision: `R1_TRANSLATION_HOLD` (updated 2026-08-27).**  The OF350 inputs and
 reference remain frozen.  This review approves neither a full-board OpenLB350
 run nor an EC1XT240 3D model.  It does approve the independently executable
 unit/Darcy/depth/EOS contract tests in `src/openfoam350_r1_components/`.
@@ -33,7 +33,7 @@ different OpenFOAM release.
 | Liquid properties and gravity | `rho=1510 kg m-3`, `mu=1e-3 Pa s`, `sigma=0.0309 N m-1`, `g=(0,0,-9.81)` | dimensional input through `UnitConverter` / `MultiPhaseUnitConverter` | DIRECT_PHYSICAL | none for the values | pressure, velocity, capillarity | C0; future C5 |
 | Moving top, fixed bottom and 1 um equivalent layer | 3-D dynamic mesh, regional quintic top displacement | variable-depth 2-D conservative formulation | MATHEMATICAL_MAPPING | requires custom depth source/flux treatment; no stock moving-wall equivalent was found | layer height, phase inventory, lateral/net flux, pressure | C3, then C5/C6 |
 | Region Darcy `d`, `f=0` | actual `DarcyForchheimer` dictionaries; every Forchheimer vector is zero | custom tensor acceleration in force-aware multiphase lattice | MATHEMATICAL_MAPPING | OpenLB Guo–Zhao is only scalar `K`, not the final tensor/two-phase path | zone pressure, velocity, fill, flux | C2 then C6 |
-| Air `perfectGas` | `p=rho_g R_air T`, `T=293 K`, open lateral `p=1e5 Pa` | no strict built-in candidate found | NOT_TRANSFERRED | an externally coupled gas conservation/EOS model would be an explicit approximation, not an OpenLB equivalence | gas pressure/density, liquid inventory, fill, flux | C4 proves EOS only; C5/C6 blocked |
+| Air `perfectGas` | `p=rho_g R_air T`, `T=293 K`, open lateral `p=1e5 Pa` | project-owned isothermal gas mass/EOS primitive; no strict built-in candidate found | APPROXIMATION | finite-volume gas closure is tested pre-coupling; it is not yet an OpenLB two-phase solver | gas pressure/density, liquid inventory, fill, flux | C4 closed/open piston passes; C5/C6 pending coupling |
 | `compressibleVoF` interface | finite-volume VOF, liquid alpha, zero-gradient alpha at all patches | `ConservativePhaseFieldBGKdynamics` + `MultiPhaseIncompressibleInterfaceTRTdynamics` + `LiangPostProcessor` from `gasStorage2d` | NUMERICAL_EQUIVALENT for interface-only tests | VOF is not phase field; the supplied model is explicitly incompressible and its pressure/phase boundaries differ | liquid inventory, interface location, pressure, spurious velocity | C5, after gas decision |
 | Side pressure and phase boundaries | four lateral 1e5 Pa, U/alpha zero-gradient; top/bottom flux pressure | no directly equivalent two-phase compressible/open-boundary API found | APPROXIMATION / HOLD | `gasStorage2d` uses incompressible pressure boundaries and a convective phase outlet, not four-side zero-gradient alpha | boundary liquid/net flux and gas storage | C5/C6 |
 | Physical time | 0–1 s dynamic run | standard D2Q9 liquid conversion is screenable; direct gas-acoustic equivalence is not | NOT_TRANSFERRED | displacement continuation is possible only after the coupled equations exist | `t50/t90`, transient pressure/flow | C0 and time analysis |
@@ -117,13 +117,26 @@ at most `4.12662e-6`.  `gasStorage2d` uses
 analogue, not this gas-mass/EOS system.  The inspected OpenLB examples and
 source contain no coupled, open-boundary, two-phase `perfectGas` implementation.
 
-The only defensible reduced candidate is an explicitly labelled project-owned
-isothermal gas-mass/EOS field coupled to an incompressible phase-field liquid
-and to the variable-depth equation.  It must conserve *lateral gas mass flux*;
-a spatially uniform trapped-gas ODE is not equivalent because OF350 sides are
-open.  This would be an `APPROXIMATION`, requires a new coupling design, and is
-not implemented in this stage.  Replacing it by a fixed `rho_g`, the historical
-`7.1 kg m-3`, or the density ratio in an example is prohibited.
+The reduced candidate is an explicitly labelled project-owned isothermal
+gas-mass/EOS field coupled to an incompressible phase-field liquid and to the
+variable-depth equation. Its cell balance and closure are
+
+\[
+ m_i=h_i\alpha_{g,i}A_i\rho_{g,i},\qquad
+ m_i^{n+1}=m_i^n-\Delta t\sum_f F_{i,f}^{out},\qquad
+ p_i=\rho_{g,i}R_{air}T.
+\]
+
+`r1IsothermalGasClosure.h` implements this control-volume convention. C4a
+compresses a closed piston exactly over the frozen `1.000e5` to `3.052e5 Pa`
+range. C4b has two depth-varying cells and an open reservoir; its boundary flux
+convention is `F_out=G(p-p_res)` and its measured global mass residual is
+`8.34e-15`. `G` is deliberately a test-only numerical conductance, not an
+OF350 fitted property. This establishes a testable gas primitive, **not** an
+equivalence to the OF350 lateral boundary yet: C5 must derive/validate the
+coupled velocity and boundary flux law. A spatially uniform trapped-gas ODE,
+fixed `rho_g`, the historical `7.1 kg m-3`, or an example density ratio remain
+prohibited substitutions.
 
 ### M4 — interface candidate and differences
 
@@ -153,18 +166,24 @@ actual OpenLB converter gives
  dt=\frac{(\tau-0.5)dx^2}{3\nu}=1.51\times10^{-5}\ \mathrm s.
 \]
 
-That is 66,225 steps per physical second.  The frozen maximum speed maps to
-`u_lat=0.10726`, `Ma=0.18578`; it fails the declared low-Mach screen even
-though the mean speed maps to only `0.005315`.  With liquid density scaling the
-pressure conversion is about `662 Pa`, so the approximately 1.015 MPa maximum
-gauge excursion maps to a lattice pressure magnitude around `1.5e3`, also
-outside a small-perturbation incompressible-LBM interpretation.
+That is 66,225 steps per physical second. The frozen maximum speed maps to
+`u_lat=0.10726`, `Ma=0.18578`; the screen is correctly defined as `Ma<0.1`, so
+this candidate fails even though the mean speed maps to only `0.005315`. It
+does **not** prove that a one-second liquid LBM is intrinsically impossible:
+holding `Ma=0.1` at the frozen maximum speed gives `dt=8.12784e-6 s`,
+`tau=0.66148`, and about `1.23e5` steps/s. With liquid density scaling the
+`tau=0.8` pressure conversion is about `662 Pa`, so the approximately 1.015
+MPa maximum gauge excursion maps to a lattice pressure magnitude around
+`1.5e3`, outside a small-perturbation incompressible-LBM interpretation.
 
-The isothermal ideal-air sound speed is `sqrt(R_air*T)=290.34 m s-1`.  Matching
-that D2Q9 acoustic scale at 10 um requires `dt=1.98855e-8 s`, or
-`5.0288e7` steps/s; it implies liquid `tau` about `0.500000395`, too close to
-0.5 for this to be an acceptable liquid-stable mapping.  Direct physical-time
-regression is therefore **not released**.
+The isothermal ideal-air sound speed is `sqrt(R_air*T)=290.34 m s-1`. Matching
+that D2Q9 acoustic scale at 10 um requires `dt=1.98855e-8 s`, or `5.0288e7`
+steps/s; the correct liquid value is `tau=0.500395077`, not `0.500000395`.
+It remains close to 0.5 and costly, but this is not the sole reason to withhold
+physical-time regression. The decisive open issue is the missing validated
+coupling of gas mass/EOS, moving depth, interface and open-boundary flux.
+Direct physical-time regression is therefore **pending**, not declared
+computationally impossible.
 
 A 525 x 300 D2Q9 lattice stores at least 11.34 MB of populations per double
 lattice (22.68 MB for two) before overlap, fields, phase lattices, geometry,
@@ -185,17 +204,20 @@ It cannot be implemented before M1+M3 have a coupled conservation law.
 
 | Test | Purpose | Grid / inputs | Expected | Result | Status |
 | --- | --- | --- | --- | --- | --- |
-| C0 | OpenLB physical/lattice conversions | actual `UnitConverter`, 525 cells over 5.25 mm, liquid tau 0.8 | forward/reverse pressure, velocity and force; record Mach | round trips pass; `dt=1.51e-5 s`; max-speed `Ma=0.18578` | `PASS` conversion; direct-time screen `FAIL` |
+| C0 | OpenLB physical/lattice conversions | actual `UnitConverter`, 525 cells over 5.25 mm, liquid tau 0.8 | forward/reverse pressure, velocity and force; record Mach | round trips pass; `dt=1.51e-5 s`; max-speed `Ma=0.18578` | `PASS` conversion; tau-.8 direct-time screen `FAIL` |
 | C1 | minimal single-phase OpenLB pipeline | official OpenLB cavity2d copied to an isolated temp workdir; 32², tau .8, `u=0.01` | finite run, no NaN, low Mach | exit 0; `u_lat=0.03125`, `Ma=0.05413` | `PASS` pipeline only, not a convergence result |
 | C2 | tensor Darcy law | actual K400 `D=(1e16,1e15) m-2`, three pressure gradients | sign, axis and `mu D u + grad p=0` | max residual `1.2456e-13 Pa m-1` | `PASS_PRE_DYNAMICS` |
+| C2b | EC1 zero-direction Darcy | actual EC1 `D=(5e16,0,0) m-2`, nonzero y/z velocity | no `1/D` division; x sign; no y/z drag | zero-direction acceleration exactly `0` | `PASS_PRE_DYNAMICS` |
 | C3 | moving-layer conservation | EC1 1 um to 65 nm, quintic, 10,000 raw component steps | `Delta(Ah)+integral Qout dt=0` | relative residual `2.2214e-15` | `PASS_PRE_DYNAMICS` |
-| C4 | gas EOS/storage primitive | 293 K, 28.9 kg/kmol, reference pressure range | `p=rho RT` across range | round-trip residual `2.2204e-16` | `PASS_EOS_ONLY` |
+| C3b | depth-jump conservation | EC1 and K350 displacements, shared face flux | `h1*u1=h2*u2` and local/global balance | relative residual `2.3224e-15` | `PASS_PRE_DYNAMICS` |
+| C4 | gas EOS/storage primitive | 293 K, 28.9 kg/kmol; closed piston and two-cell open reservoir | `p=rho RT`; inventory plus boundary flux | EOS residual `2.2204e-16`; open mass residual `8.3387e-15` | `PASS_PRE_COUPLING` |
 | C5 | two-phase single-column | needs selected gas field + AC/VOF mapping + open boundary | inventory, capillary, gas response, finite interface | not run; no valid coupled gas formulation | `BLOCKED` |
 | C6 | EC1XT240 equivalent rectangle | actual EC1 `d=(5e16,0,0)`, motion, two phases | compatible region QoI | not run; inherits C5 blocker | `BLOCKED` |
 
-`PASS_PRE_DYNAMICS` deliberately means an equation/unit contract has passed,
-not that it has been injected into an OpenLB collision/coupling operator.  The
-integrated force, depth and gas coupling must be tested again after it exists.
+`PASS_PRE_DYNAMICS` and `PASS_PRE_COUPLING` deliberately mean an equation/unit
+contract has passed, not that it has been injected into an OpenLB
+collision/coupling operator. The integrated force, depth, phase and gas
+coupling must be tested again after it exists.
 
 ## Regression and error-budget decision
 
@@ -214,17 +236,20 @@ new tolerance.
 
 ## Release condition
 
-`R1_TRANSLATION_HOLD` is caused by two coupled scientific gaps, not a compiler
-or routine implementation problem:
+`R1_TRANSLATION_HOLD` now has a narrower basis: the primitive gas closure,
+Darcy zero-direction handling, and depth-jump conservation have passed, but
+their coupled two-phase implementation has not. The remaining gaps are not a
+compiler failure:
 
 1. no strict OpenLB 1.9 implementation was found for OF350's open-boundary,
-   compressible `perfectGas` two-phase mass/EOS response; and
+   compressible `perfectGas` two-phase mass/EOS response; the project-owned
+   alternative remains an explicit approximation until C5 validates it; and
 2. no project coupling yet exists that simultaneously enforces variable-depth
    phase/gas conservation and tensor Darcy force without overwriting
    capillary/external forcing.
 
-To change the gate, select and document the gas approximation (or a verified
-strict solver capability), implement the M1/M2/M3 coupling, then run C5 and C6
-with the frozen OF350 values.  It is forbidden to bypass this by fixed-density
+To change the gate, derive/document the gas velocity and open-boundary flux
+closure, integrate M1/M2/M3 with the conservative phase field, then run C5 and
+C6 with the frozen OF350 values. It is forbidden to bypass this by fixed-density
 gas, a pressure-inlet surrogate, altered Darcy coefficients, or a nominal-time
 comparison.
