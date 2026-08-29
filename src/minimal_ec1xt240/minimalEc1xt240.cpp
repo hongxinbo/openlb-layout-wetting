@@ -408,7 +408,8 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
   stream << std::setprecision(17)
     << "{\n"
     << "  \"case_id\": \"minimal_ec1xt240_oas_phasefield\",\n"
-    << "  \"status\": \"" << (pass ? "MINIMAL_240_RUN_PASS" : "MINIMAL_240_RUN_HOLD") << "\",\n"
+    << "  \"status\": \"" << (pass ? "MINIMAL_240_SMOKE_PASS" : "MINIMAL_240_SMOKE_HOLD") << "\",\n"
+    << "  \"claim\": \"numerical pipeline / geometry / stability smoke test; liquid inventory is diagnostic, not a formal conservation gate\",\n"
     << "  \"geometry_source\": \"inputs/layouts/SIM-EC1XT240.OAS\",\n"
     << "  \"mask\": \"geometry/ec1xt240/minimal_ec1xt240_20nm.pgm\",\n"
     << "  \"geometry_depth_m\": " << c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>() << ",\n"
@@ -460,7 +461,7 @@ bool simulate(MinimalCase& c)
       writeVtk(c,step);
     }
     if (!stable) {
-      std::cerr << "MINIMAL_240_FAIL step=" << step << " phi=[" << current.minPhi << ','
+      std::cerr << "MINIMAL_240_SMOKE_HOLD step=" << step << " phi=[" << current.minPhi << ','
                 << current.maxPhi << "] max_Ma=" << current.maxSpeed*std::sqrt(T(3))
                 << " non_finite=" << current.nonFiniteCells << '\n';
       break;
@@ -473,15 +474,18 @@ bool simulate(MinimalCase& c)
   const T initialRight = initial.rightHalfPhi/T(initial.rightHalfCells);
   const T finalRight = final.rightHalfPhi/T(final.rightHalfCells);
   const bool moved = finalRight > initialRight+T(1e-4);
-  const bool pass = stable && moved;
-  writeSummary(c,initial,final,residual,pass);
+  // This is deliberately a smoke gate. Inventory residual is written as a
+  // diagnostic but has no post-hoc threshold until physical validation defines
+  // an independent conservation criterion.
+  const bool smokePass = stable && moved;
+  writeSummary(c,initial,final,residual,smokePass);
   std::cout << std::setprecision(17)
-            << (pass ? "MINIMAL_240_RUN_PASS" : "MINIMAL_240_RUN_HOLD")
+            << (smokePass ? "MINIMAL_240_SMOKE_PASS" : "MINIMAL_240_SMOKE_HOLD")
             << " phi=[" << final.minPhi << ',' << final.maxPhi << ']'
             << " max_Ma=" << final.maxSpeed*std::sqrt(T(3))
             << " right_half_change=" << finalRight-initialRight
             << " inventory_residual=" << residual << '\n';
-  return pass;
+  return smokePass;
 }
 
 std::string environmentOr(const char* name, const std::string& fallback)

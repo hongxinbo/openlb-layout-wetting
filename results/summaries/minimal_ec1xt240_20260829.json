@@ -3,7 +3,8 @@
   "date": "2026-08-29",
   "scope_status": "PROJECT_SCOPE_RESET_PASS",
   "minimal_240": {
-    "status": "MINIMAL_240_RUN_PASS",
+    "status": "MINIMAL_240_SMOKE_PASS",
+    "claim": "numerical pipeline / geometry / stability smoke test; liquid inventory is diagnostic, not a formal conservation gate",
     "source_layout": "inputs/layouts/SIM-EC1XT240.OAS",
     "source_sha256": "209fbd4b907dc591c8786035face94de7df05fd10debf7e73dfc51a186ac0bfc",
     "mask": "geometry/ec1xt240/minimal_ec1xt240_20nm.pgm",
@@ -11,6 +12,7 @@
     "grid": [120, 60],
     "planview_dx_m": 2e-08,
     "physical_groove_depth_m": 0.0001,
+    "of350_parameter_status": "OF350_CANDIDATE values for numerical smoke/provisional code-path use; actual EC1 liquid identity and temperature UNKNOWN",
     "model": "OpenLB conservative phase field plus Liang coupling, sigma=0, periodic-x representative crop",
     "gas_approximation": "reduced incompressible phase, rho_g=151 kg/m3; not perfectGas",
     "drive": "quintic-ramped uniform x acceleration 1e-6 lattice units",
@@ -21,7 +23,7 @@
     "max_mach": 3.6860125278194044e-05,
     "right_half_liquid_fraction_change": 0.021410889217452555,
     "periodic_liquid_inventory_residual": 0.0042862860819164062,
-    "raw_result_directory": "results/minimal_ec1xt240_runs/run_KG8QwF",
+    "raw_result_directory": "results/minimal_ec1xt240_runs/run_El4UEu",
     "outputs": [
       "vtkData/oas_material_iT0000000.vtm",
       "vtkData/minimalEc1xt240.pvd",
@@ -31,6 +33,7 @@
   },
   "p0_pressing": {
     "status": "P0_PRESSING_PASS",
+    "claim": "candidate moving-depth conservation algorithm test; not confirmation of a physical EC1 100-to-80 um compression process",
     "source": "src/ec1xt240_pressing_p0/p0DepthIntegratedPiston.cpp",
     "formulation": "two-phase finite-volume q_l=h*alpha_l and q_g=h*(1-alpha_l), no alpha rescale or clipping",
     "depth_m": [0.0001, 0.00008],
@@ -40,14 +43,15 @@
     "phase_range": [6.6139879178870894e-30, 1.0],
     "liquid_centroid_displacement_cells": 6.133711613242408,
     "max_face_velocity_lattice": 0.0022343675335179114,
-    "raw_result_directory": "results/minimal_ec1xt240_runs/p0_RUFCD0"
+    "raw_result_directory": "results/minimal_ec1xt240_runs/p0_lL1Dw2"
   },
   "p1a_oas_depth_transport": {
     "status": "P1_OAS_DEPTH_TRANSPORT_PASS",
+    "claim": "real-OAS conservative sidecar transport test for a candidate moving-depth scenario; not physical EC1 driving validation",
     "source": "src/ec1xt240_pressing_p1/p1OasDepthIntegratedPressing.cpp",
     "source_mask": "geometry/ec1xt240/minimal_ec1xt240_20nm.pgm",
     "formulation": "finite-volume q_l=h*alpha_l and q_g=h*(1-alpha_l) routed through real OAS right-edge outlets; no alpha rescaling or clipping",
-    "scope": "real-OAS conservative depth-transport evidence; not an OpenLB collision/coupling result",
+    "scope": "real-OAS conservative depth-transport evidence; not an OpenLB collision/coupling or physical-driving validation result",
     "depth_m": [0.0001, 0.00008],
     "fluid_cells": 3840,
     "right_edge_openings": 60,
@@ -58,13 +62,14 @@
     "phase_range": [0.0, 0.9999999999999997],
     "liquid_centroid_displacement_cells": 3.896376514131788,
     "max_face_cfl": 0.02474562043365604,
-    "raw_result_directory": "results/minimal_ec1xt240_runs/p1a_yWKP5u"
+    "raw_result_directory": "results/minimal_ec1xt240_runs/p1a_Jsd3bu"
   },
   "known_limitations": [
     "Minimal 240 is a 2-D OAS representative crop, not a full 1 mm board or a z-resolved groove simulation.",
     "The simplified gas is not OpenFOAM perfectGas and the periodic boundary is not an EC1 process boundary.",
-    "Surface tension, Darcy, calibrated wetting, and the actual OAS/OpenLB pressing coupling are not yet enabled; P1A is an independent real-OAS depth-transport sidecar.",
+    "Surface tension, Darcy, calibrated wetting, and an OAS/OpenLB moving-depth coupling are not enabled; P1A is an independent candidate-scenario depth-transport sidecar.",
+    "Physical EC1 driving/boundary facts are UNKNOWN: liquid and temperature, pressure versus displacement history, whether the 100 um groove depth changes, gas venting, and wall/contact-angle baseline.",
     "The earlier pressure-open minimal exploration was stable but did not move the front sufficiently and had 0.282 inventory residual; it remains a diagnostic HOLD, not the selected baseline."
   ],
-  "next": "P1B_240_PRESSING_MODEL_OPENLB_COUPLING"
+  "next": "CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY"
 }

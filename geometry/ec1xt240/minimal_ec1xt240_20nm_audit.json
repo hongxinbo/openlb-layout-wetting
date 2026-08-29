@@ -1,4 +1,6 @@
 {
+  "active_transport_direction": "x",
+  "bottom_top_connected": true,
   "crop_bbox_um": [
     -2101.3,
     -13000.64,
@@ -53,6 +55,10 @@
     -1600.2,
     -12500.08
   ],
+  "left_right_connected": true,
+  "pass_criterion": "left_right_connected and periodic_x_edge_match",
+  "periodic_x_edge_match": true,
+  "periodic_y_edge_match": true,
   "physical_groove_depth_m": 0.0001,
   "raster_convention": {
     "fluid_accessible": 0,

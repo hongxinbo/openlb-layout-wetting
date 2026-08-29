@@ -3,8 +3,9 @@
 
 The OAS raster convention is fixed: 255 means layer 1/0 solid wall and 0
 means fluid-accessible white space. The script reports 4-neighbour fluid and
-solid connectivity, boundary access, physical dimensions from extraction
-metadata, and the separately declared 100 um physical groove depth.
+solid connectivity, boundary access, periodic-edge compatibility, physical
+dimensions from extraction metadata, and the separately declared 100 um
+physical groove depth.
 """
 
 import argparse
@@ -83,12 +84,20 @@ def main():
                   if item["touches"]["bottom"] and item["touches"]["top"]]
     left_right = [item for item in fluid
                   if item["touches"]["left"] and item["touches"]["right"]]
+    periodic_x_edge_match = all(values[y * nx] == values[y * nx + nx - 1]
+                                for y in range(ny))
+    periodic_y_edge_match = all(values[x] == values[(ny - 1) * nx + x]
+                                for x in range(nx))
+    left_right_connected = bool(left_right)
+    bottom_top_connected = bool(bottom_top)
     fluid_pixels = sum(item["pixels"] for item in fluid)
     dx_m = metadata["dx_nm"] * 1e-9
 
     audit = {
         "schema_version": 1,
-        "status": "PASS_GEOMETRY_AUDIT" if bottom_top else "FAIL_GEOMETRY_AUDIT",
+        "status": "PASS_GEOMETRY_AUDIT" if left_right_connected and periodic_x_edge_match else "FAIL_GEOMETRY_AUDIT",
+        "active_transport_direction": "x",
+        "pass_criterion": "left_right_connected and periodic_x_edge_match",
         "source_layout": metadata["source_layout"],
         "source_mask": str(args.mask),
         "source_metadata": str(args.metadata),
@@ -102,6 +111,10 @@ def main():
         "solid_fraction": 1.0 - fluid_pixels / (nx * ny),
         "fluid_component_count": len(fluid),
         "solid_component_count": len(solid),
+        "left_right_connected": left_right_connected,
+        "bottom_top_connected": bottom_top_connected,
+        "periodic_x_edge_match": periodic_x_edge_match,
+        "periodic_y_edge_match": periodic_y_edge_match,
         "fluid_components_bottom_to_top": len(bottom_top),
         "fluid_components_left_to_right": len(left_right),
         "largest_fluid_component": fluid[0] if fluid else None,

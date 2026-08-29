@@ -1,9 +1,9 @@
 schema_version: 1
 case_id: minimal_ec1xt240_oas_phasefield
-status: MINIMAL_240_RUN_PASS
-configuration: config/minimal_ec1xt240.yaml
+status: MINIMAL_240_SMOKE_PASS
+documented_configuration: config/minimal_ec1xt240.yaml
+runtime_solver_source: src/minimal_ec1xt240/minimalEc1xt240.cpp
 source_layout: inputs/layouts/SIM-EC1XT240.OAS
 geometry_audit: geometry/ec1xt240/minimal_ec1xt240_20nm_audit.json
-solver_source: src/minimal_ec1xt240/minimalEc1xt240.cpp
 result_summary: results/summaries/minimal_ec1xt240_20260829.json
-next_phase: 240_PRESSING_MODEL
+next_phase: CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY

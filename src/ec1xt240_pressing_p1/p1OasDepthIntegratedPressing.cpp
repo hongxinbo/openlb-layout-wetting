@@ -5,9 +5,9 @@
 // not yet an OpenLB collision/coupling implementation. q_l=h*alpha_l and
 // q_g=h*(1-alpha_l) are moved to the real right-edge openings along a
 // shortest-path flow tree. No alpha rescaling, clipping, or mass deletion is
-// used. Its purpose is to establish that the proposed moving-depth transport
-// remains bounded and conservative in the actual plan-view geometry before a
-// P1B OpenLB field/collision coupling is claimed.
+// used. It establishes that a candidate moving-depth transport remains bounded
+// and conservative in the actual plan-view geometry. The 100-to-80 um history
+// is a numerical algorithm test, not a confirmed EC1XT240 physical process.
 
 #include <algorithm>
 #include <cctype>

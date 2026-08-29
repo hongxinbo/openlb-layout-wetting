@@ -2,8 +2,9 @@
 //
 // q_l=h*alpha_l and q_g=h*(1-alpha_l) are transported with the same resolved
 // face flux. No phase field is multiplied by h_old/h_new; no clipping or mass
-// deletion is used. This is the simple pressing-conservation test that must
-// pass before a depth source is attached to the actual EC1 OpenLB phase field.
+// deletion is used. This is a candidate moving-depth conservation test. The
+// 100-to-80 um history is not a confirmed EC1XT240 physical process; if such a
+// process is later confirmed, this result is reusable numerical evidence.
 
 #include <algorithm>
 #include <cmath>

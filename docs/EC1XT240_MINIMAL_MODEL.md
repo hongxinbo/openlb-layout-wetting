@@ -10,8 +10,9 @@
 - Raster convention: OAS layer `1/0` / pink is solid (`255`); white space is
   fluid accessible (`0`). The crop is not an OF350 rectangle.
 - The audit finds 53.33% fluid area and one four-neighbour fluid component
-  connecting left-to-right. It also connects top-to-bottom; the active minimal
-  drive uses the verified left-right route.
+  connecting left-to-right. The x-periodic left/right edge pixel patterns are
+  equal, which is the active smoke-case geometry gate. Top/bottom connectivity
+  and edge equality are recorded as diagnostics.
 - Fixed physical wall/groove depth is 100 um and is recorded separately from
   the 2-D plan-view raster. It is not z-resolved in this minimal case.
 
@@ -35,24 +36,31 @@ The periodic drive is a deliberately minimal transport test, not a physical
 inlet/outlet claim. It avoids reintroducing the unvalidated OF350 gas/open
 boundary mapping before the OAS geometry and phase pipeline are proven.
 
+The liquid density, viscosity, and surface-tension values used for this smoke
+case are `OF350_CANDIDATE` values. They support a reproducible numerical code
+path, but are not confirmed EC1XT240 physical properties: the actual liquid,
+temperature, driving mechanism, gas/vent state, and wall wetting remain
+unknown.
+
 ## Current result
 
-The 5,000-step actual OpenLB run is `MINIMAL_240_RUN_PASS`: finite phase range
+The 5,000-step actual OpenLB run is `MINIMAL_240_SMOKE_PASS`: finite phase range
 `[3.58e-09, 0.999997]`, max Mach `3.69e-05`, right-half liquid-fraction change
 `0.02141`, and periodic liquid-inventory residual `0.004286`. It wrote OAS
 geometry, liquid phase, physical velocity, and physical gauge-pressure VTK.
 
-This is a numerical pipeline/stability result only. It is not a final EC1
-model, a pressing result, a Darcy result, an open-boundary result, or an
-experimental validation.
+This is a numerical pipeline/geometry/stability smoke result only. The
+inventory residual is retained as a diagnostic, not used as a formal
+conservation PASS condition. It is not a final EC1 model, a pressing result, a
+Darcy result, an open-boundary result, or an experimental validation.
 
 ## Pressing status
 
 P0 is a separate two-phase finite-volume piston ledger. It transports
-`q_l=h alpha_l` and `q_g=h(1-alpha_l)` to a resolved outlet during a 100 to
-80 um depth reduction. It passes without rescaling or clipping. Its purpose is
-to establish a bounded conservative pressing law before applying it to the
-layout.
+`q_l=h alpha_l` and `q_g=h(1-alpha_l)` to a resolved outlet during a candidate
+100 to 80 um depth reduction. It passes without rescaling or clipping. It is a
+conservative algorithm test, not evidence that EC1XT240 physically undergoes
+that groove-depth compression.
 
 P1A then applies that same transport law to all 3,840 fluid cells of the real
 OAS crop, routing both phases through the connected right-edge openings. The
@@ -60,5 +68,12 @@ actual run reaches 80 um with liquid/gas inventory residuals `6.60e-15` and
 `2.68e-14`, phase range `[0, 1]`, and 3.90-cell liquid-centroid displacement.
 It is explicitly a finite-volume depth-transport sidecar, not an OpenLB
 collision/phase-field coupling. Thus `P1_OAS_DEPTH_TRANSPORT_PASS` does **not**
-mean `240_PRESSING_PASS`; P1B must inject the conservative depth operator into
-the minimal OpenLB timestep before that label can be claimed.
+mean physical EC1 driving validation or `240_PRESSING_PASS`. If a moving plate
+or moving effective depth is later confirmed, P0/P1A become reusable numerical
+evidence for that route. If fixed-depth pressure-driven intrusion is confirmed,
+they remain archived optional algorithm tests rather than baseline blockers.
+
+The next active gate is `CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY`: confirm the
+liquid/temperature, driving mechanism, pressure or displacement history,
+whether the 100 um groove stays fixed, gas venting, and wall/contact-angle
+baseline before selecting a physical EC1 model.

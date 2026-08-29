@@ -1,7 +1,9 @@
 schema_version: 1
 case_id: minimal_ec1xt240_oas_phasefield
-status: MINIMAL_240_RUN_PASS
+status: MINIMAL_240_SMOKE_PASS
 scope_authority: docs/ACTIVE_PROJECT_SCOPE.md
+configuration_role: documented_effective_configuration
+runtime_source_of_truth: src/minimal_ec1xt240/minimalEc1xt240.cpp
 
 geometry:
   source_layout: inputs/layouts/SIM-EC1XT240.OAS
@@ -13,11 +15,24 @@ geometry:
   physical_groove_depth_m: 1.0e-4
   z_representation: fixed-depth metadata only; not z-resolved
 
-physical_baseline:
-  liquid_density_kg_m3: 1510.0
-  liquid_dynamic_viscosity_Pa_s: 1.0e-3
-  surface_tension_N_m: 3.09e-2
-  source: OF350 parameter/model reference
+of350_candidate_parameters:
+  liquid_density_kg_m3:
+    value: 1510.0
+    role: OF350_CANDIDATE
+  liquid_dynamic_viscosity_Pa_s:
+    value: 1.0e-3
+    role: OF350_CANDIDATE
+  surface_tension_N_m:
+    value: 3.09e-2
+    role: OF350_CANDIDATE
+  use: smoke runs and provisional code-path exploration only
+  physical_ec1_status: actual liquid identity and temperature UNKNOWN
+
+confirmed_geometry:
+  physical_groove_depth_m:
+    value: 1.0e-4
+    role: PHYSICAL_BASELINE
+  process_status: driving mechanism and whether this depth changes are UNKNOWN
 
 model_assumptions:
   phase_formulation: OpenLB conservative phase field plus Liang coupling
@@ -38,6 +53,7 @@ numerical:
   max_steps: 5000
 
 parameter_roles:
-  physical_baseline: [liquid_density_kg_m3, liquid_dynamic_viscosity_Pa_s, surface_tension_N_m, physical_groove_depth_m]
+  of350_candidate: [liquid_density_kg_m3, liquid_dynamic_viscosity_Pa_s, surface_tension_N_m]
+  confirmed_physical: [physical_groove_depth_m]
   numerical: [planview_dx_m, liquid_tau, phase_tau, interface_width_cells]
-  study_variable: [surface_tension_N_m, contact_angle_deg, pressing_depth_m, pressing_speed, darcy_tensor_m_minus_2]
+  study_variable_after_physical_definition: [surface_tension_N_m, contact_angle_deg, pressing_depth_m, pressing_speed, darcy_tensor_m_minus_2]

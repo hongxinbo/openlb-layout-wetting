@@ -6,6 +6,12 @@ It has fixed 100 um groove-depth metadata, a simplified incompressible gas
 phase, periodic-x numerical driving, and no Darcy, pressing, surface tension,
 or calibrated wetting. See `config/minimal_ec1xt240.yaml`.
 
+That YAML file is a documented effective-configuration snapshot. The current
+minimal smoke solver does not parse YAML at runtime; its runtime source of
+truth is `src/minimal_ec1xt240/minimalEc1xt240.cpp`. Its OF350-derived liquid
+values are candidates for numerical smoke tests, not confirmed EC1XT240
+physical properties.
+
 Run from the repository root:
 
 ```sh
