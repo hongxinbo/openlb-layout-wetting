@@ -1,0 +1,75 @@
+{
+  "active_transport_direction": "x",
+  "bottom_top_connected": true,
+  "crop_bbox_um": [
+    -2101.3,
+    -13000.64,
+    -2098.9,
+    -12999.44
+  ],
+  "dx_nm": 20.0,
+  "fluid_component_count": 1,
+  "fluid_components_bottom_to_top": 1,
+  "fluid_components_left_to_right": 1,
+  "fluid_fraction": 0.5333333333333333,
+  "grid": {
+    "height_m": 1.2e-06,
+    "nx": 120,
+    "ny": 60,
+    "width_m": 2.4e-06
+  },
+  "interpretation": "A real OAS crop is used as a 2-D plan-view representative geometry. The fixed 100 um depth is recorded separately and not resolved through z in this minimal model.",
+  "largest_fluid_component": {
+    "bbox_pixel": [
+      0,
+      0,
+      119,
+      59
+    ],
+    "pixels": 3840,
+    "touches": {
+      "bottom": true,
+      "left": true,
+      "right": true,
+      "top": true
+    }
+  },
+  "largest_solid_component": {
+    "bbox_pixel": [
+      1,
+      0,
+      6,
+      27
+    ],
+    "pixels": 168,
+    "touches": {
+      "bottom": false,
+      "left": false,
+      "right": false,
+      "top": true
+    }
+  },
+  "layout_bbox_um": [
+    -2600.0,
+    -13500.0,
+    -1600.2,
+    -12500.08
+  ],
+  "left_right_connected": true,
+  "pass_criterion": "left_right_connected and periodic_x_edge_match",
+  "periodic_x_edge_match": true,
+  "periodic_y_edge_match": true,
+  "physical_groove_depth_m": 0.0001,
+  "raster_convention": {
+    "fluid_accessible": 0,
+    "neighbourhood": 4,
+    "solid": 255
+  },
+  "schema_version": 1,
+  "solid_component_count": 20,
+  "solid_fraction": 0.4666666666666667,
+  "source_layout": "inputs/layouts/SIM-EC1XT240.OAS",
+  "source_mask": "geometry/ec1xt240/minimal_ec1xt240_20nm.pgm",
+  "source_metadata": "geometry/ec1xt240/minimal_ec1xt240_20nm.json",
+  "status": "PASS_GEOMETRY_AUDIT"
+}

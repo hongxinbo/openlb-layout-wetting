@@ -1,0 +1,64 @@
+schema_version: 1
+case_id: minimal_ec1xt240_oas_phasefield
+status: MINIMAL_240_SMOKE_PASS
+scope_authority: docs/ACTIVE_PROJECT_SCOPE.md
+configuration_role: documented_effective_configuration
+runtime_source_of_truth: src/minimal_ec1xt240/minimalEc1xt240.cpp
+
+geometry:
+  source_layout: inputs/layouts/SIM-EC1XT240.OAS
+  source_layer: 1/0
+  raster_mask: geometry/ec1xt240/minimal_ec1xt240_20nm.pgm
+  geometry_audit: geometry/ec1xt240/minimal_ec1xt240_20nm_audit.json
+  crop_bbox_um: [-2101.3, -13000.64, -2098.9, -12999.44]
+  planview_dx_m: 2.0e-8
+  physical_groove_depth_m: 1.0e-4
+  z_representation: fixed-depth metadata only; not z-resolved
+
+of350_transfer_baseline:
+  liquid_density_kg_m3:
+    value: 1510.0
+    role: OF350_TRANSFER_BASELINE
+  liquid_dynamic_viscosity_Pa_s:
+    value: 1.0e-3
+    role: OF350_TRANSFER_BASELINE
+  surface_tension_N_m:
+    value: 3.09e-2
+    role: OF350_TRANSFER_BASELINE
+  use: source-backed reduced-baseline inputs; not universally measured EC1 properties
+  physical_ec1_status: transferred source baseline, subject to future material-equivalence refinement
+
+confirmed_geometry:
+  physical_groove_depth_m:
+    value: 1.0e-4
+    role: PHYSICAL_BASELINE
+  process_status: fixed groove depth; a separate upper film is squeezed by a descending template
+  upper_film_initial_m: 1.0e-6
+  template_final_displacement_m: -9.35e-7
+  template_move_duration_s: 1.0
+  template_motion: quintic smoothstep 10s^3 - 15s^4 + 6s^5
+  upper_film_final_m_approx: 6.5e-8
+
+model_assumptions:
+  phase_formulation: OpenLB conservative phase field plus Liang coupling
+  gas: reduced incompressible phase
+  gas_density_kg_m3: 151.0
+  surface_tension_enabled: false
+  darcy_enabled: false
+  pressing_enabled: false
+  boundary: periodic-x representative crop with solid OAS walls
+  drive: quintic-ramped uniform x lattice acceleration
+
+numerical:
+  liquid_tau: 0.8
+  phase_tau: 0.8
+  interface_width_cells: 5.0
+  drive_acceleration_lattice: 1.0e-6
+  drive_ramp_steps: 1000
+  max_steps: 5000
+
+parameter_roles:
+  of350_transfer_baseline: [liquid_density_kg_m3, liquid_dynamic_viscosity_Pa_s, surface_tension_N_m]
+  confirmed_physical: [physical_groove_depth_m]
+  numerical: [planview_dx_m, liquid_tau, phase_tau, interface_width_cells]
+  study_variable_after_physical_definition: [surface_tension_N_m, contact_angle_deg, pressing_depth_m, pressing_speed, darcy_tensor_m_minus_2]

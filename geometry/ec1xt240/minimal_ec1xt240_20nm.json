@@ -1,0 +1,28 @@
+{
+  "crop_bbox_um": [
+    -2101.3,
+    -13000.64,
+    -2098.9,
+    -12999.44
+  ],
+  "cropped_polygon_count": 20,
+  "dx_nm": 20.0,
+  "fluid_value": 0,
+  "layer": "1/0",
+  "layout_bbox_um": [
+    -2600.0,
+    -13500.0,
+    -1600.2,
+    -12500.08
+  ],
+  "layout_dbu_um": 0.001,
+  "nx": 120,
+  "ny": 60,
+  "row_order": "top_to_bottom",
+  "sampling": "pixel_center",
+  "schema_version": 1,
+  "solid_fraction": 0.4666666666666667,
+  "solid_value": 255,
+  "source_layout": "inputs/layouts/SIM-EC1XT240.OAS",
+  "top_cell": "TOP"
+}
