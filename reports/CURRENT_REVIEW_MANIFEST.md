@@ -10,20 +10,20 @@
 | PR review baseline commit | `9b24e20` |
 | GitHub repository | `hongxinbo/openlb-layout-wetting` (PRIVATE) |
 | review pull request | [PR #1](https://github.com/hongxinbo/openlb-layout-wetting/pull/1) (OPEN) |
-| current phase | Phase B — Minimal real-OAS smoke baseline, with optional P0/P1A algorithm evidence |
+| current phase | Phase B complete — minimal real-OAS smoke baseline; next phase is the reduced physical baseline |
 | current status | `PROJECT_SCOPE_RESET_PASS`, `PASS_GEOMETRY_AUDIT`, `MINIMAL_240_SMOKE_PASS`, `P0_PRESSING_PASS`, `P1_OAS_DEPTH_TRANSPORT_PASS` |
 
-The confirmed EC1 physical driving model, `240_PRESSING_PASS`, and
-`EC1XT240_BASELINE_MODEL` have **not** been claimed.
+The frozen interpretation does not claim full 3-D EC1 process equivalence or
+experimental validation. It authorizes a reduced 2-D wetting/intrusion model.
 
 ## Scope change
 
 `docs/ACTIVE_PROJECT_SCOPE.md` is the active authority for this checkpoint.
 OpenFOAM350 remains a parameter/model and sanity reference; it is not a
-mandatory quantitative gate before EC1XT240. Its liquid properties are
-`OF350_CANDIDATE` values for smoke/provisional exploration, not confirmed EC1
-physical inputs. Historical OF350/R1 data, reports and code remain untouched
-as legacy/diagnostic assets.
+mandatory quantitative gate before EC1XT240. Its source-backed liquid, gas,
+temperature and surface-tension values are now `OF350_TRANSFER_BASELINE`, not
+universal measured EC1 properties. Historical OF350/R1 data, reports and code
+remain untouched as legacy/diagnostic assets.
 
 ## Important files for review
 
@@ -91,16 +91,16 @@ crop with periodic-x numerical forcing, zero surface tension, neutral wall
 treatment and a reduced incompressible gas phase. It is not an EC1 physical
 inlet/outlet, perfect-gas, Darcy, wetting or calibrated capillary model.
 
-P0/P1A are candidate moving-depth numerical evidence only. They do not establish
-that EC1XT240 physically undergoes 100-to-80 um compression. If a moving plate
-or effective-depth process is later confirmed, they are reusable evidence; if
-fixed-depth pressure-driven intrusion is confirmed, they remain archived
-optional algorithm tests.
+P0/P1A are candidate moving-depth numerical evidence only. Their 100-to-80 um
+schedule is neither real groove compression nor the physical EC1 upper-film
+trajectory. If reused, `h` means an upper-film/reduced control-volume thickness,
+not the 100 um groove depth; they remain archived optional algorithm tests.
 
-The next action is **`CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY`**: determine the
-liquid/temperature, driving mechanism, pressure or displacement history,
-whether the 100 um groove stays fixed, gas venting, and wall/contact-angle
-baseline. Only then select a fixed-depth, moving-depth, or other physical route.
+The next action is **`EC1XT240_REDUCED_BASELINE`**: a vented-gas,
+pressure-driven, wetting-aware 2-D OAS model with no additional Darcy
+resistance. The frozen interpretation has fixed 100 um grooves and a separate
+upper film, squeezed from 1.0 um toward about 65 nm by a -0.935 um, 1 s
+OF350-quintic template descent.
 
 ## Repository and push status
 

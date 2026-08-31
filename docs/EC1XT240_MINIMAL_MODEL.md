@@ -36,11 +36,10 @@ The periodic drive is a deliberately minimal transport test, not a physical
 inlet/outlet claim. It avoids reintroducing the unvalidated OF350 gas/open
 boundary mapping before the OAS geometry and phase pipeline are proven.
 
-The liquid density, viscosity, and surface-tension values used for this smoke
-case are `OF350_CANDIDATE` values. They support a reproducible numerical code
-path, but are not confirmed EC1XT240 physical properties: the actual liquid,
-temperature, driving mechanism, gas/vent state, and wall wetting remain
-unknown.
+The liquid density, viscosity, temperature and surface-tension inputs are
+now frozen for the next baseline as `OF350_TRANSFER_BASELINE`: source-backed
+values transferred from OF350, rather than universally measured EC1 material
+properties. This smoke result itself remains a historical numerical test.
 
 ## Current result
 
@@ -57,10 +56,10 @@ Darcy result, an open-boundary result, or an experimental validation.
 ## Pressing status
 
 P0 is a separate two-phase finite-volume piston ledger. It transports
-`q_l=h alpha_l` and `q_g=h(1-alpha_l)` to a resolved outlet during a candidate
-100 to 80 um depth reduction. It passes without rescaling or clipping. It is a
-conservative algorithm test, not evidence that EC1XT240 physically undergoes
-that groove-depth compression.
+`q_l=h alpha_l` and `q_g=h(1-alpha_l)` to a resolved outlet during a prescribed
+100 to 80 um numerical stress schedule. It passes without rescaling or
+clipping. This is not evidence that EC1XT240 physically undergoes groove-depth
+compression, and is not the source-backed upper-film trajectory.
 
 P1A then applies that same transport law to all 3,840 fluid cells of the real
 OAS crop, routing both phases through the connected right-edge openings. The
@@ -68,12 +67,12 @@ actual run reaches 80 um with liquid/gas inventory residuals `6.60e-15` and
 `2.68e-14`, phase range `[0, 1]`, and 3.90-cell liquid-centroid displacement.
 It is explicitly a finite-volume depth-transport sidecar, not an OpenLB
 collision/phase-field coupling. Thus `P1_OAS_DEPTH_TRANSPORT_PASS` does **not**
-mean physical EC1 driving validation or `240_PRESSING_PASS`. If a moving plate
-or moving effective depth is later confirmed, P0/P1A become reusable numerical
-evidence for that route. If fixed-depth pressure-driven intrusion is confirmed,
-they remain archived optional algorithm tests rather than baseline blockers.
+mean physical EC1 driving validation or `240_PRESSING_PASS`. If reused, its
+`h` must represent the moving upper film/reduced control volume, never the
+fixed 100 um groove depth. It remains archived numerical evidence while the
+reduced baseline uses pressure-driven intrusion.
 
-The next active gate is `CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY`: confirm the
-liquid/temperature, driving mechanism, pressure or displacement history,
-whether the 100 um groove stays fixed, gas venting, and wall/contact-angle
-baseline before selecting a physical EC1 model.
+The frozen interpretation is: fixed 100 um grooves, an upper liquid film that
+falls from 1.0 um toward about 65 nm under the -0.935 um, 1 s quintic template
+displacement, and a downward template that squeezes liquid into the grooves.
+The next active gate is `EC1XT240_REDUCED_BASELINE`.

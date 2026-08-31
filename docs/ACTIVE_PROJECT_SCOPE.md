@@ -9,8 +9,8 @@ their evidence as historical records.
 > OpenLB350 reproduction is not a prerequisite for EC1XT240.
 
 > The current research priority is to establish the simplest stable real-OAS
-> EC1XT240 smoke model, then confirm the physical driving and boundary
-> conditions before selecting additional physical complexity.
+> EC1XT240 wetting/intrusion baseline under the confirmed reduced physical
+> interpretation. It is not a full 3-D or moving-mesh imprint reproduction.
 
 ## Retained
 
@@ -21,9 +21,10 @@ their evidence as historical records.
 - `r1DepthFlux.h` and C3/C5/C6 evidence remain diagnostic research assets; no
   old result is relabelled or deleted.
 - `SIM-EC1XT240.OAS` remains the sole XY authority for active EC1 geometry.
-- The confirmed physical wall/groove depth is **100 um**. OF350's 1 um to
-  roughly 65 nm equivalent moving layer is a different, historical reduced
-  geometry and must never be used as the EC1 groove depth.
+- The confirmed physical wall/groove depth is **100 um** and remains fixed.
+  OF350's 1 um to roughly 65 nm layer is the distinct moving upper liquid
+  film/gap: the upper template descends and squeezes that film into the fixed
+  grooves. It must never be used as the EC1 groove depth.
 
 ## Archived, not deleted
 
@@ -45,20 +46,23 @@ These are not declared scientifically false; they are deferred research work.
 ## Active roadmap
 
 1. **Phase A — historical/reference evidence:** retain OF350, R1, Darcy, gas
-   and moving-depth work as provenance and diagnostics. OF350 values may drive
-   smoke/code-path tests as candidates; they are not confirmed EC1 properties.
+   and moving-depth work as provenance and diagnostics. The source-backed
+   liquid, gas, temperature and surface-tension inputs are frozen for this
+   stage as `OF350_TRANSFER_BASELINE`; they are not universal measured EC1
+   material properties.
 2. **Phase B — Minimal real-OAS smoke baseline:** the fixed-depth, reduced
    two-phase plan-view case proves OAS parsing, periodic-x compatibility,
    finite phase-field execution, basic transport, and VTK/result output.
-3. **Phase C — physical-definition gate:**
-   `CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY` must establish the actual liquid and
-   temperature (or approval to reuse OF350 values), driving mechanism,
-   pressure/displacement history, whether the 100 um groove stays fixed, gas
-   outlet/venting state, and wall/contact-angle baseline.
-4. **Phase D — minimal physical EC1 baseline:** after Phase C, choose a
-   fixed-depth pressure-driven route, a moving-depth/plate-driven route, or
-   another confirmed process definition. Then add only the required physics to
-   form `EC1XT240_BASELINE_MODEL`.
+3. **Phase C — frozen physical-definition input:** groove depth is fixed at
+   100 um; an upper film moves from 1.0 um toward about 65 nm as the template
+   takes the source-backed -0.935 um quintic displacement over 1 s. The
+   template presses downward and squeezes the upper liquid film into the
+   grooves. The first reduced model uses a vented-gas approximation and a
+   `LITERATURE_ASSUMPTION` liquid-measured 60 deg contact angle.
+4. **Phase D — reduced physical EC1 baseline:** use explicit OAS walls,
+   fixed-depth metadata, conservative phase field, surface tension, wetting,
+   and a non-arbitrary `OF350_REDUCED_PRESSURE_DRIVE`. This is a reduced 2-D
+   plan-view model, not a full 3-D process claim.
 5. **Phase E — validation/studies:** conservation, stability, grid and
    relaxation sensitivity, then same-layout parameter and same-parameter
    layout studies.
@@ -71,19 +75,19 @@ the label is neither physical validation nor experimental validation.
 
 | Parameter | Baseline source | Role | Can sweep later? |
 | --- | --- | --- | --- |
-| liquid density 1510 kg/m3 | OF350 | `OF350_CANDIDATE` | Yes, after physical definition |
-| liquid viscosity 1e-3 Pa s | OF350 | `OF350_CANDIDATE` | Yes |
-| surface tension 0.0309 N/m | OF350 | `OF350_CANDIDATE` | Yes |
-| contact angle | not supplied by OF350 | `UNKNOWN` until physical definition | Yes |
+| liquid density 1510 kg/m3 | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
+| liquid viscosity 1e-3 Pa s | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
+| surface tension 0.0309 N/m | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
+| contact angle 60 deg, through liquid | literature anchors | `LITERATURE_ASSUMPTION` | 30/60/85/120 deg |
 | groove/wall depth 100 um | group confirmation | `PHYSICAL_BASELINE` | No current sweep |
-| pressing depth/speed | physical process unknown | `UNKNOWN` until route selection | Yes |
-| gas representation | reduced OpenLB model in minimal case | `MODEL_ASSUMPTION` | Yes |
+| upper-film displacement | OF350 EC1XT240 source | `OF350_TRANSFER_BASELINE` | No baseline sweep |
+| gas representation | reduced vented gas | `MODEL_ASSUMPTION` | Yes |
 | Darcy tensor | OF350 diagnostic/reference only | `STUDY_VARIABLE` after double-count audit | Yes |
 | dx, tau, interface width | implementation | `NUMERICAL` | sensitivity only |
 
-The OF350 candidate values are allowed for the current smoke and provisional
-code-path exploration. They must not be described as confirmed EC1XT240 liquid
-properties while liquid identity and temperature remain unknown.
+`OF350_TRANSFER_BASELINE` means source-backed values transferred from the
+successful OF350 calculation. It does not mean an independently measured,
+universally applicable EC1XT240 material property.
 
 ## Current release labels
 
@@ -91,11 +95,11 @@ properties while liquid identity and temperature remain unknown.
 - `PASS_GEOMETRY_AUDIT`
 - `MINIMAL_240_SMOKE_PASS`
 - `P0_PRESSING_PASS` — candidate moving-depth conservation algorithm test;
-  it does not confirm physical 100-to-80 um EC1 compression.
+  its 100-to-80 um schedule is a numerical stress test, not physical groove
+  compression or the real upper-film trajectory.
 - `P1_OAS_DEPTH_TRANSPORT_PASS` — P1A applies the conservative depth transport
-  to the real OAS crop as an independent candidate-scenario sidecar; it does
-  not validate the EC1 physical driving mechanism.
-- `NEXT = CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY` — only after this gate may a
-  fixed-depth pressure route, moving-depth route, or another physical model be
-  selected. P0/P1A remain reusable optional evidence if moving depth is later
-  confirmed, and archived diagnostic tests if it is not.
+  to the real OAS crop as an independent numerical sidecar. If reused, its
+  `h` denotes an upper-film/reduced control-volume thickness, never the 100 um
+  groove depth.
+- `NEXT = EC1XT240_REDUCED_BASELINE` — component-validate a wetting-aware,
+  pressure-driven, vented-gas 2-D OAS model with no additional Darcy resistance.

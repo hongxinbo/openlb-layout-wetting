@@ -12,7 +12,7 @@
     "grid": [120, 60],
     "planview_dx_m": 2e-08,
     "physical_groove_depth_m": 0.0001,
-    "of350_parameter_status": "OF350_CANDIDATE values for numerical smoke/provisional code-path use; actual EC1 liquid identity and temperature UNKNOWN",
+    "of350_parameter_status": "OF350_TRANSFER_BASELINE: source-backed values for the next reduced baseline, not universally measured EC1 material properties",
     "model": "OpenLB conservative phase field plus Liang coupling, sigma=0, periodic-x representative crop",
     "gas_approximation": "reduced incompressible phase, rho_g=151 kg/m3; not perfectGas",
     "drive": "quintic-ramped uniform x acceleration 1e-6 lattice units",
@@ -33,10 +33,11 @@
   },
   "p0_pressing": {
     "status": "P0_PRESSING_PASS",
-    "claim": "candidate moving-depth conservation algorithm test; not confirmation of a physical EC1 100-to-80 um compression process",
+    "claim": "candidate moving-control-volume conservation algorithm stress test; not a physical EC1 100-to-80 um groove-compression process or upper-film trajectory",
     "source": "src/ec1xt240_pressing_p0/p0DepthIntegratedPiston.cpp",
     "formulation": "two-phase finite-volume q_l=h*alpha_l and q_g=h*(1-alpha_l), no alpha rescale or clipping",
     "depth_m": [0.0001, 0.00008],
+    "reuse_rule": "if reused, h denotes upper-film/reduced control-volume thickness, never fixed 100 um groove depth",
     "liquid_inventory_boundary_residual": 3.7585675312831176e-14,
     "gas_inventory_boundary_residual": 1.8134055764944205e-13,
     "phase_closure_max_abs": 2.3323899235594414e-17,
@@ -47,12 +48,13 @@
   },
   "p1a_oas_depth_transport": {
     "status": "P1_OAS_DEPTH_TRANSPORT_PASS",
-    "claim": "real-OAS conservative sidecar transport test for a candidate moving-depth scenario; not physical EC1 driving validation",
+    "claim": "real-OAS conservative sidecar transport test for a numerical moving-control-volume scenario; not physical EC1 driving validation",
     "source": "src/ec1xt240_pressing_p1/p1OasDepthIntegratedPressing.cpp",
     "source_mask": "geometry/ec1xt240/minimal_ec1xt240_20nm.pgm",
     "formulation": "finite-volume q_l=h*alpha_l and q_g=h*(1-alpha_l) routed through real OAS right-edge outlets; no alpha rescaling or clipping",
     "scope": "real-OAS conservative depth-transport evidence; not an OpenLB collision/coupling or physical-driving validation result",
     "depth_m": [0.0001, 0.00008],
+    "reuse_rule": "if reused, h denotes upper-film/reduced control-volume thickness, never fixed 100 um groove depth",
     "fluid_cells": 3840,
     "right_edge_openings": 60,
     "unreachable_fluid_cells": 0,
@@ -68,8 +70,8 @@
     "Minimal 240 is a 2-D OAS representative crop, not a full 1 mm board or a z-resolved groove simulation.",
     "The simplified gas is not OpenFOAM perfectGas and the periodic boundary is not an EC1 process boundary.",
     "Surface tension, Darcy, calibrated wetting, and an OAS/OpenLB moving-depth coupling are not enabled; P1A is an independent candidate-scenario depth-transport sidecar.",
-    "Physical EC1 driving/boundary facts are UNKNOWN: liquid and temperature, pressure versus displacement history, whether the 100 um groove depth changes, gas venting, and wall/contact-angle baseline.",
+    "The frozen physical interpretation has fixed 100 um grooves and a separate upper film: 1.0 um initially, squeezed toward about 65 nm by a -0.935 um, 1 s OF350-quintic template descent.",
     "The earlier pressure-open minimal exploration was stable but did not move the front sufficiently and had 0.282 inventory residual; it remains a diagnostic HOLD, not the selected baseline."
   ],
-  "next": "CONFIRM_PHYSICAL_DRIVING_AND_BOUNDARY"
+  "next": "EC1XT240_REDUCED_BASELINE"
 }

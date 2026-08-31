@@ -15,24 +15,29 @@ geometry:
   physical_groove_depth_m: 1.0e-4
   z_representation: fixed-depth metadata only; not z-resolved
 
-of350_candidate_parameters:
+of350_transfer_baseline:
   liquid_density_kg_m3:
     value: 1510.0
-    role: OF350_CANDIDATE
+    role: OF350_TRANSFER_BASELINE
   liquid_dynamic_viscosity_Pa_s:
     value: 1.0e-3
-    role: OF350_CANDIDATE
+    role: OF350_TRANSFER_BASELINE
   surface_tension_N_m:
     value: 3.09e-2
-    role: OF350_CANDIDATE
-  use: smoke runs and provisional code-path exploration only
-  physical_ec1_status: actual liquid identity and temperature UNKNOWN
+    role: OF350_TRANSFER_BASELINE
+  use: source-backed reduced-baseline inputs; not universally measured EC1 properties
+  physical_ec1_status: transferred source baseline, subject to future material-equivalence refinement
 
 confirmed_geometry:
   physical_groove_depth_m:
     value: 1.0e-4
     role: PHYSICAL_BASELINE
-  process_status: driving mechanism and whether this depth changes are UNKNOWN
+  process_status: fixed groove depth; a separate upper film is squeezed by a descending template
+  upper_film_initial_m: 1.0e-6
+  template_final_displacement_m: -9.35e-7
+  template_move_duration_s: 1.0
+  template_motion: quintic smoothstep 10s^3 - 15s^4 + 6s^5
+  upper_film_final_m_approx: 6.5e-8
 
 model_assumptions:
   phase_formulation: OpenLB conservative phase field plus Liang coupling
@@ -53,7 +58,7 @@ numerical:
   max_steps: 5000
 
 parameter_roles:
-  of350_candidate: [liquid_density_kg_m3, liquid_dynamic_viscosity_Pa_s, surface_tension_N_m]
+  of350_transfer_baseline: [liquid_density_kg_m3, liquid_dynamic_viscosity_Pa_s, surface_tension_N_m]
   confirmed_physical: [physical_groove_depth_m]
   numerical: [planview_dx_m, liquid_tau, phase_tau, interface_width_cells]
   study_variable_after_physical_definition: [surface_tension_N_m, contact_angle_deg, pressing_depth_m, pressing_speed, darcy_tensor_m_minus_2]
