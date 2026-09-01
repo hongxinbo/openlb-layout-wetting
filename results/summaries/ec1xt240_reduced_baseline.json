@@ -1,0 +1,161 @@
+{
+  "schema_version": 2,
+  "case_id": "ec1xt240_reduced_baseline",
+  "status": "EC1XT240_REDUCED_BASELINE_PASS",
+  "claim_boundary": "Reduced 2-D real-OAS wetting/intrusion under two OF350 EC1XT240 zone-mean pressure-scale surrogates; not full 3-D, moving-mesh, perfectGas, strict OF350 regression, or experimental validation.",
+  "inputs": {
+    "config_repo_relative": "config/ec1xt240_reduced_baseline.yaml",
+    "oas_repo_relative": "inputs/layouts/SIM-EC1XT240.OAS",
+    "mask_repo_relative": "geometry/ec1xt240/ec1xt240_10nm.pgm",
+    "fixed_groove_depth_m": 0.0001,
+    "contact_angle_deg_through_liquid": 60.0,
+    "contact_angle_role": "LITERATURE_ASSUMPTION",
+    "gas_model": "REDUCED_VENTED_GAS",
+    "additional_darcy_enabled": false,
+    "liquid_tau": 0.6,
+    "liquid_tau_selection": "tau 0.8 final-state screen: resolved but 0.0144431522 flux residual exceeded the predeclared 1 percent conservation gate and was HOLD; tau 0.6 was selected as the numerical mapping after that sensitivity run and has a 0.0010101869 residual PASS",
+    "phase_tau": 0.8,
+    "interface_width_cells": 5.0
+  },
+  "of350_pressure_scale_surrogates": {
+    "forcing_interpretation": "OF350 zone mean pressure minus ambient is used only as a source-backed forcing magnitude; it is not a claimed lateral pressure drop across the 2.4 um OAS crop.",
+    "reference_repo_relative": "references/openfoam350/reference_stage1_1_20260827/of350_reference_regions.csv",
+    "region": "EC1XT240OASZone",
+    "coordinate": "mean_top_displacement_m",
+    "state_57k_pa": {
+      "source_time_s": 0.75,
+      "target_mean_top_displacement_m": -8.381996726001988e-07,
+      "absolute_pressure_pa": 157165.90466258352,
+      "gauge_pressure_pa": 57165.90466258352,
+      "role": "comparison only"
+    },
+    "final_state_228477_pa": {
+      "source_time_s": 1.0,
+      "target_mean_top_displacement_m": -9.349865321999512e-07,
+      "absolute_pressure_pa": 328477.1244673609,
+      "gauge_pressure_pa": 228477.1244673609,
+      "role": "formal baseline"
+    }
+  },
+  "openlb": {
+    "installed_version": "1.9.0-19-g3dedbdd2",
+    "phase_path": "ConservativePhaseFieldBGKdynamics + LiangPostProcessor + PhaseFieldCurvedWall"
+  },
+  "runtime_policy": {
+    "pressure_ramp_steps": 4000,
+    "max_hold_steps": 16000,
+    "resolved_front_definition": "furthest fluid phi>=0.5 position minus initial position",
+    "resolved_uptake_definition": "downstream-of-initial-front liquid cell-equivalent change",
+    "resolved_front_threshold_cells": 1.0,
+    "resolved_uptake_threshold_cell_equivalents": 1.0,
+    "intrusion_observable_requires": "both resolved metrics"
+  },
+  "pressure_scale_runs": {
+    "state_57k_pa_theta60": {
+      "status": "RESOLVED_INTRUSION_PASS",
+      "steps": 4000,
+      "hold_steps_completed": 0,
+      "stopped_after_resolved_intrusion": true,
+      "max_mach": 0.005589424849008105,
+      "phase_range": [1.230460178192061e-12, 1.000007327204783],
+      "inventory_plus_boundary_flux_residual": 0.0004966282465603666,
+      "resolved_front_progress_cells": 5.0,
+      "resolved_uptake_cell_equivalents": 15.635265076500161,
+      "resolved_uptake_volume_m3": 1.563526507650016e-19
+    },
+    "final_state_228477_pa_theta60": {
+      "status": "RESOLVED_INTRUSION_PASS",
+      "formal_baseline": true,
+      "steps": 4000,
+      "requested_max_steps": 20000,
+      "pressure_ramp_steps": 4000,
+      "hold_steps_completed": 0,
+      "stopped_after_resolved_intrusion": true,
+      "physical_time_s": 2.013333333333333e-08,
+      "phase_range": [1.2303491558895985e-12, 1.0000321190055619],
+      "max_lattice_speed": 0.0032271502722138754,
+      "max_mach": 0.005589588235134165,
+      "filling_fraction": 0.1788479277249282,
+      "filling_fraction_change": -1.7152164203199094e-05,
+      "liquid_centroid_progress_cells": 0.034221633793531936,
+      "resolved_front_progress_cells": 5.0,
+      "resolved_uptake_cell_equivalents": 16.675471026915318,
+      "resolved_uptake_volume_m3": 1.667547102691532e-19,
+      "intrusion_observable": true,
+      "inventory_plus_boundary_flux_residual": 0.0010101869207920083,
+      "integrated_outward_liquid_volume_m3": 3.038614246333928e-20,
+      "mean_pressure_gauge_pa": 18893.17190022792,
+      "pressure_range_gauge_pa": [-523138.0558008782, 234671.8278862227]
+    }
+  },
+  "component_gates": {
+    "e1_pressure_drive": {
+      "status": "PRESSURE_DRIVE_COMPONENT_PASS",
+      "baseline_liquid_tau": 0.6,
+      "state_57k_pa": {
+        "mean_lattice_u_x": 8.10839047296846e-05,
+        "front_metric_change_m": 1.1372890210267806e-10,
+        "max_mach": 0.0007768144392450608,
+        "pressure_range_pa": [0.0, 57165.90466258352]
+      },
+      "final_state_228477_pa": {
+        "mean_lattice_u_x": 0.00032391693077272045,
+        "front_metric_change_m": 4.700136388014887e-10,
+        "max_mach": 0.0031024167556184105,
+        "pressure_range_pa": [0.0, 228477.1244673609]
+      },
+      "forced_poiseuille_cross_check_relative_velocity_l1_error": 0.00147309
+    },
+    "e2_contact_angle_60": {
+      "status": "CONTACT_ANGLE_60_PASS",
+      "initial_condition": "target-independent 90-degree cap, 300 nm radius, 10 nm grid",
+      "measured_angle_deg_through_liquid": 63.287002448481196,
+      "liquid_inventory_drift": 0.0032179973024596617,
+      "max_mach": 0.0005083878351887184,
+      "post_peak_mach_nonincreasing": true
+    },
+    "e3_capillary_sanity": {
+      "status": "CAPILLARY_SANITY_PASS",
+      "formula": "p_gas-p_liquid = 2*sigma*cos(theta)*(1/w + 1/H)",
+      "theta_30_ratio": 0.723352483758892,
+      "theta_60_ratio": 0.7830564974410609,
+      "theta_120_ratio": 0.7908182677237862
+    }
+  },
+  "final_state_contact_angle_sensitivity": {
+    "shared_conditions": "same final-state 228477.1245 Pa gauge surrogate, geometry, material values, tau, phase tau, interface width, ramp, and resolved thresholds; run only after theta60 formal baseline resolved",
+    "theta_30": {
+      "status": "RESOLVED_INTRUSION_PASS",
+      "resolved_front_progress_cells": 5.0,
+      "resolved_uptake_cell_equivalents": 24.849278035378944,
+      "liquid_centroid_progress_cells": 0.050687045593125646,
+      "max_mach": 0.005511309354334001,
+      "inventory_plus_boundary_flux_residual": 0.0006118670479232204
+    },
+    "theta_60": {
+      "status": "RESOLVED_INTRUSION_PASS",
+      "resolved_front_progress_cells": 5.0,
+      "resolved_uptake_cell_equivalents": 16.675471026915318,
+      "liquid_centroid_progress_cells": 0.034221633793531936,
+      "max_mach": 0.005589588235134165,
+      "inventory_plus_boundary_flux_residual": 0.0010101869207920083
+    },
+    "theta_85": {
+      "status": "RESOLVED_INTRUSION_PASS",
+      "resolved_front_progress_cells": 1.0,
+      "resolved_uptake_cell_equivalents": 2.019565179357386,
+      "liquid_centroid_progress_cells": 0.016118006874556556,
+      "max_mach": 0.001215665648384864,
+      "inventory_plus_boundary_flux_residual": 0.0019455376993970399
+    },
+    "theta_120": {
+      "status": "RESOLVED_INTRUSION_PASS",
+      "resolved_front_progress_cells": 1.0,
+      "resolved_uptake_cell_equivalents": 5.320397244745948,
+      "liquid_centroid_progress_cells": 0.027762919441968847,
+      "max_mach": 0.0011731524625852882,
+      "inventory_plus_boundary_flux_residual": 0.002277226917389568
+    },
+    "interpretation": "30-to-60 degree uptake decreases as capillary assistance weakens. The 85/120 ordering is retained without a forced monotonic quantitative claim."
+  }
+}

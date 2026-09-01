@@ -1,0 +1,104 @@
+schema_version: 1
+case_id: ec1xt240_reduced_baseline
+status: EC1XT240_REDUCED_BASELINE_PASS
+runtime_source_of_truth: src/minimal_ec1xt240/minimalEc1xt240.cpp
+runtime_launcher: scripts/run_ec1xt240_reduced_baseline.py
+
+geometry:
+  source_layout: inputs/layouts/SIM-EC1XT240.OAS
+  raster_mask: geometry/ec1xt240/ec1xt240_10nm.pgm
+  planview_dx_m: 1.0e-8
+  physical_groove_depth_m: 1.0e-4
+  groove_depth_role: CONFIRMED_GROUP_INPUT_FIXED
+  z_representation: fixed depth used only to convert 2-D phase inventory and boundary flux to volume; z is not resolved
+
+upper_film_interpretation:
+  role: CONFIRMED_GROUP_INPUT
+  initial_thickness_m: 1.0e-6
+  final_template_displacement_m: -9.35e-7
+  move_duration_s: 1.0
+  final_thickness_m_approx: 6.5e-8
+  motion: quintic S(s)=10s^3-15s^4+6s^5
+  statement: moving upper film does not change the fixed 100 um groove depth
+
+of350_transfer_baseline:
+  role: OF350_TRANSFER_BASELINE
+  liquid_label: Immersion Liquid 5095
+  liquid_density_kg_m3: 1510.0
+  liquid_dynamic_viscosity_Pa_s: 1.0e-3
+  surface_tension_N_m: 3.09e-2
+  temperature_K: 293.0
+  external_absolute_pressure_Pa: 1.0e5
+  air_source_model: perfectGas, molWeight 28.9, mu 1.5e-5 Pa s
+  limitation: transferred source baseline, not a universally measured EC1 material property
+
+wetting:
+  contact_angle_deg: 60.0
+  convention: measured through liquid phase
+  role: LITERATURE_ASSUMPTION
+  sensitivity_degrees: [30.0, 60.0, 85.0, 120.0]
+
+gas:
+  model: REDUCED_VENTED_GAS
+  reduced_density_kg_m3: 151.0
+  reduced_dynamic_viscosity_Pa_s: 1.5e-5
+  limitation: incompressible reduced phase; no claim of local perfectGas reproduction
+
+drive:
+  id: OF350_ZONE_MEAN_PRESSURE_SCALE_SURROGATE
+  source_regions_csv: references/openfoam350/reference_stage1_1_20260827/of350_reference_regions.csv
+  source_region: EC1XT240OASZone
+  progression_coordinate: mean_top_displacement_m
+  pressure_interpolation: linear in mean_top_displacement_m
+  pressure_quantity: mean_pressure_Pa
+  formal_pressure_scale: final_state_228477_pa
+  pressure_scales:
+    state_57k_pa:
+      source_time_s: 0.75
+      target_mean_top_displacement_m: -8.381996726001988e-7
+      expected_absolute_pressure_Pa: 157165.90466258352
+      expected_gauge_pressure_Pa: 57165.90466258352
+      role: lower OF350 pressure-scale surrogate for comparison only
+    final_state_228477_pa:
+      source_time_s: 1.0
+      target_mean_top_displacement_m: -9.349865321999512e-7
+      expected_absolute_pressure_Pa: 328477.1244673609
+      expected_gauge_pressure_Pa: 228477.1244673609
+      role: formal final-state OF350 pressure-scale surrogate
+  boundary_model: pressure-open inlet/outlet with a liquid inlet and convective phase outlet
+  forcing_interpretation: OF350 zone mean pressure minus ambient is used only as a source-backed forcing magnitude; it is not a claimed lateral pressure drop across the 2.4 um OAS crop
+  explicitly_not_used: [t50, t90, arbitrary_lattice_acceleration]
+
+model:
+  phase_formulation: OpenLB ConservativePhaseFieldBGKdynamics plus LiangPostProcessor
+  wall_wetting: OpenLB PhaseFieldCurvedWall, theta=60 deg through liquid
+  surface_tension_enabled: true
+  open_boundary_enabled: true
+  additional_darcy_enabled: false
+  darcy_reason: explicit OAS walls already resolve plan-view resistance; adding OF350 zone Darcy would double count
+
+numerical_runtime:
+  liquid_tau: 0.6
+  liquid_tau_rationale: final-state 228477 Pa screen at tau 0.8 had 1.4443 percent flux residual and exceeded the predeclared 1 percent conservation gate; tau 0.6 was selected as the numerical mapping after that sensitivity run and has a 0.1010 percent residual
+  phase_tau: 0.8
+  interface_width_cells: 5.0
+  pressure_ramp_steps: 4000
+  max_hold_steps: 16000
+  max_steps: 20000
+  metrics_interval: 100
+  vtk_interval: 4000
+
+component_validation:
+  e1_status: PRESSURE_DRIVE_COMPONENT_PASS
+  e2_status: CONTACT_ANGLE_60_PASS
+  e3_status: CAPILLARY_SANITY_PASS
+  component_dx_note: E2 uses a target-independent 90 deg initial droplet of 300 nm radius on the audited 10 nm real-OAS mask for 20000 steps; the formal OAS runtime uses the same 10 nm mask for a 4000-step pressure ramp followed by at most 16000 hold steps
+
+gates:
+  max_mach: 0.1
+  inventory_plus_boundary_flux_residual: 0.01
+  phase_min: -0.05
+  phase_max: 1.05
+  resolved_front_progress_cells: 1.0
+  resolved_uptake_cell_equivalents: 1.0
+  baseline_release: requires PASS_GEOMETRY_AUDIT, PRESSURE_DRIVE_COMPONENT_PASS, CONTACT_ANGLE_60_PASS, CAPILLARY_SANITY_PASS, runtime health, and both resolved intrusion metrics at the final_state_228477_pa pressure scale

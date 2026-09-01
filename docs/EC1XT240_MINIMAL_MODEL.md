@@ -75,4 +75,6 @@ reduced baseline uses pressure-driven intrusion.
 The frozen interpretation is: fixed 100 um grooves, an upper liquid film that
 falls from 1.0 um toward about 65 nm under the -0.935 um, 1 s quintic template
 displacement, and a downward template that squeezes liquid into the grooves.
-The next active gate is `EC1XT240_REDUCED_BASELINE`.
+The reduced physical-baseline implementation and its current gate decision are
+recorded in `docs/EC1XT240_PHYSICAL_BASELINE.md`; the historical minimal smoke
+result does not itself release that baseline.
