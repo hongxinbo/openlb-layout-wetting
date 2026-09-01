@@ -28,6 +28,11 @@ FIXED_GROOVE_DEPTH_M = 1.0e-4
 CONTACT_TEST_STEPS = 20000
 MENISCUS_TEST_STEPS = 5000
 CONTACT_COMPONENT_DX_M = 1.0e-8
+BASELINE_LIQUID_TAU = 0.6
+PRESSURE_SCALES_PA = {
+    "state_57k_pa": 57165.90466258352,
+    "final_state_228477_pa": 228477.1244673609,
+}
 
 
 def run(command: list[str], cwd: Path, environment: dict[str, str]) -> str:
@@ -85,20 +90,22 @@ def component_command(solver: Path, angle: float) -> list[str]:
     ]
 
 
-def direct_pressure_command(solver: Path) -> list[str]:
-    """Exercise the exact pressure-open path used by the OAS baseline."""
+def direct_pressure_command(solver: Path, scale_id: str, pressure_pa: float) -> list[str]:
+    """Exercise each OF350 pressure-scale path used by the OAS baseline."""
     return [
         str(solver),
         "--STRAIGHT_CHANNEL", "1",
         "--STRAIGHT_CHANNEL_WIDTH_M", repr(CHANNEL_WIDTH_M),
+        "--PHYS_DELTA_X", repr(CONTACT_COMPONENT_DX_M),
+        "--LATTICE_RELAXATION_TIME", repr(BASELINE_LIQUID_TAU),
         "--OPEN_BOUNDARY", "1",
         "--SURFACE_TENSION_N_M", "0",
         "--CONTACT_ANGLE_DEG", "90",
-        "--PRESSURE_DRIVE_PA", "57165.90466258352",
+        "--PRESSURE_DRIVE_PA", repr(pressure_pa),
         "--MAX_STEPS", "1000",
         "--METRIC_INTERVAL", "100",
         "--VTK_INTERVAL", "1000",
-        "--CASE_LABEL", "e1_direct_pressure_boundary",
+        "--CASE_LABEL", f"e1_direct_pressure_{scale_id}",
     ]
 
 
@@ -153,21 +160,32 @@ def main() -> int:
 
     # E1a: this is the actual project pressure-inlet/outlet path, in a straight
     # channel.  The OpenLB pressure setter receives physical Pa directly.
-    e1_direct_dir = run_dir / "e1_direct_pressure"
-    e1_direct_dir.mkdir()
-    e1_direct_log = run(direct_pressure_command(solver), e1_direct_dir,
-                        {**environment, "MINIMAL_240_OUTPUT_DIR": str(e1_direct_dir)})
-    e1_direct = summary(e1_direct_dir)
-    direct_pass = (
-        e1_direct["mean_lattice_u_x"] > 0.0
-        and e1_direct["front_metric_change_m"] > 0.0
-        and e1_direct["max_mach"] < 0.1
-        and e1_direct["phase_range"][0] >= -0.05
-        and e1_direct["phase_range"][1] <= 1.05
-        and e1_direct["pressure_range_pa"][0] >= -1.0e-9
-        and 0.95 * 57165.90466258352 <= e1_direct["pressure_range_pa"][1] <= 1.05 * 57165.90466258352
-        and not has_nan(e1_direct_log)
-    )
+    e1_direct: dict[str, dict] = {}
+    for scale_id, pressure_pa in PRESSURE_SCALES_PA.items():
+        e1_direct_dir = run_dir / f"e1_direct_pressure_{scale_id}"
+        e1_direct_dir.mkdir()
+        e1_direct_log = run(direct_pressure_command(solver, scale_id, pressure_pa), e1_direct_dir,
+                            {**environment, "MINIMAL_240_OUTPUT_DIR": str(e1_direct_dir)})
+        result = summary(e1_direct_dir)
+        passed = (
+            result["mean_lattice_u_x"] > 0.0
+            and result["front_metric_change_m"] > 0.0
+            and result["max_mach"] < 0.1
+            and result["phase_range"][0] >= -0.05
+            and result["phase_range"][1] <= 1.05
+            and result["pressure_range_pa"][0] >= -1.0e-9
+            and 0.95 * pressure_pa <= result["pressure_range_pa"][1] <= 1.05 * pressure_pa
+            and not has_nan(e1_direct_log)
+        )
+        e1_direct[scale_id] = {
+            "pressure_drive_pa": pressure_pa,
+            "mean_lattice_u_x": result["mean_lattice_u_x"],
+            "front_metric_change_m": result["front_metric_change_m"],
+            "max_mach": result["max_mach"],
+            "pressure_range_pa": result["pressure_range_pa"],
+            "status": "PASS" if passed else "HOLD",
+        }
+    direct_pass = all(item["status"] == "PASS" for item in e1_direct.values())
 
     # E1b: OpenLB's forced, periodic-x channel is an independent x-force
     # cross-check.  Its analytical vector-error metric screens transverse
@@ -248,15 +266,9 @@ def main() -> int:
         "case": "EC1XT240_REDUCED_BASELINE physical component gates",
         "openlb_root_role": "local_openlb_1_9_checkout",
         "e1_pressure_drive_component": {
-            "implementation": "project pressure-open straight channel plus official OpenLB forced-Poiseuille cross-check",
-            "direct_pressure_boundary": {
-                "pressure_drive_pa": 57165.90466258352,
-                "mean_lattice_u_x": e1_direct["mean_lattice_u_x"],
-                "front_metric_change_m": e1_direct["front_metric_change_m"],
-                "max_mach": e1_direct["max_mach"],
-                "pressure_range_pa": e1_direct["pressure_range_pa"],
-                "status": "PASS" if direct_pass else "HOLD",
-            },
+            "implementation": "project pressure-open straight channel at both OF350 pressure scales plus official OpenLB forced-Poiseuille cross-check",
+            "baseline_liquid_tau": BASELINE_LIQUID_TAU,
+            "direct_pressure_boundaries": e1_direct,
             "forced_poiseuille_cross_check": {
                 "relative_velocity_l1_error": e1_error,
                 "gate": "<= 0.05",

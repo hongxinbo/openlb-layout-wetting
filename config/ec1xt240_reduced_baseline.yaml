@@ -45,14 +45,26 @@ gas:
   limitation: incompressible reduced phase; no claim of local perfectGas reproduction
 
 drive:
-  id: OF350_REDUCED_PRESSURE_DRIVE
+  id: OF350_PRESSURE_SCALE_SURROGATE
   source_regions_csv: references/openfoam350/reference_stage1_1_20260827/of350_reference_regions.csv
   source_region: EC1XT240OASZone
   progression_coordinate: mean_top_displacement_m
-  target_mean_top_displacement_m: -8.381996726001988e-7
   pressure_interpolation: linear in mean_top_displacement_m
   pressure_quantity: mean_pressure_Pa
-  use_gauge_pressure_Pa: 57165.90466258352
+  formal_pressure_scale: final_state_228477_pa
+  pressure_scales:
+    state_57k_pa:
+      source_time_s: 0.75
+      target_mean_top_displacement_m: -8.381996726001988e-7
+      expected_absolute_pressure_Pa: 157165.90466258352
+      expected_gauge_pressure_Pa: 57165.90466258352
+      role: lower OF350 pressure-scale surrogate for comparison only
+    final_state_228477_pa:
+      source_time_s: 1.0
+      target_mean_top_displacement_m: -9.349865321999512e-7
+      expected_absolute_pressure_Pa: 328477.1244673609
+      expected_gauge_pressure_Pa: 228477.1244673609
+      role: formal final-state OF350 pressure-scale surrogate
   boundary_model: pressure-open inlet/outlet with a liquid inlet and convective phase outlet
   explicitly_not_used: [t50, t90, arbitrary_lattice_acceleration]
 
@@ -65,11 +77,13 @@ model:
   darcy_reason: explicit OAS walls already resolve plan-view resistance; adding OF350 zone Darcy would double count
 
 numerical_runtime:
-  liquid_tau: 0.8
+  liquid_tau: 0.6
+  liquid_tau_rationale: final-state 228477 Pa screen at tau 0.8 had 1.4443 percent flux residual; tau 0.6 is the predeclared accepted mapping with 0.1010 percent residual
   phase_tau: 0.8
   interface_width_cells: 5.0
-  max_steps: 4000
   pressure_ramp_steps: 4000
+  max_hold_steps: 16000
+  max_steps: 20000
   metrics_interval: 100
   vtk_interval: 4000
 
@@ -77,12 +91,13 @@ component_validation:
   e1_status: PRESSURE_DRIVE_COMPONENT_PASS
   e2_status: CONTACT_ANGLE_60_PASS
   e3_status: CAPILLARY_SANITY_PASS
-  component_dx_note: E2 uses a target-independent 90 deg initial droplet of 300 nm radius on the audited 10 nm real-OAS mask for 20000 steps; the formal OAS runtime uses the same 10 nm mask for 4000 steps, preserving the 20 nm 1000-step physical duration
+  component_dx_note: E2 uses a target-independent 90 deg initial droplet of 300 nm radius on the audited 10 nm real-OAS mask for 20000 steps; the formal OAS runtime uses the same 10 nm mask for a 4000-step pressure ramp followed by at most 16000 hold steps
 
 gates:
   max_mach: 0.1
   inventory_plus_boundary_flux_residual: 0.01
   phase_min: -0.05
   phase_max: 1.05
-  minimum_front_progress_cells: 0.05
-  baseline_release: requires PASS_GEOMETRY_AUDIT, PRESSURE_DRIVE_COMPONENT_PASS, CONTACT_ANGLE_60_PASS, CAPILLARY_SANITY_PASS, and the runtime gates above
+  resolved_front_progress_cells: 1.0
+  resolved_uptake_cell_equivalents: 1.0
+  baseline_release: requires PASS_GEOMETRY_AUDIT, PRESSURE_DRIVE_COMPONENT_PASS, CONTACT_ANGLE_60_PASS, CAPILLARY_SANITY_PASS, runtime health, and both resolved intrusion metrics at the final_state_228477_pa pressure scale

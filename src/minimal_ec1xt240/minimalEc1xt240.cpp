@@ -61,7 +61,12 @@ struct STRAIGHT_CHANNEL : public descriptors::FIELD_BASE<1> { };
 struct STRAIGHT_CHANNEL_WIDTH_M : public descriptors::FIELD_BASE<1> { };
 struct WETTING_DROPLET : public descriptors::FIELD_BASE<1> { };
 struct DROPLET_RADIUS_M : public descriptors::FIELD_BASE<1> { };
-struct MINIMUM_FRONT_PROGRESS_CELLS : public descriptors::FIELD_BASE<1> { };
+// These thresholds classify resolved intrusion in the summary.  They do not
+// turn a numerically healthy run into a solver failure; the runtime launcher
+// applies the formal-baseline release policy to the emitted metrics.
+struct RESOLVED_FRONT_PROGRESS_CELLS : public descriptors::FIELD_BASE<1> { };
+struct RESOLVED_UPTAKE_CELL_EQUIVALENTS : public descriptors::FIELD_BASE<1> { };
+struct STOP_ON_RESOLVED_INTRUSION : public descriptors::FIELD_BASE<1> { };
 }
 
 namespace {
@@ -442,6 +447,8 @@ struct Snapshot {
   std::size_t liquidPressureCells{};
   std::size_t gasPressureCells{};
   T liquidOutwardVolumeStep{};
+  T maxLiquidFrontCell{-std::numeric_limits<T>::infinity()};
+  T downstreamPhi{};
 };
 
 Snapshot snapshot(MinimalCase& c)
@@ -452,6 +459,7 @@ Snapshot snapshot(MinimalCase& c)
   auto& phaseBlock = c.getLattice(Component1{}).getBlock(0);
   auto& geometry = c.getGeometry().getBlockGeometry(0);
   const int split = geometry.getNx()/2;
+  const T initialLiquidLength = c.getParameters().get<parameters::INITIAL_LIQUID_LENGTH_M>();
   nsBlock.forCoreSpatialLocations([&](LatticeR<2> r) {
     const int material = geometry.getMaterial(r);
     if (material != 1 && material != 3 && material != 4) return;
@@ -468,6 +476,12 @@ Snapshot snapshot(MinimalCase& c)
     }
     result.sumPhi += phi;
     result.sumPhiX += phi*T(r[0]+T(.5));
+    if (phi >= T(.5)) {
+      result.maxLiquidFrontCell = std::max(result.maxLiquidFrontCell,T(r[0])+T(.5));
+    }
+    if ((T(r[0])+T(.5))*dx >= initialLiquidLength) {
+      result.downstreamPhi += phi;
+    }
     result.minPhi = std::min(result.minPhi,phi);
     result.maxPhi = std::max(result.maxPhi,phi);
     result.maxSpeed = std::max(result.maxSpeed,util::norm<2>(u));
@@ -588,17 +602,18 @@ void appendMetrics(MinimalCase& c, int step, const Snapshot& s, T liquidBalanceR
   const auto path = c.getParameters().get<parameters::OUTPUT_DIR>()+"/metrics.csv";
   const bool fresh = !std::filesystem::exists(path);
   std::ofstream stream(path,std::ios::app);
-  if (fresh) stream << "step,time_s,drive_acceleration_lattice,filling_fraction,liquid_centroid_x_m,right_half_phi,mean_lattice_u_x,max_abs_lattice_u_y,max_lattice_u,max_mach,mean_pressure_gauge_pa,pressure_min_gauge_pa,pressure_max_gauge_pa,instant_outward_liquid_volume_m3,integrated_outward_liquid_volume_m3,inventory_plus_boundary_flux_residual\n";
+  if (fresh) stream << "step,time_s,drive_acceleration_lattice,filling_fraction,liquid_centroid_x_m,liquid_0p5_front_x_m,post_initial_front_liquid_cell_equivalents,right_half_phi,mean_lattice_u_x,max_abs_lattice_u_y,max_lattice_u,max_mach,mean_pressure_gauge_pa,pressure_min_gauge_pa,pressure_max_gauge_pa,instant_outward_liquid_volume_m3,integrated_outward_liquid_volume_m3,inventory_plus_boundary_flux_residual\n";
   const T meanPhi = s.cells ? s.sumPhi/T(s.cells) : T();
   const T liquidCentroid = s.sumPhi > T() ? s.sumPhiX/s.sumPhi*dx : T();
   const T rightPhi = s.rightHalfCells ? s.rightHalfPhi/T(s.rightHalfCells) : T();
+  const T liquidFront = std::isfinite(s.maxLiquidFrontCell) ? s.maxLiquidFrontCell*dx : T();
   const T acceleration = c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5) ? T()
     : c.getParameters().get<parameters::DRIVE_ACCELERATION_LATTICE>()
       *smoothstep(T(step)/c.getParameters().get<parameters::DRIVE_RAMP_STEPS>());
   const T pressureFactor = converter.getConversionFactorPressure();
   const T meanPressure = s.cells ? s.meanPressureLattice/T(s.cells)*pressureFactor : T();
   stream << std::setprecision(17) << step << ',' << converter.getPhysTime(step) << ',' << acceleration << ','
-         << meanPhi << ',' << liquidCentroid << ',' << rightPhi << ',' << s.sumUx/T(s.cells) << ',' << s.maxAbsUy << ',' << s.maxSpeed << ',' << s.maxSpeed*std::sqrt(T(3)) << ','
+         << meanPhi << ',' << liquidCentroid << ',' << liquidFront << ',' << s.downstreamPhi << ',' << rightPhi << ',' << s.sumUx/T(s.cells) << ',' << s.maxAbsUy << ',' << s.maxSpeed << ',' << s.maxSpeed*std::sqrt(T(3)) << ','
          << meanPressure << ',' << s.minPressureLattice*pressureFactor << ',' << s.maxPressureLattice*pressureFactor << ','
          << s.liquidOutwardVolumeStep << ',' << integratedOutwardLiquidVolume << ',' << liquidBalanceResidual << '\n';
 }
@@ -637,11 +652,12 @@ void writeVtk(MinimalCase& c, int step)
 
 void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final,
                   T liquidBalanceResidual, T integratedOutwardLiquidVolume,
-                  T measuredContactAngleDeg, bool pass)
+                  T measuredContactAngleDeg, bool pass, int completedSteps,
+                  bool stoppedAfterResolvedIntrusion)
 {
   if (!singleton::mpi().isMainProcessor()) return;
   const auto& converter = c.getLattice(NavierStokes{}).getUnitConverter();
-  const int steps = c.getParameters().get<parameters::MAX_STEPS>();
+  const int requestedSteps = c.getParameters().get<parameters::MAX_STEPS>();
   const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   const T initialRight = initial.rightHalfPhi/T(initial.rightHalfCells);
   const T finalRight = final.rightHalfPhi/T(final.rightHalfCells);
@@ -649,7 +665,20 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
   const T finalFilling = final.sumPhi/T(final.cells);
   const T initialCentroid = initial.sumPhiX/initial.sumPhi*dx;
   const T finalCentroid = final.sumPhiX/final.sumPhi*dx;
-  const T frontProgressCells = final.sumPhiX/final.sumPhi-initial.sumPhiX/initial.sumPhi;
+  const T centroidProgressCells = final.sumPhiX/final.sumPhi-initial.sumPhiX/initial.sumPhi;
+  const T initialLiquidFront = initial.maxLiquidFrontCell*dx;
+  const T finalLiquidFront = final.maxLiquidFrontCell*dx;
+  const T resolvedFrontProgressCells = final.maxLiquidFrontCell-initial.maxLiquidFrontCell;
+  const T resolvedUptakeCells = final.downstreamPhi-initial.downstreamPhi;
+  const T resolvedUptakeVolume = resolvedUptakeCells*dx*dx
+    *c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>();
+  const T resolvedFrontThreshold = c.getParameters().get<parameters::RESOLVED_FRONT_PROGRESS_CELLS>();
+  const T resolvedUptakeThreshold = c.getParameters().get<parameters::RESOLVED_UPTAKE_CELL_EQUIVALENTS>();
+  const bool resolvedFront = std::isfinite(resolvedFrontProgressCells)
+    && resolvedFrontProgressCells >= resolvedFrontThreshold;
+  const bool resolvedUptake = std::isfinite(resolvedUptakeCells)
+    && resolvedUptakeCells >= resolvedUptakeThreshold;
+  const bool intrusionObservable = resolvedFront && resolvedUptake;
   const T liquidMeanPressure = final.liquidPressureCells
     ? final.liquidPressureLattice/T(final.liquidPressureCells)*converter.getConversionFactorPressure() : T();
   const T gasMeanPressure = final.gasPressureCells
@@ -682,11 +711,15 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
   stream << ",\n"
     << "  \"gas_approximation\": \"REDUCED_VENTED_GAS: incompressible reduced-density phase; not perfectGas\",\n"
     << "  \"driving\": \"" << (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)
-      ? "OF350_REDUCED_PRESSURE_DRIVE through pressure-open inlet/outlet"
+      ? "OF350_PRESSURE_SCALE_SURROGATE through pressure-open inlet/outlet"
       : "zero-drive closed component test") << "\",\n"
     << "  \"pressure_drive_pa\": " << c.getParameters().get<parameters::PRESSURE_DRIVE_PA>() << ",\n"
-    << "  \"steps\": " << steps << ",\n"
-    << "  \"physical_time_s\": " << converter.getPhysTime(steps) << ",\n"
+    << "  \"steps\": " << completedSteps << ",\n"
+    << "  \"requested_max_steps\": " << requestedSteps << ",\n"
+    << "  \"pressure_ramp_steps\": " << c.getParameters().get<parameters::DRIVE_RAMP_STEPS>() << ",\n"
+    << "  \"hold_steps_completed\": " << std::max(0,completedSteps-static_cast<int>(c.getParameters().get<parameters::DRIVE_RAMP_STEPS>())) << ",\n"
+    << "  \"stopped_after_resolved_intrusion\": " << (stoppedAfterResolvedIntrusion ? "true" : "false") << ",\n"
+    << "  \"physical_time_s\": " << converter.getPhysTime(completedSteps) << ",\n"
     << "  \"phase_range\": [" << final.minPhi << ", " << final.maxPhi << "],\n"
     << "  \"max_lattice_speed\": " << final.maxSpeed << ",\n"
     << "  \"mean_lattice_u_x\": " << final.sumUx/T(final.cells) << ",\n"
@@ -701,7 +734,20 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
     << "  \"initial_liquid_centroid_x_m\": " << initialCentroid << ",\n"
     << "  \"front_metric_liquid_centroid_x_m\": " << finalCentroid << ",\n"
     << "  \"front_metric_change_m\": " << finalCentroid-initialCentroid << ",\n"
-    << "  \"front_progress_cells\": " << frontProgressCells << ",\n"
+    << "  \"front_progress_cells\": " << centroidProgressCells << ",\n"
+    << "  \"liquid_centroid_progress_cells\": " << centroidProgressCells << ",\n"
+    << "  \"initial_liquid_0p5_front_x_m\": " << initialLiquidFront << ",\n"
+    << "  \"liquid_0p5_front_x_m\": " << finalLiquidFront << ",\n"
+    << "  \"resolved_front_progress_cells\": " << resolvedFrontProgressCells << ",\n"
+    << "  \"initial_post_initial_front_liquid_cell_equivalents\": " << initial.downstreamPhi << ",\n"
+    << "  \"post_initial_front_liquid_cell_equivalents\": " << final.downstreamPhi << ",\n"
+    << "  \"resolved_uptake_cell_equivalents\": " << resolvedUptakeCells << ",\n"
+    << "  \"resolved_uptake_volume_m3\": " << resolvedUptakeVolume << ",\n"
+    << "  \"resolved_front_threshold_cells\": " << resolvedFrontThreshold << ",\n"
+    << "  \"resolved_uptake_threshold_cell_equivalents\": " << resolvedUptakeThreshold << ",\n"
+    << "  \"resolved_front\": " << (resolvedFront ? "true" : "false") << ",\n"
+    << "  \"resolved_uptake\": " << (resolvedUptake ? "true" : "false") << ",\n"
+    << "  \"intrusion_observable\": " << (intrusionObservable ? "true" : "false") << ",\n"
     << "  \"liquid_inventory_boundary_residual\": " << liquidBalanceResidual << ",\n"
     << "  \"integrated_outward_liquid_volume_m3\": " << integratedOutwardLiquidVolume << ",\n"
     << "  \"mean_pressure_pa\": " << final.meanPressureLattice/T(final.cells)*converter.getConversionFactorPressure() << ",\n"
@@ -721,12 +767,15 @@ bool simulate(MinimalCase& c)
   const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   Snapshot initial = snapshot(c);
   bool stable = true;
+  bool stoppedAfterResolvedIntrusion = false;
+  int completedSteps = 0;
   T integratedOutwardLiquidVolume{};
   T previousOutwardLiquidVolumeStep = initial.liquidOutwardVolumeStep;
 
   writeVtk(c,0);
   appendMetrics(c,0,initial,T(),integratedOutwardLiquidVolume);
   for (int step=1; step<=steps; ++step) {
+    completedSteps = step;
     setDriveForce(c,step);
     ns.collideAndStream();
     phase.collideAndStream();
@@ -753,7 +802,17 @@ bool simulate(MinimalCase& c)
     const bool bounded = current.minPhi >= T(-.05) && current.maxPhi <= T(1.05);
     const bool lowMach = current.maxSpeed*std::sqrt(T(3)) < T(.1);
     stable = current.nonFiniteCells == 0 && bounded && lowMach;
-    if (step % metricInterval == 0 || !stable || step == steps) {
+    const T resolvedFrontProgressCells = current.maxLiquidFrontCell-initial.maxLiquidFrontCell;
+    const T resolvedUptakeCells = current.downstreamPhi-initial.downstreamPhi;
+    const bool resolvedIntrusion = std::isfinite(resolvedFrontProgressCells)
+      && resolvedFrontProgressCells >= c.getParameters().get<parameters::RESOLVED_FRONT_PROGRESS_CELLS>()
+      && std::isfinite(resolvedUptakeCells)
+      && resolvedUptakeCells >= c.getParameters().get<parameters::RESOLVED_UPTAKE_CELL_EQUIVALENTS>();
+    const bool stopAfterResolvedIntrusion = stable
+      && c.getParameters().get<parameters::STOP_ON_RESOLVED_INTRUSION>() > T(.5)
+      && step >= static_cast<int>(c.getParameters().get<parameters::DRIVE_RAMP_STEPS>())
+      && resolvedIntrusion;
+    if (step % metricInterval == 0 || !stable || step == steps || stopAfterResolvedIntrusion) {
       appendMetrics(c,step,current,residual,integratedOutwardLiquidVolume);
       writeVtk(c,step);
     }
@@ -761,6 +820,10 @@ bool simulate(MinimalCase& c)
       std::cerr << "MINIMAL_240_SMOKE_HOLD step=" << step << " phi=[" << current.minPhi << ','
                 << current.maxPhi << "] max_Ma=" << current.maxSpeed*std::sqrt(T(3))
                 << " non_finite=" << current.nonFiniteCells << '\n';
+      break;
+    }
+    if (stopAfterResolvedIntrusion) {
+      stoppedAfterResolvedIntrusion = true;
       break;
     }
   }
@@ -772,16 +835,18 @@ bool simulate(MinimalCase& c)
     /std::max(T(1e-30),initialVolume);
   const T initialRight = initial.rightHalfPhi/T(initial.rightHalfCells);
   const T finalRight = final.rightHalfPhi/T(final.rightHalfCells);
-  const T frontProgressCells = final.sumPhiX/final.sumPhi-initial.sumPhiX/initial.sumPhi;
+  const T centroidProgressCells = final.sumPhiX/final.sumPhi-initial.sumPhiX/initial.sumPhi;
+  const T resolvedFrontProgressCells = final.maxLiquidFrontCell-initial.maxLiquidFrontCell;
+  const T resolvedUptakeCells = final.downstreamPhi-initial.downstreamPhi;
   const T measuredContactAngleDeg = measureContactAngleThroughLiquid(c);
   const bool wettingMode = c.getParameters().get<parameters::WETTING_DROPLET>() > T(.5);
   const bool targetIs60 = std::abs(c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()-T(60)) < T(1e-12);
   const bool contactPass = !wettingMode || (std::isfinite(measuredContactAngleDeg)
     && std::abs(measuredContactAngleDeg-c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()) <= T(5));
   const T residualGate = wettingMode ? T(.005) : T(.01);
-  const bool smokePass = stable && residual <= residualGate && contactPass
-    && (wettingMode || frontProgressCells >= c.getParameters().get<parameters::MINIMUM_FRONT_PROGRESS_CELLS>());
-  writeSummary(c,initial,final,residual,integratedOutwardLiquidVolume,measuredContactAngleDeg,smokePass);
+  const bool smokePass = stable && residual <= residualGate && contactPass;
+  writeSummary(c,initial,final,residual,integratedOutwardLiquidVolume,measuredContactAngleDeg,
+               smokePass,completedSteps,stoppedAfterResolvedIntrusion);
   std::cout << std::setprecision(17)
             << (wettingMode ? (targetIs60 ? (smokePass ? "CONTACT_ANGLE_60_PASS" : "CONTACT_ANGLE_60_HOLD")
                                            : (smokePass ? "WETTING_COMPONENT_PASS" : "WETTING_COMPONENT_HOLD"))
@@ -789,7 +854,9 @@ bool simulate(MinimalCase& c)
             << " phi=[" << final.minPhi << ',' << final.maxPhi << ']'
             << " max_Ma=" << final.maxSpeed*std::sqrt(T(3))
             << " right_half_change=" << finalRight-initialRight
-            << " front_progress_cells=" << frontProgressCells
+            << " centroid_progress_cells=" << centroidProgressCells
+            << " resolved_front_progress_cells=" << resolvedFrontProgressCells
+            << " resolved_uptake_cell_equivalents=" << resolvedUptakeCells
             << " inventory_residual=" << residual << '\n';
   return smokePass;
 }
@@ -836,7 +903,9 @@ int main(int argc, char* argv[])
   params.set<parameters::STRAIGHT_CHANNEL_WIDTH_M>(T(120e-9));
   params.set<parameters::WETTING_DROPLET>(T());
   params.set<parameters::DROPLET_RADIUS_M>(T(200e-9));
-  params.set<parameters::MINIMUM_FRONT_PROGRESS_CELLS>(T(.05));
+  params.set<parameters::RESOLVED_FRONT_PROGRESS_CELLS>(T(1));
+  params.set<parameters::RESOLVED_UPTAKE_CELL_EQUIVALENTS>(T(1));
+  params.set<parameters::STOP_ON_RESOLVED_INTRUSION>(T());
   params.set<parameters::MAX_STEPS>(5000);
   params.set<parameters::METRIC_INTERVAL>(100);
   params.set<parameters::VTK_INTERVAL>(1000);
