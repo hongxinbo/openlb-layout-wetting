@@ -1,0 +1,72 @@
+schema_version: 1
+case_id: ec1xt240_production_study
+frozen_baseline_config: config/ec1xt240_reduced_baseline.yaml
+frozen_baseline_merge_commit: 2b8330112ad3ce1f8b461fc747b70fb939436a59
+
+geometry:
+  source_layout: inputs/layouts/SIM-EC1XT240.OAS
+  crop_bbox_um: [-2101.3, -13000.64, -2098.9, -12999.44]
+  expected_width_um: 2.4
+  expected_height_um: 1.2
+  fixed_groove_depth_m: 1.0e-4
+  rasterization: independent pixel-center OAS extraction for every requested dx; never resize an existing mask
+
+common_endpoint:
+  pressure_ramp_steps: 4000
+  fixed_pressure_hold_steps: 4000
+  max_steps: 8000
+  stop_on_resolved_intrusion: false
+  metrics_interval: 100
+  vtk_interval: 8000
+  time_statement: reported OpenLB time is reduced-model numerical mapping, not OF350 one-second process time
+
+frozen_physics:
+  contact_angle_deg: 60.0
+  pressure_scale: final_state_228477_pa
+  liquid_density_kg_m3: 1510.0
+  liquid_dynamic_viscosity_Pa_s: 1.0e-3
+  surface_tension_N_m: 3.09e-2
+  gas_model: REDUCED_VENTED_GAS
+  additional_darcy_enabled: false
+
+baseline_numerical_mapping:
+  dx_nm: 10.0
+  interface_width_cells: 5.0
+  liquid_tau: 0.6
+  phase_tau: 0.8
+  viscosity_tau_formula: tau(mu) = 0.5 + (tau0 - 0.5) * (mu / mu0) at fixed rho, dx, and physical timestep
+  grid_tau_formula: tau(dx) = 0.5 + (tau0 - 0.5) * (dx0 / dx)^2 at fixed physical viscosity and timestep
+  gas_tau_statement: gas tau is derived from its physical kinematic viscosity under the shared physical timestep
+
+grid_robustness:
+  resolutions:
+    dx_8nm:
+      dx_nm: 8.0
+      interface_width_cells: 6.25
+    dx_10nm:
+      dx_nm: 10.0
+      interface_width_cells: 5.0
+    dx_12nm:
+      dx_nm: 12.0
+      interface_width_cells: 4.166666666666667
+  physical_interface_width_nm: 50.0
+  acceptance_relative_metric_difference: 0.20
+  status_if_not_accepted: NUMERICAL_ROBUSTNESS_HOLD
+  statement: practical reduced-model engineering robustness screen, not Richardson extrapolation
+
+formal_sweeps:
+  contact_angle_deg: [30.0, 60.0, 85.0, 120.0]
+  liquid_dynamic_viscosity_Pa_s: [5.0e-4, 1.0e-3, 2.0e-3, 5.0e-3]
+  pressure_scales: [state_57k_pa, final_state_228477_pa]
+
+gates:
+  max_mach: 0.1
+  conservation_residual: 0.01
+  phase_min: -0.05
+  phase_max: 1.05
+  production_case: no NaN, bounded phase, Mach below gate, and inventory plus boundary-flux residual at or below gate
+
+layout_generic_interface:
+  selector: --layout <oas/path>
+  nondefault_crop_requirement: --crop-um xmin,ymin,xmax,ymax
+  current_second_layout_status: SECOND_LAYOUT_SELECTION_REQUIRED

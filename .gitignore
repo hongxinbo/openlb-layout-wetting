@@ -43,3 +43,7 @@ results/**
 !results/README.md
 !results/summaries/
 !results/summaries/**
+!results/tables/
+!results/tables/**
+!results/figures/
+!results/figures/**
