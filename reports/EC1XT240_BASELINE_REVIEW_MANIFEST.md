@@ -5,7 +5,7 @@
 | branch | codex/ec1xt240-physical-baseline |
 | base | 786b7b57a11a0855f3ea974aeb0350ce106421d9 (merged PR #1) |
 | review result | EC1XT240_REDUCED_BASELINE_PASS |
-| formal pressure scale | final_state_228477_pa, 228477.1244673609 Pa gauge |
+| formal pressure scale | final_state_228477_pa, 228477.1244673609 Pa gauge; OF350 zone-mean pressure minus ambient is a forcing magnitude, not a claimed OAS-crop lateral pressure drop |
 | OpenLB installation exercised | 1.9.0-19-g3dedbdd2 |
 | artifact policy | raw logs, VTK, solver output, and effective commands remain in the external results root; repository artifacts are configuration, source, geometry audit, and compact summaries |
 

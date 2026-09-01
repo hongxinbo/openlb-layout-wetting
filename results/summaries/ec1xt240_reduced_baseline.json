@@ -2,7 +2,7 @@
   "schema_version": 2,
   "case_id": "ec1xt240_reduced_baseline",
   "status": "EC1XT240_REDUCED_BASELINE_PASS",
-  "claim_boundary": "Reduced 2-D real-OAS wetting/intrusion under two OF350 pressure-scale surrogates; not full 3-D, moving-mesh, perfectGas, strict OF350 regression, or experimental validation.",
+  "claim_boundary": "Reduced 2-D real-OAS wetting/intrusion under two OF350 EC1XT240 zone-mean pressure-scale surrogates; not full 3-D, moving-mesh, perfectGas, strict OF350 regression, or experimental validation.",
   "inputs": {
     "config_repo_relative": "config/ec1xt240_reduced_baseline.yaml",
     "oas_repo_relative": "inputs/layouts/SIM-EC1XT240.OAS",
@@ -13,11 +13,12 @@
     "gas_model": "REDUCED_VENTED_GAS",
     "additional_darcy_enabled": false,
     "liquid_tau": 0.6,
-    "liquid_tau_selection": "tau 0.8 final-state screen: resolved but 0.0144431522 flux residual HOLD; tau 0.6 final-state screen: 0.0010101869 residual PASS",
+    "liquid_tau_selection": "tau 0.8 final-state screen: resolved but 0.0144431522 flux residual exceeded the predeclared 1 percent conservation gate and was HOLD; tau 0.6 was selected as the numerical mapping after that sensitivity run and has a 0.0010101869 residual PASS",
     "phase_tau": 0.8,
     "interface_width_cells": 5.0
   },
   "of350_pressure_scale_surrogates": {
+    "forcing_interpretation": "OF350 zone mean pressure minus ambient is used only as a source-backed forcing magnitude; it is not a claimed lateral pressure drop across the 2.4 um OAS crop.",
     "reference_repo_relative": "references/openfoam350/reference_stage1_1_20260827/of350_reference_regions.csv",
     "region": "EC1XT240OASZone",
     "coordinate": "mean_top_displacement_m",

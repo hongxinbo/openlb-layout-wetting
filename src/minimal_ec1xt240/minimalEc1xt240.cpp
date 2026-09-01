@@ -694,7 +694,7 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
     << "{\n"
     << "  \"case_id\": \"" << c.getParameters().get<parameters::CASE_LABEL>() << "\",\n"
     << "  \"status\": \"" << status << "\",\n"
-    << "  \"claim\": \"reduced 2-D OAS wetting/intrusion model under OF350-pressing-derived drive; not full 3-D or perfectGas reproduction\",\n"
+    << "  \"claim\": \"reduced 2-D OAS wetting/intrusion model driven by an OF350 EC1XT240 zone-mean pressure scale surrogate; source-backed forcing magnitude only, not a claimed lateral pressure drop across the OAS crop; not full 3-D or perfectGas reproduction\",\n"
     << "  \"geometry_source\": \"inputs/layouts/SIM-EC1XT240.OAS\",\n"
     << "  \"mask_file\": \"" << std::filesystem::path(c.getParameters().get<parameters::MASK_INPUT>()).filename().string() << "\",\n"
     << "  \"planview_dx_m\": " << dx << ",\n"
@@ -711,7 +711,7 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
   stream << ",\n"
     << "  \"gas_approximation\": \"REDUCED_VENTED_GAS: incompressible reduced-density phase; not perfectGas\",\n"
     << "  \"driving\": \"" << (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)
-      ? "OF350_PRESSURE_SCALE_SURROGATE through pressure-open inlet/outlet"
+      ? "OF350_ZONE_MEAN_PRESSURE_SCALE_SURROGATE through pressure-open inlet/outlet"
       : "zero-drive closed component test") << "\",\n"
     << "  \"pressure_drive_pa\": " << c.getParameters().get<parameters::PRESSURE_DRIVE_PA>() << ",\n"
     << "  \"steps\": " << completedSteps << ",\n"

@@ -45,7 +45,7 @@ gas:
   limitation: incompressible reduced phase; no claim of local perfectGas reproduction
 
 drive:
-  id: OF350_PRESSURE_SCALE_SURROGATE
+  id: OF350_ZONE_MEAN_PRESSURE_SCALE_SURROGATE
   source_regions_csv: references/openfoam350/reference_stage1_1_20260827/of350_reference_regions.csv
   source_region: EC1XT240OASZone
   progression_coordinate: mean_top_displacement_m
@@ -66,6 +66,7 @@ drive:
       expected_gauge_pressure_Pa: 228477.1244673609
       role: formal final-state OF350 pressure-scale surrogate
   boundary_model: pressure-open inlet/outlet with a liquid inlet and convective phase outlet
+  forcing_interpretation: OF350 zone mean pressure minus ambient is used only as a source-backed forcing magnitude; it is not a claimed lateral pressure drop across the 2.4 um OAS crop
   explicitly_not_used: [t50, t90, arbitrary_lattice_acceleration]
 
 model:
@@ -78,7 +79,7 @@ model:
 
 numerical_runtime:
   liquid_tau: 0.6
-  liquid_tau_rationale: final-state 228477 Pa screen at tau 0.8 had 1.4443 percent flux residual; tau 0.6 is the predeclared accepted mapping with 0.1010 percent residual
+  liquid_tau_rationale: final-state 228477 Pa screen at tau 0.8 had 1.4443 percent flux residual and exceeded the predeclared 1 percent conservation gate; tau 0.6 was selected as the numerical mapping after that sensitivity run and has a 0.1010 percent residual
   phase_tau: 0.8
   interface_width_cells: 5.0
   pressure_ramp_steps: 4000

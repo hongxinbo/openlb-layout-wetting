@@ -4,13 +4,13 @@
 
 **Status: EC1XT240_REDUCED_BASELINE_PASS.**
 
-This is a reproducible reduced two-dimensional, real-OAS wetting and intrusion baseline under two pressure-scale surrogates extracted from the frozen OF350 reference. The formal baseline is the **final-state 228477.1245 Pa gauge** surrogate. It is not a three-dimensional 100 um calculation, moving-mesh model, local perfectGas equivalence, strict OF350 regression, or experimental validation.
+This is a reproducible reduced two-dimensional, real-OAS wetting and intrusion baseline under two OF350 EC1XT240 zone-mean pressure-scale surrogates. The formal baseline is the **final-state 228477.1245 Pa gauge** surrogate. It is not a three-dimensional 100 um calculation, moving-mesh model, local perfectGas equivalence, strict OF350 regression, or experimental validation.
 
 The release evidence is the real-OAS geometry audit, retained E1/E2/E3 component tests, and a final-state 60-degree OAS run that is both numerically healthy and resolved as an observable intrusion.
 
 ## Pressure-scale surrogates
 
-The pressure values are not arbitrary lattice forcing. They are gauge pressures obtained by subtracting the 1e5 Pa OF350 external reference from the frozen EC1XT240OASZone mean pressure.
+The pressure values are not arbitrary lattice forcing. They are gauge pressures obtained by subtracting the 1e5 Pa OF350 external reference from the frozen EC1XT240OASZone mean pressure. This OF350 zone-mean pressure minus ambient is used only as a source-backed forcing magnitude for the pressure-open reduced model; it is not claimed to be the real lateral pressure drop across the 2.4 um OAS crop.
 
 | scale | frozen OF350 state | absolute pressure | gauge pressure | use |
 | --- | --- | ---: | ---: | --- |
@@ -31,7 +31,7 @@ The runtime launcher interpolates the frozen reference at the stated displacemen
 | Darcy | disabled | explicit OAS walls already resolve plan-view resistance; an added OF350 zone Darcy term would double count it |
 | phase path | ConservativePhaseFieldBGKdynamics + LiangPostProcessor + PhaseFieldCurvedWall | Liang capillary force is added; it is not overwritten by another force |
 
-The final baseline uses liquid tau 0.6, phase tau 0.8, and a five-cell interface. The same final-state screen at liquid tau 0.8 reached the resolved metrics but had a 1.4443% boundary-flux residual and therefore remained HOLD. Lowering liquid tau to 0.6 decreases the physical timestep in this solver-specific conversion and produces the predeclared accepted 0.1010% residual. This is a recorded numerical mapping choice, not an OF350 physical-time mapping or a convergence claim.
+The final baseline uses liquid tau 0.6, phase tau 0.8, and a five-cell interface. The same final-state screen at liquid tau 0.8 reached the resolved metrics but had a 1.4443% boundary-flux residual, exceeding the predeclared 1% conservation gate, and therefore remained HOLD. Tau 0.6 was selected as the numerical mapping after that sensitivity run; it decreases the physical timestep in this solver-specific conversion and gives a 0.1010% residual. This is a recorded numerical mapping choice, not an OF350 physical-time mapping or a convergence claim.
 
 ## Ramp, hold, and resolved intrusion definition
 
