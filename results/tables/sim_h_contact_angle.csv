@@ -1,0 +1,4 @@
+theta_deg,status,executed,normalized_downstream_uptake,resolved_front_advance_nm,target_filling_fraction,inventory_plus_boundary_flux_residual,max_mach
+30.0,NOT_RUN_BASELINE_HEALTH_HOLD,false,,,,,
+60.0,SIM_H_CASE_HOLD,true,0.006508796000636985,80.0,1.4079905534784069e-08,0.035841076811884295,0.009489920975590014
+120.0,NOT_RUN_BASELINE_HEALTH_HOLD,false,,,,,

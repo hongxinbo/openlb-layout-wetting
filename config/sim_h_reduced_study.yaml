@@ -1,0 +1,64 @@
+schema_version: 1
+case_id: sim_h_reduced_study
+frozen_ec1_baseline_config: config/ec1xt240_reduced_baseline.yaml
+frozen_ec1_production_summary: results/summaries/ec1xt240_production_study.json
+
+geometry:
+  source_layout: inputs/layouts/SIM-H.OAS
+  source_sha256: 38908d0462a30c68ce8701e26617a5d7d73ce25b466e44b5d79469427bc90cc3
+  selected_solid_layer: 1/0
+  solid_convention: pink layer-1/0 layout features are solid; white background is fluid
+  layout_bbox_um: [400.0, -12500.0, 1399.4, -11500.6]
+  candidate_crop_a_um: [400.6, -12499.4, 403.01, -12496.99]
+  candidate_crop_b_um: [400.6, -12499.4, 403.01, -12498.59]
+  crop_bbox_um: [400.6, -12499.4, 403.01, -12496.99]
+  expected_width_um: 2.41
+  expected_height_um: 2.41
+  fixed_groove_depth_m: 1.0e-4
+  selection_statement: The source is a periodic solid-post network at the inspected location, not an isolated literal H-shaped cavity. The selected crop contains a complete 3 by 3 post-and-channel representative network and preserves x/y edge compatibility at 10 nm.
+
+target_roi:
+  coordinate_system: crop_local_um
+  bbox_um: [0.8, 0.8, 1.61, 1.61]
+  definition: The central 0.81 um by 0.81 um post-and-channel unit in the selected crop. Filling is evaluated only over lattice cells classified as fluid/open-boundary material, not over solid pixels.
+  selection_timing: Frozen before the baseline run and independent of the resulting liquid field.
+
+common_endpoint:
+  pressure_ramp_steps: 4000
+  fixed_pressure_hold_steps: 4000
+  max_steps: 8000
+  stop_on_resolved_intrusion: false
+  metrics_interval: 100
+  vtk_interval: 8000
+  time_statement: reported OpenLB time is reduced-model numerical mapping, not OF350 one-second process time
+
+frozen_physics:
+  contact_angle_deg: 60.0
+  pressure_scale: final_state_228477_pa
+  liquid_density_kg_m3: 1510.0
+  liquid_dynamic_viscosity_Pa_s: 1.0e-3
+  surface_tension_N_m: 3.09e-2
+  gas_model: REDUCED_VENTED_GAS
+  additional_darcy_enabled: false
+
+numerical_mapping:
+  dx_nm: 10.0
+  interface_width_cells: 5.0
+  physical_interface_width_nm: 50.0
+  liquid_tau: 0.6
+  phase_tau: 0.8
+  viscosity_tau_formula: tau(mu) = 0.5 + 0.1 * (mu / 1 mPa s) at fixed dx and reduced numerical timestep
+
+minimal_sensitivity:
+  contact_angle_deg: [30.0, 60.0, 120.0]
+  liquid_dynamic_viscosity_Pa_s: [5.0e-4, 1.0e-3, 5.0e-3]
+  run_only_if_baseline_health_passes: true
+
+gates:
+  max_mach: 0.1
+  conservation_residual: 0.01
+  phase_min: -0.05
+  phase_max: 1.05
+  baseline_health: no NaN, bounded phase, Mach below gate, inventory plus boundary-flux residual at or below gate, and complete 8000-step common endpoint
+
+claim_boundary: Frozen reduced 2-D vented-gas OAS model using the OF350 final-state EC1XT240 zone-mean pressure-scale surrogate only; not an isolated literal H-cavity reconstruction, full 3-D, moving mesh, local perfectGas, strict OF350 regression, or experimental validation.
