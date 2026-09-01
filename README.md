@@ -10,8 +10,10 @@
 - 14个OAS输入：已复制并记录SHA-256。
 - EC1XT240初步几何审计：已记录。
 - OpenFOAM 350参数来源审计：已建立初稿。
-- OpenLB求解器：尚未实现。
-- 正式物理结果：尚无。
+- OpenLB reduced physical baseline：`EC1XT240_REDUCED_BASELINE_PASS`；真实OAS
+  平面、表面张力、润湿、OF350位移导出的压力驱动和排气近似已通过最小组件门。
+- 该结果是受限的二维 reduced baseline，不是100 um显式三维、局部`perfectGas`、
+  严格OF350回归或实验验证；见`docs/EC1XT240_PHYSICAL_BASELINE.md`。
 
 ## 先读这些文件
 

@@ -9,8 +9,8 @@
 | original implementation commit | `1864b0e` |
 | PR review baseline commit | `9b24e20` |
 | GitHub repository | `hongxinbo/openlb-layout-wetting` (PRIVATE) |
-| review pull request | [PR #1](https://github.com/hongxinbo/openlb-layout-wetting/pull/1) (OPEN) |
-| current phase | Phase B complete — minimal real-OAS smoke baseline; next phase is the reduced physical baseline |
+| review pull request | [PR #1](https://github.com/hongxinbo/openlb-layout-wetting/pull/1) (MERGED) |
+| current phase | historical Phase B smoke baseline; the active physical-baseline review is `reports/EC1XT240_BASELINE_REVIEW_MANIFEST.md` |
 | current status | `PROJECT_SCOPE_RESET_PASS`, `PASS_GEOMETRY_AUDIT`, `MINIMAL_240_SMOKE_PASS`, `P0_PRESSING_PASS`, `P1_OAS_DEPTH_TRANSPORT_PASS` |
 
 The frozen interpretation does not claim full 3-D EC1 process equivalence or
@@ -96,17 +96,16 @@ schedule is neither real groove compression nor the physical EC1 upper-film
 trajectory. If reused, `h` means an upper-film/reduced control-volume thickness,
 not the 100 um groove depth; they remain archived optional algorithm tests.
 
-The next action is **`EC1XT240_REDUCED_BASELINE`**: a vented-gas,
-pressure-driven, wetting-aware 2-D OAS model with no additional Darcy
-resistance. The frozen interpretation has fixed 100 um grooves and a separate
-upper film, squeezed from 1.0 um toward about 65 nm by a -0.935 um, 1 s
-OF350-quintic template descent.
+The reduced physical-baseline implementation is tracked in
+`reports/EC1XT240_BASELINE_REVIEW_MANIFEST.md`.  Its independent release gate
+now records `EC1XT240_REDUCED_BASELINE_PASS` for the bounded 2-D reduced model;
+that result does not change the historical smoke claim or authorize full 3-D,
+local perfect-gas, or strict OF350 regression work.
 
 ## Repository and push status
 
 Only the files listed above were staged for the implementation commit. Existing
 modified and untracked OF350/R1 documents, code, reference data and user work
 remain outside this checkpoint. Raw runs, VTK output, and build artifacts are
-not staged. The branch tracks `origin/codex/minimal-ec1xt240`; the private
-GitHub remote and PR #1 are available for review. No force push or PR merge is
-part of this checkpoint.
+not staged. PR #1 is merged; this historical manifest is not the current
+physical-baseline release record.

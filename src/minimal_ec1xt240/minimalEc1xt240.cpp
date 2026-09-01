@@ -3,9 +3,11 @@
 // This is intentionally not an OpenFOAM350 regression and not a final EC1
 // model. It uses a raster directly extracted from SIM-EC1XT240.OAS, a fixed
 // declared groove depth of 100 um, a conservative OpenLB phase field, and a
-// reduced incompressible gas phase. Darcy, contact-angle calibration, local
-// perfect-gas physics, surface tension, and z-pressing are deliberately absent
-// from this first stability baseline.
+// reduced incompressible gas phase.  Surface tension and a wall contact-angle
+// input are enabled for the physical-baseline and component-test modes; their
+// validation status is deliberately reported separately from runtime health.
+// Darcy, local perfect-gas physics, and an explicitly resolved z-pressing mesh
+// are outside this reduced model.
 
 #include <olb.h>
 
@@ -50,6 +52,16 @@ struct GAS_NU_M2_S : public descriptors::FIELD_BASE<1> { };
 struct PHASE_TAU : public descriptors::FIELD_BASE<1> { };
 struct INITIAL_LIQUID_LENGTH_M : public descriptors::FIELD_BASE<1> { };
 struct PHYSICAL_GROOVE_DEPTH_M : public descriptors::FIELD_BASE<1> { };
+struct OPEN_BOUNDARY : public descriptors::FIELD_BASE<1> { };
+struct SURFACE_TENSION_N_M : public descriptors::FIELD_BASE<1> { };
+struct CONTACT_ANGLE_DEG : public descriptors::FIELD_BASE<1> { };
+struct PRESSURE_DRIVE_PA : public descriptors::FIELD_BASE<1> { };
+struct CASE_LABEL : public descriptors::TYPED_FIELD_BASE<std::string,1> { };
+struct STRAIGHT_CHANNEL : public descriptors::FIELD_BASE<1> { };
+struct STRAIGHT_CHANNEL_WIDTH_M : public descriptors::FIELD_BASE<1> { };
+struct WETTING_DROPLET : public descriptors::FIELD_BASE<1> { };
+struct DROPLET_RADIUS_M : public descriptors::FIELD_BASE<1> { };
+struct MINIMUM_FRONT_PROGRESS_CELLS : public descriptors::FIELD_BASE<1> { };
 }
 
 namespace {
@@ -57,11 +69,10 @@ using T = MinimalCase::value_t;
 using NSDESCRIPTOR = MinimalCase::descriptor_t_of<NavierStokes>;
 using PHIDESCRIPTOR = MinimalCase::descriptor_t_of<Component1>;
 
-constexpr T kDx = 20.e-9;
-constexpr T kLiquidDensity = 1510.;
-constexpr T kLiquidDynamicViscosity = 1.e-3;
-constexpr T kLiquidNu = kLiquidDynamicViscosity/kLiquidDensity;
-constexpr T kDensityScale = kLiquidDensity;
+constexpr T kDefaultDx = 20.e-9;
+constexpr T kDefaultLiquidDensity = 1510.;
+constexpr T kDefaultLiquidDynamicViscosity = 1.e-3;
+constexpr T kDefaultLiquidNu = kDefaultLiquidDynamicViscosity/kDefaultLiquidDensity;
 
 class InitialLiquidBand final : public AnalyticalF2D<T,T> {
 private:
@@ -74,6 +85,24 @@ public:
   bool operator()(T output[1], const T input[2]) override
   {
     output[0] = T(.5)*(T(1)-std::tanh((input[0]-_front)/_width));
+    return true;
+  }
+};
+
+class InitialLiquidDroplet final : public AnalyticalF2D<T,T> {
+private:
+  T _x;
+  T _y;
+  T _radius;
+  T _width;
+public:
+  InitialLiquidDroplet(T x, T y, T radius, T width)
+    : AnalyticalF2D<T,T>(1), _x(x), _y(y), _radius(radius), _width(width) { }
+
+  bool operator()(T output[1], const T input[2]) override
+  {
+    const T distance = std::hypot(input[0]-_x,input[1]-_y);
+    output[0] = T(.5)*(T(1)-std::tanh((distance-_radius)/_width));
     return true;
   }
 };
@@ -133,6 +162,27 @@ public:
   }
 };
 
+template <typename V>
+class StraightChannelSolidIndicator2D final : public IndicatorF2D<V> {
+private:
+  V _height;
+  V _width;
+public:
+  StraightChannelSolidIndicator2D(V height, V width)
+    : _height(height), _width(width)
+  {
+    this->_myMin = {V(),V()};
+    this->_myMax = {V(),_height};
+  }
+
+  bool operator()(bool output[1], const V input[2]) override
+  {
+    const V half = _width/T(2);
+    output[0] = std::abs(input[1]-_height/T(2)) > half;
+    return true;
+  }
+};
+
 T smoothstep(T x)
 {
   x = std::clamp(x,T(),T(1));
@@ -145,20 +195,46 @@ Mesh<T,MinimalCase::d> createMesh(MinimalCase::ParametersD& params)
   Mesh<T,MinimalCase::d> mesh(domain,params.get<parameters::PHYS_DELTA_X>(),
                               singleton::mpi().getSize());
   mesh.setOverlap(params.get<parameters::OVERLAP>());
-  mesh.getCuboidDecomposition().setPeriodicity({true,false});
+  if (params.get<parameters::OPEN_BOUNDARY>() < T(.5)
+      && params.get<parameters::STRAIGHT_CHANNEL>() < T(.5)) {
+    mesh.getCuboidDecomposition().setPeriodicity({true,false});
+  }
   return mesh;
 }
 
 void prepareGeometry(MinimalCase& c)
 {
   auto& geometry = c.getGeometry();
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   geometry.rename(0,2);
-  geometry.rename(2,1,{1,1});
-  RasterSolidIndicator2D<T> solid(c.getParameters().get<parameters::MASK_INPUT>(),kDx);
-  geometry.rename(1,5,solid);
+  const bool straight = c.getParameters().get<parameters::STRAIGHT_CHANNEL>() > T(.5);
+  if (straight) {
+    // Keep a one-cell exterior wall frame, as in OpenLB's channel examples.
+    // The component droplet is then a closed, non-periodic wall test rather
+    // than a malformed periodic strip with open side voxels.
+    geometry.rename(2,1,{1,1});
+    const auto extent = c.getParameters().get<parameters::DOMAIN_EXTENT>();
+    StraightChannelSolidIndicator2D<T> solid(extent[1],
+      c.getParameters().get<parameters::STRAIGHT_CHANNEL_WIDTH_M>());
+    geometry.rename(1,5,solid);
+  } else {
+    geometry.rename(2,1,{1,1});
+    RasterSolidIndicator2D<T> solid(c.getParameters().get<parameters::MASK_INPUT>(),dx);
+    geometry.rename(1,5,solid);
+  }
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    const auto extent = c.getParameters().get<parameters::DOMAIN_EXTENT>();
+    IndicatorCuboid2D<T> inlet(dx,extent[1]-T(2)*dx,{T(),extent[1]/T(2)});
+    IndicatorCuboid2D<T> outlet(dx,extent[1]-T(2)*dx,{extent[0],extent[1]/T(2)});
+    geometry.rename(2,3,inlet);
+    geometry.rename(2,4,outlet);
+  }
   geometry.clean();
   geometry.innerClean();
   geometry.checkForErrors();
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    geometry.getStatistics().print();
+  }
 }
 
 template <typename STAGE>
@@ -186,44 +262,77 @@ void prepareLattices(MinimalCase& c)
   auto& ns = c.getLattice(NavierStokes{});
   auto& phase = c.getLattice(Component1{});
   const auto extent = c.getParameters().get<parameters::DOMAIN_EXTENT>();
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   const T tauL = c.getParameters().get<parameters::LATTICE_RELAXATION_TIME>();
+  const T rhoL = c.getParameters().get<parameters::RHO_LIQUID>();
+  const T nuL = c.getParameters().get<parameters::NU_LIQUID>();
   const T rhoG = c.getParameters().get<parameters::GAS_DENSITY_KG_M3>();
   const T nuG = c.getParameters().get<parameters::GAS_NU_M2_S>();
-  const T tauG = nuG/kLiquidNu*(tauL-T(.5))+T(.5);
+  const T tauG = nuG/nuL*(tauL-T(.5))+T(.5);
   const T width = c.getParameters().get<parameters::INTERFACE_WIDTH>();
 
   ns.setUnitConverter<MultiPhaseUnitConverterFromRelaxationTime<T,NSDESCRIPTOR>>(
-    static_cast<int>(std::llround(extent[1]/kDx)),tauL,T(1),extent[1],kLiquidNu,kLiquidDensity);
+    static_cast<int>(std::llround(extent[1]/dx)),tauL,T(1),extent[1],nuL,rhoL);
   phase.setUnitConverter(ns.getUnitConverter());
 
   auto bulk = geometry.getMaterialIndicator(1);
   auto wall = geometry.getMaterialIndicator({2,5});
   auto fluid = geometry.getMaterialIndicator(1);
+  auto inlet = geometry.getMaterialIndicator(3);
+  auto outlet = geometry.getMaterialIndicator(4);
+  auto pressureFluid = geometry.getMaterialIndicator({1,3});
 
   dynamics::set<NSDynamics>(ns,bulk);
   dynamics::set<PhaseDynamics>(phase,bulk);
   boundary::set<boundary::BounceBackIncompressible>(ns,wall);
   boundary::set<boundary::PhaseFieldCurvedWall>(phase,wall);
-  phase.addPostProcessor<stage::PreCoupling>(fluid,meta::id<RhoStatistics>());
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    boundary::set<boundary::RegularizedTemperature>(phase,inlet);
+    boundary::set<boundary::IncompressibleZouHePressure>(ns,inlet);
+    boundary::set<boundary::IncompressibleZouHePressure>(ns,outlet);
+    setConvectivePhaseFieldBoundary<T,PHIDESCRIPTOR>(phase,outlet);
+    phase.addPostProcessor<stage::InitOutlet>(outlet,meta::id<SetOutletCells2D<1,0>>());
+  }
+  phase.addPostProcessor<stage::PreCoupling>(pressureFluid,meta::id<RhoStatistics>());
   phase.addPostProcessor<stage::PreCoupling>(meta::id<initialPsi>{});
   phase.addPostProcessor<stage::IterativePostProcess>(bulk,meta::id<normGradPsi>{});
   phase.addPostProcessor<stage::IterativePostProcess>(meta::id<psiEvolve>{});
   phase.setParameter<psiEvolve::DELTAT>(T(.7));
   setSignedDistanceBoundary<T,PHIDESCRIPTOR>(phase,wall);
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    setSignedDistanceBoundary<T,PHIDESCRIPTOR>(phase,inlet);
+    setSignedDistanceBoundary<T,PHIDESCRIPTOR>(phase,outlet);
+  }
 
   auto& liang = c.setCouplingOperator("Liang",LiangPostProcessor{},
                                        NavierStokes{},ns,Component1{},phase);
-  liang.restrictTo(fluid);
-  liang.setParameter<LiangPostProcessor::SIGMA>(T()); // P2 adds reference sigma.
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    liang.restrictTo(geometry.getMaterialIndicator({1,4}));
+  } else {
+    liang.restrictTo(fluid);
+  }
+  liang.setParameter<LiangPostProcessor::SIGMA>(
+    c.getParameters().get<parameters::SURFACE_TENSION_N_M>()
+      /ns.getUnitConverter().getConversionFactorSurfaceTension());
   liang.setParameter<LiangPostProcessor::W>(width);
   liang.setParameter<LiangPostProcessor::TAUS>({tauG,tauL});
-  liang.setParameter<LiangPostProcessor::RHOS>({rhoG/kDensityScale,T(1)});
+  liang.setParameter<LiangPostProcessor::RHOS>({rhoG/rhoL,T(1)});
   liang.setParameter<LiangPostProcessor::SWITCH>(T(1));
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    auto& velocityCoupling = c.setCouplingOperator("InletVelocity",VelocityCoupling{},
+      NavierStokes{},ns,Component1{},phase);
+    velocityCoupling.restrictTo(inlet);
+  }
 
   ns.setParameter<descriptors::OMEGA>(T(1)/tauL);
   ns.setParameter<collision::ITRT::TAU_MINUS>(T(1.5));
-  ns.setParameter<collision::ITRT::MAXNABLARHO>((T(1)-rhoG/kDensityScale)/width);
+  ns.setParameter<collision::ITRT::MAXNABLARHO>((T(1)-rhoG/rhoL)/width);
   phase.setParameter<descriptors::OMEGA>(T(1)/c.getParameters().get<parameters::PHASE_TAU>());
+  // OpenLB 1.9 PhaseFieldCurvedWall uses the lattice parameter in its
+  // IsoPhaseFieldCurvedWall2D processor. The wall-cell field is still written
+  // below as auditable metadata, but it is not the controlling input here.
+  phase.setParameter<descriptors::THETA>(
+    c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()*M_PI/T(180));
   phase.setParameter<descriptors::EPSILON>(T(1.5)*width);
   phase.setParameter<descriptors::INTERFACE_WIDTH>(width);
   phase.setParameter<descriptors::MAX_VELOCITY>(T(.02));
@@ -245,17 +354,33 @@ void initializeFields(MinimalCase& c)
   auto& ns = c.getLattice(NavierStokes{});
   auto& phase = c.getLattice(Component1{});
   const T tauL = c.getParameters().get<parameters::LATTICE_RELAXATION_TIME>();
+  const T rhoL = c.getParameters().get<parameters::RHO_LIQUID>();
+  const T nuL = c.getParameters().get<parameters::NU_LIQUID>();
   const T rhoG = c.getParameters().get<parameters::GAS_DENSITY_KG_M3>();
   const T nuG = c.getParameters().get<parameters::GAS_NU_M2_S>();
-  const T tauG = nuG/kLiquidNu*(tauL-T(.5))+T(.5);
+  const T tauG = nuG/nuL*(tauL-T(.5))+T(.5);
   const T width = c.getParameters().get<parameters::INTERFACE_WIDTH>();
   const T liquidLength = c.getParameters().get<parameters::INITIAL_LIQUID_LENGTH_M>();
-  auto all = geometry.getMaterialIndicator({0,1,2,5});
+  const auto extent = c.getParameters().get<parameters::DOMAIN_EXTENT>();
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
+  auto all = geometry.getMaterialIndicator({0,1,2,3,4,5});
   auto wall = geometry.getMaterialIndicator({2,5});
-  auto fluid = geometry.getMaterialIndicator(1);
+  auto fluid = geometry.getMaterialIndicator({1,3,4});
 
-  InitialLiquidBand phi0(liquidLength,width*kDx/T(2));
-  AnalyticalConst2D<T,T> rhoGas(rhoG/kDensityScale);
+  const bool wettingDroplet = c.getParameters().get<parameters::WETTING_DROPLET>() > T(.5);
+  const T channelBottom = (extent[1]-c.getParameters().get<parameters::STRAIGHT_CHANNEL_WIDTH_M>())/T(2);
+  InitialLiquidBand liquidBand(liquidLength,width*dx/T(2));
+  // The contact-angle component must relax from a target-independent initial
+  // shape.  Centre the circular droplet on the lower wall, i.e. an initial
+  // 90-degree geometric cap, for every requested wall angle.  This avoids
+  // turning the component test into a target-angle preservation check.
+  const T dropletRadius = c.getParameters().get<parameters::DROPLET_RADIUS_M>();
+  InitialLiquidDroplet liquidDroplet(extent[0]/T(2),channelBottom,
+    dropletRadius,width*dx/T(2));
+  AnalyticalF2D<T,T>& phi0 = wettingDroplet
+    ? static_cast<AnalyticalF2D<T,T>&>(liquidDroplet)
+    : static_cast<AnalyticalF2D<T,T>&>(liquidBand);
+  AnalyticalConst2D<T,T> rhoGas(rhoG/rhoL);
   AnalyticalConst2D<T,T> rhoLiquid(T(1));
   AnalyticalIdentity2D<T,T> rho0(rhoGas+(rhoLiquid-rhoGas)*phi0);
   AnalyticalConst2D<T,T> tauGas(tauG);
@@ -264,7 +389,7 @@ void initializeFields(MinimalCase& c)
   AnalyticalConst2D<T,T> zeroScalar(T{});
   AnalyticalConst2D<T,T> zeroVelocity(T{},T{});
   AnalyticalConst2D<T,T> one(T(1));
-  AnalyticalConst2D<T,T> neutralTheta(M_PI/T(2));
+  AnalyticalConst2D<T,T> contactAngle(c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()*M_PI/T(180));
 
   fields::set<SCALAR>(ns,all,one);
   fields::set<RHO>(ns,all,rho0);
@@ -274,7 +399,7 @@ void initializeFields(MinimalCase& c)
   fields::set<OLD_PHIU>(phase,all,zeroVelocity);
   fields::set<BOUNDARY>(phase,wall,2);
   fields::set<BOUNDARY>(phase,fluid,1);
-  fields::set<THETA>(phase,wall,neutralTheta);
+  fields::set<THETA>(phase,wall,contactAngle);
   momenta::setOrderParameter(phase,all,phi0);
   momenta::setVelocity(phase,all,zeroVelocity);
   phase.iniEquilibrium(all,phi0,zeroVelocity);
@@ -282,6 +407,9 @@ void initializeFields(MinimalCase& c)
   momenta::setVelocity(ns,all,zeroVelocity);
   ns.iniEquilibrium(all,zeroScalar,zeroVelocity);
   phase.executePostProcessors(stage::PreCoupling());
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    phase.executePostProcessors(stage::InitOutlet());
+  }
   signedDistance<stage::IterativePostProcess>(c);
   ns.initialize();
   phase.initialize();
@@ -296,25 +424,37 @@ void initializeFields(MinimalCase& c)
 
 struct Snapshot {
   T sumPhi{};
+  T sumPhiX{};
   T rightHalfPhi{};
   T maxSpeed{};
+  T sumUx{};
+  T maxAbsUy{};
   T minPhi{std::numeric_limits<T>::max()};
   T maxPhi{-std::numeric_limits<T>::max()};
   std::size_t cells{};
   std::size_t rightHalfCells{};
   std::size_t nonFiniteCells{};
+  T meanPressureLattice{};
+  T minPressureLattice{std::numeric_limits<T>::max()};
+  T maxPressureLattice{-std::numeric_limits<T>::max()};
+  T liquidPressureLattice{};
+  T gasPressureLattice{};
+  std::size_t liquidPressureCells{};
+  std::size_t gasPressureCells{};
+  T liquidOutwardVolumeStep{};
 };
 
 Snapshot snapshot(MinimalCase& c)
 {
   Snapshot result;
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   auto& nsBlock = c.getLattice(NavierStokes{}).getBlock(0);
   auto& phaseBlock = c.getLattice(Component1{}).getBlock(0);
   auto& geometry = c.getGeometry().getBlockGeometry(0);
   const int split = geometry.getNx()/2;
   nsBlock.forCoreSpatialLocations([&](LatticeR<2> r) {
     const int material = geometry.getMaterial(r);
-    if (material != 1) return;
+    if (material != 1 && material != 3 && material != 4) return;
     auto ns = nsBlock.get(r);
     auto phase = phaseBlock.get(r);
     const T phi = phase.computeRho();
@@ -327,9 +467,28 @@ Snapshot snapshot(MinimalCase& c)
       return;
     }
     result.sumPhi += phi;
+    result.sumPhiX += phi*T(r[0]+T(.5));
     result.minPhi = std::min(result.minPhi,phi);
     result.maxPhi = std::max(result.maxPhi,phi);
     result.maxSpeed = std::max(result.maxSpeed,util::norm<2>(u));
+    result.sumUx += u[0];
+    result.maxAbsUy = std::max(result.maxAbsUy,std::abs(u[1]));
+    const T pressure = ns.computeRho();
+    result.meanPressureLattice += pressure;
+    result.minPressureLattice = std::min(result.minPressureLattice,pressure);
+    result.maxPressureLattice = std::max(result.maxPressureLattice,pressure);
+    if (phi >= T(.95)) {
+      result.liquidPressureLattice += pressure;
+      ++result.liquidPressureCells;
+    } else if (phi <= T(.05)) {
+      result.gasPressureLattice += pressure;
+      ++result.gasPressureCells;
+    }
+    if (material == 3 || material == 4) {
+      const T outwardVelocity = material == 3 ? -u[0] : u[0];
+      result.liquidOutwardVolumeStep += phi*outwardVelocity*dx*dx
+        *c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>();
+    }
     if (r[0] >= split) {
       result.rightHalfPhi += phi;
       ++result.rightHalfCells;
@@ -339,29 +498,109 @@ Snapshot snapshot(MinimalCase& c)
   return result;
 }
 
+T measureContactAngleThroughLiquid(MinimalCase& c)
+{
+  if (c.getParameters().get<parameters::WETTING_DROPLET>() < T(.5)) {
+    return std::numeric_limits<T>::quiet_NaN();
+  }
+  auto& phase = c.getLattice(Component1{}).getBlock(0);
+  auto& geometry = c.getGeometry().getBlockGeometry(0);
+  const int nx = geometry.getNx();
+  const int ny = geometry.getNy();
+  int firstFluidY = -1;
+  for (int y=0; y<ny && firstFluidY < 0; ++y) {
+    for (int x=0; x<nx; ++x) {
+      if (geometry.getMaterial({x,y}) == 1) {
+        firstFluidY = y;
+        break;
+      }
+    }
+  }
+  if (firstFluidY < 0 || firstFluidY+2 >= ny) return std::numeric_limits<T>::quiet_NaN();
+  const int yContact = firstFluidY+1;
+  const auto phiAt = [&](int x, int y) { return phase.get({x,y}).computeRho(); };
+  int left = -1;
+  int right = -1;
+  for (int x=1; x<nx; ++x) {
+    if (geometry.getMaterial({x-1,yContact}) != 1 || geometry.getMaterial({x,yContact}) != 1) continue;
+    const T a = phiAt(x-1,yContact);
+    const T b = phiAt(x,yContact);
+    if ((a-T(.5))*(b-T(.5)) <= T()) {
+      if (left < 0) left = x;
+      right = x;
+    }
+  }
+  const int xCentre = nx/2;
+  int top = -1;
+  for (int y=yContact+1; y<ny; ++y) {
+    if (geometry.getMaterial({xCentre,y-1}) != 1 || geometry.getMaterial({xCentre,y}) != 1) continue;
+    const T a = phiAt(xCentre,y-1);
+    const T b = phiAt(xCentre,y);
+    if ((a-T(.5))*(b-T(.5)) <= T()) {
+      top = y;
+    }
+  }
+  if (left < 0 || right <= left || top < 0) return std::numeric_limits<T>::quiet_NaN();
+  const auto interpolate = [&](int x0, int y0, int x1, int y1) {
+    const T a = phiAt(x0,y0);
+    const T b = phiAt(x1,y1);
+    const T f = (T(.5)-a)/(b-a);
+    return Vector<T,2>{T(x0)+f*T(x1-x0),T(y0)+f*T(y1-y0)};
+  };
+  const auto pLeft = interpolate(left-1,yContact,left,yContact);
+  const auto pRight = interpolate(right-1,yContact,right,yContact);
+  const auto pTop = interpolate(xCentre,top-1,xCentre,top);
+  const T xc = (pLeft[0]+pRight[0])/T(2);
+  const T denominator = T(2)*(pLeft[1]-pTop[1]);
+  if (std::abs(denominator) < T(1e-12)) return std::numeric_limits<T>::quiet_NaN();
+  const T yc = ((pLeft[0]-xc)*(pLeft[0]-xc)+pLeft[1]*pLeft[1]-pTop[1]*pTop[1])/denominator;
+  const T radius = std::hypot(pTop[0]-xc,pTop[1]-yc);
+  const T wallY = T(firstFluidY)-T(.5);
+  if (!std::isfinite(radius) || radius <= T()) return std::numeric_limits<T>::quiet_NaN();
+  const T cosine = std::clamp((wallY-yc)/radius,T(-1),T(1));
+  return std::acos(cosine)*T(180)/M_PI;
+}
+
 void setDriveForce(MinimalCase& c, int step)
 {
   const T ramp = smoothstep(T(step)/c.getParameters().get<parameters::DRIVE_RAMP_STEPS>());
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    auto& ns = c.getLattice(NavierStokes{});
+    // momenta::setIncompressiblePressure accepts physical pressure and applies
+    // the UnitConverter once internally.  Passing a pre-converted lattice
+    // value would incorrectly divide by the pressure factor a second time.
+    const T physicalPressure = c.getParameters().get<parameters::PRESSURE_DRIVE_PA>()*ramp;
+    AnalyticalConst2D<T,T> inletPressure(physicalPressure);
+    momenta::setIncompressiblePressure(ns,c.getGeometry().getMaterialIndicator(3),inletPressure);
+    return;
+  }
   AnalyticalConst2D<T,T> force(c.getParameters().get<parameters::DRIVE_ACCELERATION_LATTICE>()*ramp,T{});
   auto& ns = c.getLattice(NavierStokes{});
   fields::set<EXTERNAL_FORCE>(ns,c.getGeometry().getMaterialIndicator(1),force);
 }
 
-void appendMetrics(MinimalCase& c, int step, const Snapshot& s, T liquidBalanceResidual)
+void appendMetrics(MinimalCase& c, int step, const Snapshot& s, T liquidBalanceResidual,
+                   T integratedOutwardLiquidVolume)
 {
   if (!singleton::mpi().isMainProcessor()) return;
   const auto& converter = c.getLattice(NavierStokes{}).getUnitConverter();
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   const auto path = c.getParameters().get<parameters::OUTPUT_DIR>()+"/metrics.csv";
   const bool fresh = !std::filesystem::exists(path);
   std::ofstream stream(path,std::ios::app);
-  if (fresh) stream << "step,time_s,drive_acceleration_lattice,mean_phi,right_half_phi,max_lattice_u,max_mach,liquid_balance_residual\n";
+  if (fresh) stream << "step,time_s,drive_acceleration_lattice,filling_fraction,liquid_centroid_x_m,right_half_phi,mean_lattice_u_x,max_abs_lattice_u_y,max_lattice_u,max_mach,mean_pressure_gauge_pa,pressure_min_gauge_pa,pressure_max_gauge_pa,instant_outward_liquid_volume_m3,integrated_outward_liquid_volume_m3,inventory_plus_boundary_flux_residual\n";
   const T meanPhi = s.cells ? s.sumPhi/T(s.cells) : T();
+  const T liquidCentroid = s.sumPhi > T() ? s.sumPhiX/s.sumPhi*dx : T();
   const T rightPhi = s.rightHalfCells ? s.rightHalfPhi/T(s.rightHalfCells) : T();
-  const T acceleration = c.getParameters().get<parameters::DRIVE_ACCELERATION_LATTICE>()
-    *smoothstep(T(step)/c.getParameters().get<parameters::DRIVE_RAMP_STEPS>());
+  const T acceleration = c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5) ? T()
+    : c.getParameters().get<parameters::DRIVE_ACCELERATION_LATTICE>()
+      *smoothstep(T(step)/c.getParameters().get<parameters::DRIVE_RAMP_STEPS>());
+  const T pressureFactor = converter.getConversionFactorPressure();
+  const T meanPressure = s.cells ? s.meanPressureLattice/T(s.cells)*pressureFactor : T();
   stream << std::setprecision(17) << step << ',' << converter.getPhysTime(step) << ',' << acceleration << ','
-         << meanPhi << ',' << rightPhi << ',' << s.maxSpeed << ',' << s.maxSpeed*std::sqrt(T(3)) << ','
-         << liquidBalanceResidual << '\n';
+         << meanPhi << ',' << liquidCentroid << ',' << rightPhi << ',' << s.sumUx/T(s.cells) << ',' << s.maxAbsUy << ',' << s.maxSpeed << ',' << s.maxSpeed*std::sqrt(T(3)) << ','
+         << meanPressure << ',' << s.minPressureLattice*pressureFactor << ',' << s.maxPressureLattice*pressureFactor << ','
+         << s.liquidOutwardVolumeStep << ',' << integratedOutwardLiquidVolume << ',' << liquidBalanceResidual << '\n';
 }
 
 void writeVtk(MinimalCase& c, int step)
@@ -397,35 +636,79 @@ void writeVtk(MinimalCase& c, int step)
 }
 
 void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final,
-                  T liquidBalanceResidual, bool pass)
+                  T liquidBalanceResidual, T integratedOutwardLiquidVolume,
+                  T measuredContactAngleDeg, bool pass)
 {
   if (!singleton::mpi().isMainProcessor()) return;
   const auto& converter = c.getLattice(NavierStokes{}).getUnitConverter();
   const int steps = c.getParameters().get<parameters::MAX_STEPS>();
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   const T initialRight = initial.rightHalfPhi/T(initial.rightHalfCells);
   const T finalRight = final.rightHalfPhi/T(final.rightHalfCells);
+  const T initialFilling = initial.sumPhi/T(initial.cells);
+  const T finalFilling = final.sumPhi/T(final.cells);
+  const T initialCentroid = initial.sumPhiX/initial.sumPhi*dx;
+  const T finalCentroid = final.sumPhiX/final.sumPhi*dx;
+  const T frontProgressCells = final.sumPhiX/final.sumPhi-initial.sumPhiX/initial.sumPhi;
+  const T liquidMeanPressure = final.liquidPressureCells
+    ? final.liquidPressureLattice/T(final.liquidPressureCells)*converter.getConversionFactorPressure() : T();
+  const T gasMeanPressure = final.gasPressureCells
+    ? final.gasPressureLattice/T(final.gasPressureCells)*converter.getConversionFactorPressure() : T();
+  const bool wettingMode = c.getParameters().get<parameters::WETTING_DROPLET>() > T(.5);
+  const bool targetIs60 = std::abs(c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()-T(60)) < T(1e-12);
+  const char* status = wettingMode
+    ? (targetIs60 ? (pass ? "CONTACT_ANGLE_60_PASS" : "CONTACT_ANGLE_60_HOLD")
+                  : (pass ? "WETTING_COMPONENT_PASS" : "WETTING_COMPONENT_HOLD"))
+    : (pass ? "EC1XT240_REDUCED_RUNTIME_PASS" : "EC1XT240_REDUCED_RUNTIME_HOLD");
   std::ofstream stream(c.getParameters().get<parameters::OUTPUT_DIR>()+"/summary.json");
   stream << std::setprecision(17)
     << "{\n"
-    << "  \"case_id\": \"minimal_ec1xt240_oas_phasefield\",\n"
-    << "  \"status\": \"" << (pass ? "MINIMAL_240_SMOKE_PASS" : "MINIMAL_240_SMOKE_HOLD") << "\",\n"
-    << "  \"claim\": \"numerical pipeline / geometry / stability smoke test; liquid inventory is diagnostic, not a formal conservation gate\",\n"
+    << "  \"case_id\": \"" << c.getParameters().get<parameters::CASE_LABEL>() << "\",\n"
+    << "  \"status\": \"" << status << "\",\n"
+    << "  \"claim\": \"reduced 2-D OAS wetting/intrusion model under OF350-pressing-derived drive; not full 3-D or perfectGas reproduction\",\n"
     << "  \"geometry_source\": \"inputs/layouts/SIM-EC1XT240.OAS\",\n"
-    << "  \"mask\": \"geometry/ec1xt240/minimal_ec1xt240_20nm.pgm\",\n"
+    << "  \"mask_file\": \"" << std::filesystem::path(c.getParameters().get<parameters::MASK_INPUT>()).filename().string() << "\",\n"
+    << "  \"planview_dx_m\": " << dx << ",\n"
     << "  \"geometry_depth_m\": " << c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>() << ",\n"
-    << "  \"phase_model\": \"OpenLB ConservativePhaseField plus Liang coupling; sigma=0 in this minimal baseline\",\n"
-    << "  \"gas_approximation\": \"reduced incompressible phase, rho_g=151 kg/m3; not perfectGas\",\n"
-    << "  \"driving\": \"periodic-x representative crop with ramped uniform x acceleration\",\n"
+    << "  \"phase_model\": \"OpenLB ConservativePhaseField plus Liang coupling and PhaseFieldCurvedWall wetting\",\n"
+    << "  \"surface_tension_N_m\": " << c.getParameters().get<parameters::SURFACE_TENSION_N_M>() << ",\n"
+    << "  \"contact_angle_deg_through_liquid\": " << c.getParameters().get<parameters::CONTACT_ANGLE_DEG>() << ",\n"
+    << "  \"measured_contact_angle_deg_through_liquid\": ";
+  if (std::isfinite(measuredContactAngleDeg)) {
+    stream << measuredContactAngleDeg;
+  } else {
+    stream << "null";
+  }
+  stream << ",\n"
+    << "  \"gas_approximation\": \"REDUCED_VENTED_GAS: incompressible reduced-density phase; not perfectGas\",\n"
+    << "  \"driving\": \"" << (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)
+      ? "OF350_REDUCED_PRESSURE_DRIVE through pressure-open inlet/outlet"
+      : "zero-drive closed component test") << "\",\n"
+    << "  \"pressure_drive_pa\": " << c.getParameters().get<parameters::PRESSURE_DRIVE_PA>() << ",\n"
     << "  \"steps\": " << steps << ",\n"
     << "  \"physical_time_s\": " << converter.getPhysTime(steps) << ",\n"
     << "  \"phase_range\": [" << final.minPhi << ", " << final.maxPhi << "],\n"
     << "  \"max_lattice_speed\": " << final.maxSpeed << ",\n"
+    << "  \"mean_lattice_u_x\": " << final.sumUx/T(final.cells) << ",\n"
+    << "  \"max_abs_lattice_u_y\": " << final.maxAbsUy << ",\n"
     << "  \"max_mach\": " << final.maxSpeed*std::sqrt(T(3)) << ",\n"
     << "  \"initial_right_half_liquid_fraction\": " << initialRight << ",\n"
     << "  \"final_right_half_liquid_fraction\": " << finalRight << ",\n"
     << "  \"right_half_liquid_fraction_change\": " << finalRight-initialRight << ",\n"
+    << "  \"initial_filling_fraction\": " << initialFilling << ",\n"
+    << "  \"filling_fraction\": " << finalFilling << ",\n"
+    << "  \"filling_fraction_change\": " << finalFilling-initialFilling << ",\n"
+    << "  \"initial_liquid_centroid_x_m\": " << initialCentroid << ",\n"
+    << "  \"front_metric_liquid_centroid_x_m\": " << finalCentroid << ",\n"
+    << "  \"front_metric_change_m\": " << finalCentroid-initialCentroid << ",\n"
+    << "  \"front_progress_cells\": " << frontProgressCells << ",\n"
     << "  \"liquid_inventory_boundary_residual\": " << liquidBalanceResidual << ",\n"
-    << "  \"integrated_outward_liquid_volume_m3\": 0.0\n"
+    << "  \"integrated_outward_liquid_volume_m3\": " << integratedOutwardLiquidVolume << ",\n"
+    << "  \"mean_pressure_pa\": " << final.meanPressureLattice/T(final.cells)*converter.getConversionFactorPressure() << ",\n"
+    << "  \"pressure_range_pa\": [" << final.minPressureLattice*converter.getConversionFactorPressure() << ", " << final.maxPressureLattice*converter.getConversionFactorPressure() << "],\n"
+    << "  \"bulk_liquid_mean_pressure_pa\": " << liquidMeanPressure << ",\n"
+    << "  \"bulk_gas_mean_pressure_pa\": " << gasMeanPressure << ",\n"
+    << "  \"bulk_liquid_minus_gas_pressure_pa\": " << liquidMeanPressure-gasMeanPressure << "\n"
     << "}\n";
 }
 
@@ -435,29 +718,43 @@ bool simulate(MinimalCase& c)
   auto& phase = c.getLattice(Component1{});
   const int steps = c.getParameters().get<parameters::MAX_STEPS>();
   const int metricInterval = c.getParameters().get<parameters::METRIC_INTERVAL>();
+  const T dx = c.getParameters().get<parameters::PHYS_DELTA_X>();
   Snapshot initial = snapshot(c);
   bool stable = true;
+  T integratedOutwardLiquidVolume{};
+  T previousOutwardLiquidVolumeStep = initial.liquidOutwardVolumeStep;
 
   writeVtk(c,0);
-  appendMetrics(c,0,initial,T());
+  appendMetrics(c,0,initial,T(),integratedOutwardLiquidVolume);
   for (int step=1; step<=steps; ++step) {
     setDriveForce(c,step);
     ns.collideAndStream();
     phase.collideAndStream();
     phase.getCommunicator(stage::PreCoupling()).communicate();
     phase.executePostProcessors(stage::PreCoupling());
-    if (step % 100 == 0) signedDistance<stage::IterativePostProcess>(c);
+    // The signed-distance iteration initializes PSI before time stepping.  Do
+    // not repeat it as a periodic projection: it changes the order parameter
+    // in an otherwise closed wetting test and would turn numerical
+    // re-initialization drift into apparent mass loss.
     phase.getCommunicator(stage::PreCoupling()).communicate();
     c.getOperator("Liang").apply();
+    if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+      c.getOperator("InletVelocity").apply();
+    }
 
     Snapshot current = snapshot(c);
-    const T residual = std::abs(current.sumPhi-initial.sumPhi)
-      /std::max(T(1e-30),initial.sumPhi);
+    integratedOutwardLiquidVolume += T(.5)*(previousOutwardLiquidVolumeStep
+      + current.liquidOutwardVolumeStep);
+    previousOutwardLiquidVolumeStep = current.liquidOutwardVolumeStep;
+    const T initialVolume = initial.sumPhi*dx*dx*c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>();
+    const T currentVolume = current.sumPhi*dx*dx*c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>();
+    const T residual = std::abs(currentVolume-initialVolume+integratedOutwardLiquidVolume)
+      /std::max(T(1e-30),initialVolume);
     const bool bounded = current.minPhi >= T(-.05) && current.maxPhi <= T(1.05);
     const bool lowMach = current.maxSpeed*std::sqrt(T(3)) < T(.1);
     stable = current.nonFiniteCells == 0 && bounded && lowMach;
     if (step % metricInterval == 0 || !stable || step == steps) {
-      appendMetrics(c,step,current,residual);
+      appendMetrics(c,step,current,residual,integratedOutwardLiquidVolume);
       writeVtk(c,step);
     }
     if (!stable) {
@@ -469,21 +766,30 @@ bool simulate(MinimalCase& c)
   }
 
   Snapshot final = snapshot(c);
-  const T residual = std::abs(final.sumPhi-initial.sumPhi)
-    /std::max(T(1e-30),initial.sumPhi);
+  const T initialVolume = initial.sumPhi*dx*dx*c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>();
+  const T finalVolume = final.sumPhi*dx*dx*c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>();
+  const T residual = std::abs(finalVolume-initialVolume+integratedOutwardLiquidVolume)
+    /std::max(T(1e-30),initialVolume);
   const T initialRight = initial.rightHalfPhi/T(initial.rightHalfCells);
   const T finalRight = final.rightHalfPhi/T(final.rightHalfCells);
-  const bool moved = finalRight > initialRight+T(1e-4);
-  // This is deliberately a smoke gate. Inventory residual is written as a
-  // diagnostic but has no post-hoc threshold until physical validation defines
-  // an independent conservation criterion.
-  const bool smokePass = stable && moved;
-  writeSummary(c,initial,final,residual,smokePass);
+  const T frontProgressCells = final.sumPhiX/final.sumPhi-initial.sumPhiX/initial.sumPhi;
+  const T measuredContactAngleDeg = measureContactAngleThroughLiquid(c);
+  const bool wettingMode = c.getParameters().get<parameters::WETTING_DROPLET>() > T(.5);
+  const bool targetIs60 = std::abs(c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()-T(60)) < T(1e-12);
+  const bool contactPass = !wettingMode || (std::isfinite(measuredContactAngleDeg)
+    && std::abs(measuredContactAngleDeg-c.getParameters().get<parameters::CONTACT_ANGLE_DEG>()) <= T(5));
+  const T residualGate = wettingMode ? T(.005) : T(.01);
+  const bool smokePass = stable && residual <= residualGate && contactPass
+    && (wettingMode || frontProgressCells >= c.getParameters().get<parameters::MINIMUM_FRONT_PROGRESS_CELLS>());
+  writeSummary(c,initial,final,residual,integratedOutwardLiquidVolume,measuredContactAngleDeg,smokePass);
   std::cout << std::setprecision(17)
-            << (smokePass ? "MINIMAL_240_SMOKE_PASS" : "MINIMAL_240_SMOKE_HOLD")
+            << (wettingMode ? (targetIs60 ? (smokePass ? "CONTACT_ANGLE_60_PASS" : "CONTACT_ANGLE_60_HOLD")
+                                           : (smokePass ? "WETTING_COMPONENT_PASS" : "WETTING_COMPONENT_HOLD"))
+            : (smokePass ? "EC1XT240_REDUCED_RUNTIME_PASS" : "EC1XT240_REDUCED_RUNTIME_HOLD"))
             << " phi=[" << final.minPhi << ',' << final.maxPhi << ']'
             << " max_Ma=" << final.maxSpeed*std::sqrt(T(3))
             << " right_half_change=" << finalRight-initialRight
+            << " front_progress_cells=" << frontProgressCells
             << " inventory_residual=" << residual << '\n';
   return smokePass;
 }
@@ -508,23 +814,38 @@ int main(int argc, char* argv[])
   MinimalCase::ParametersD params;
   params.set<parameters::MASK_INPUT>(mask);
   params.set<parameters::OUTPUT_DIR>(output);
-  params.set<parameters::DOMAIN_EXTENT>({raster.nx*kDx,raster.ny*kDx});
-  params.set<parameters::PHYS_DELTA_X>(kDx);
+  params.set<parameters::PHYS_DELTA_X>(kDefaultDx);
+  params.set<parameters::DOMAIN_EXTENT>({raster.nx*kDefaultDx,raster.ny*kDefaultDx});
   params.set<parameters::LATTICE_RELAXATION_TIME>(T(.8));
   params.set<parameters::INTERFACE_WIDTH>(T(5));
   params.set<parameters::PHASE_TAU>(T(.8));
-  params.set<parameters::RHO_LIQUID>(kLiquidDensity);
-  params.set<parameters::NU_LIQUID>(kLiquidNu);
+  params.set<parameters::RHO_LIQUID>(kDefaultLiquidDensity);
+  params.set<parameters::NU_LIQUID>(kDefaultLiquidNu);
   params.set<parameters::GAS_DENSITY_KG_M3>(T(151));
-  params.set<parameters::GAS_NU_M2_S>(T(2)*kLiquidNu);
+  params.set<parameters::GAS_NU_M2_S>(T(2)*kDefaultLiquidNu);
   params.set<parameters::DRIVE_ACCELERATION_LATTICE>(T(1e-6));
   params.set<parameters::DRIVE_RAMP_STEPS>(T(1000));
   params.set<parameters::INITIAL_LIQUID_LENGTH_M>(T(.45e-6));
   params.set<parameters::PHYSICAL_GROOVE_DEPTH_M>(T(100e-6));
+  params.set<parameters::OPEN_BOUNDARY>(T());
+  params.set<parameters::SURFACE_TENSION_N_M>(T());
+  params.set<parameters::CONTACT_ANGLE_DEG>(T(90));
+  params.set<parameters::PRESSURE_DRIVE_PA>(T());
+  params.set<parameters::CASE_LABEL>("minimal_ec1xt240_oas_phasefield");
+  params.set<parameters::STRAIGHT_CHANNEL>(T());
+  params.set<parameters::STRAIGHT_CHANNEL_WIDTH_M>(T(120e-9));
+  params.set<parameters::WETTING_DROPLET>(T());
+  params.set<parameters::DROPLET_RADIUS_M>(T(200e-9));
+  params.set<parameters::MINIMUM_FRONT_PROGRESS_CELLS>(T(.05));
   params.set<parameters::MAX_STEPS>(5000);
   params.set<parameters::METRIC_INTERVAL>(100);
   params.set<parameters::VTK_INTERVAL>(1000);
   params.fromCLI(argc,argv);
+  // The PGM is sampled on the active physical lattice spacing.  The raster
+  // dimensions therefore define the plan-view physical extent after CLI
+  // overrides are parsed; an arbitrary extent cannot silently distort OAS.
+  const T dx = params.get<parameters::PHYS_DELTA_X>();
+  params.set<parameters::DOMAIN_EXTENT>({raster.nx*dx,raster.ny*dx});
 
   Mesh mesh = createMesh(params);
   MinimalCase c(params,mesh);
