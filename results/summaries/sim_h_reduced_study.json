@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "status": "FINAL_LAYOUT_STUDY_HOLD",
+  "claim_boundary": "Frozen reduced 2-D vented-gas OAS model using the OF350 final-state EC1XT240 zone-mean pressure-scale surrogate only; not an isolated literal H-cavity reconstruction, full 3-D, moving mesh, local perfectGas, strict OF350 regression, or experimental validation.",
+  "layout": {
+    "source_layout_repo_relative": "inputs/layouts/SIM-H.OAS",
+    "source_sha256": "38908d0462a30c68ce8701e26617a5d7d73ce25b466e44b5d79469427bc90cc3",
+    "selected_layer": "1/0",
+    "crop_bbox_um": [
+      400.6,
+      -12499.4,
+      403.01,
+      -12496.99
+    ],
+    "grid": {
+      "height_m": 2.4100000000000002e-06,
+      "nx": 241,
+      "ny": 241,
+      "width_m": 2.4100000000000002e-06
+    },
+    "geometry_audit": {
+      "active_transport_direction": "x",
+      "bottom_top_connected": true,
+      "crop_bbox_um": [
+        400.6,
+        -12499.4,
+        403.01,
+        -12496.99
+      ],
+      "dx_nm": 10.0,
+      "fluid_component_count": 10,
+      "fluid_components_bottom_to_top": 1,
+      "fluid_components_left_to_right": 1,
+      "fluid_fraction": 0.5816187737814431,
+      "grid": {
+        "height_m": 2.4100000000000002e-06,
+        "nx": 241,
+        "ny": 241,
+        "width_m": 2.4100000000000002e-06
+      },
+      "interpretation": "A real OAS crop is used as a 2-D plan-view representative geometry. The fixed 100 um depth is recorded separately and not resolved through z in this minimal model.",
+      "largest_fluid_component": {
+        "bbox_pixel": [
+          0,
+          0,
+          240,
+          240
+        ],
+        "pixels": 25681,
+        "touches": {
+          "bottom": true,
+          "left": true,
+          "right": true,
+          "top": true
+        }
+      },
+      "largest_solid_component": {
+        "bbox_pixel": [
+          20,
+          1,
+          79,
+          60
+        ],
+        "pixels": 2700,
+        "touches": {
+          "bottom": false,
+          "left": false,
+          "right": false,
+          "top": false
+        }
+      },
+      "layout_bbox_um": [
+        400.0,
+        -12500.0,
+        1399.4,
+        -11500.6
+      ],
+      "left_right_connected": true,
+      "pass_criterion": "left_right_connected and periodic_x_edge_match",
+      "periodic_x_edge_match": true,
+      "periodic_y_edge_match": true,
+      "physical_groove_depth_m": 0.0001,
+      "raster_convention": {
+        "fluid_accessible": 0,
+        "neighbourhood": 4,
+        "solid": 255
+      },
+      "schema_version": 1,
+      "solid_component_count": 9,
+      "solid_fraction": 0.4183812262185569,
+      "source_layout": "external_artifact",
+      "status": "PASS_GEOMETRY_AUDIT"
+    },
+    "mask_sha256": "8a3c09fa67d10f3d481c7f03d338601a3ced76e669779793715f3a7c85cefbbc"
+  },
+  "target_roi": {
+    "coordinate_system": "crop_local_um",
+    "bbox_um": [
+      0.8,
+      0.8,
+      1.61,
+      1.61
+    ],
+    "definition": "The central 0.81 um by 0.81 um post-and-channel unit in the selected crop. Filling is evaluated only over lattice cells classified as fluid/open-boundary material, not over solid pixels.",
+    "selection_timing": "Frozen before the baseline run and independent of the resulting liquid field."
+  },
+  "common_endpoint": {
+    "pressure_ramp_steps": 4000,
+    "fixed_pressure_hold_steps": 4000,
+    "max_steps": 8000,
+    "stop_on_resolved_intrusion": false,
+    "metrics_interval": 100,
+    "vtk_interval": 8000,
+    "time_statement": "reported OpenLB time is reduced-model numerical mapping, not OF350 one-second process time"
+  },
+  "frozen_physics": {
+    "contact_angle_deg": 60.0,
+    "pressure_scale": "final_state_228477_pa",
+    "liquid_density_kg_m3": 1510.0,
+    "liquid_dynamic_viscosity_Pa_s": 0.001,
+    "surface_tension_N_m": 0.0309,
+    "gas_model": "REDUCED_VENTED_GAS",
+    "additional_darcy_enabled": false
+  },
+  "mapping": {
+    "reduced_model_numerical_dt_s": 5.033333333333332e-12,
+    "liquid_tau": 0.6,
+    "phase_tau": 0.8
+  },
+  "solver_generalization": {
+    "status": "OUTLET_FLAT_NORMAL_FIX_TESTED",
+    "description": "Convective phase boundary is applied only to flat outlet stripe cells; wall-adjacent endpoint cells are trimmed from the artificial outlet to avoid OpenLB's curved-normal exception."
+  },
+  "baseline": {
+    "case": "sim_h_theta60_final228477",
+    "status": "SIM_H_CASE_HOLD",
+    "runtime_status": "EC1XT240_REDUCED_RUNTIME_HOLD",
+    "solver_exit_code": 1,
+    "theta_deg": 60.0,
+    "liquid_dynamic_viscosity_Pa_s": 0.001,
+    "pressure_scale_id": "final_state_228477_pa",
+    "gauge_pressure_Pa": 228477.1244673609,
+    "grid_dx_nm": 10.0,
+    "grid_nx": 241,
+    "grid_ny": 241,
+    "interface_width_cells": 5.0,
+    "physical_interface_width_nm": 50.0,
+    "liquid_tau": 0.6,
+    "gas_tau": 0.515,
+    "expected_gas_tau_from_shared_numerical_timestep": 0.515,
+    "phase_tau": 0.8,
+    "reduced_model_numerical_dt_s": 5.033333333333332e-12,
+    "steps": 8000,
+    "pressure_ramp_steps": 4000,
+    "hold_steps_completed": 4000,
+    "intrusion_classification": "OBSERVABLE",
+    "resolved_front_advance_cells": 8,
+    "resolved_front_advance_nm": 80.0,
+    "downstream_uptake_cell_equivalents": 378.0373805129967,
+    "downstream_uptake_volume_m3": 3.780373805129968e-18,
+    "normalized_downstream_uptake": 0.006508796000636985,
+    "filling_fraction": 0.23016193069625804,
+    "filling_fraction_change": 0.01204583676188073,
+    "liquid_centroid_advance_nm": 15.935603601685626,
+    "target_roi": {
+      "definition": "The central 0.81 um by 0.81 um post-and-channel unit in the selected crop. Filling is evaluated only over lattice cells classified as fluid/open-boundary material, not over solid pixels.",
+      "initial_filling_fraction": 2.6511038896416238e-14,
+      "final_filling_fraction": 1.4079905534784069e-08,
+      "filling_fraction_change": 1.4079879023745173e-08,
+      "uptake_volume_m3": 5.436241291068011e-25,
+      "normalized_uptake_by_crop_volume": 9.35975842541969e-10,
+      "fluid_cells": 3861,
+      "lattice_index_bounds": [
+        80,
+        80,
+        161,
+        161
+      ]
+    },
+    "inventory_plus_boundary_flux_residual": 0.035841076811884295,
+    "max_mach": 0.009489920975590014,
+    "mean_pressure_gauge_pa": 36335.43085933432,
+    "pressure_range_gauge_pa": [
+      -124981.04982427327,
+      296946.13673894026
+    ],
+    "phase_range": [
+      8.398615136684384e-12,
+      1.0000836452329547
+    ],
+    "geometry_audit_status": "PASS_GEOMETRY_AUDIT",
+    "geometry_mask_sha256": "8a3c09fa67d10f3d481c7f03d338601a3ced76e669779793715f3a7c85cefbbc"
+  },
+  "minimal_sensitivity_status": "NOT_RUN_BASELINE_HEALTH_HOLD",
+  "contact_angle_study": [
+    {
+      "case": "sim_h_theta60_final228477",
+      "status": "SIM_H_CASE_HOLD",
+      "runtime_status": "EC1XT240_REDUCED_RUNTIME_HOLD",
+      "solver_exit_code": 1,
+      "theta_deg": 60.0,
+      "liquid_dynamic_viscosity_Pa_s": 0.001,
+      "pressure_scale_id": "final_state_228477_pa",
+      "gauge_pressure_Pa": 228477.1244673609,
+      "grid_dx_nm": 10.0,
+      "grid_nx": 241,
+      "grid_ny": 241,
+      "interface_width_cells": 5.0,
+      "physical_interface_width_nm": 50.0,
+      "liquid_tau": 0.6,
+      "gas_tau": 0.515,
+      "expected_gas_tau_from_shared_numerical_timestep": 0.515,
+      "phase_tau": 0.8,
+      "reduced_model_numerical_dt_s": 5.033333333333332e-12,
+      "steps": 8000,
+      "pressure_ramp_steps": 4000,
+      "hold_steps_completed": 4000,
+      "intrusion_classification": "OBSERVABLE",
+      "resolved_front_advance_cells": 8,
+      "resolved_front_advance_nm": 80.0,
+      "downstream_uptake_cell_equivalents": 378.0373805129967,
+      "downstream_uptake_volume_m3": 3.780373805129968e-18,
+      "normalized_downstream_uptake": 0.006508796000636985,
+      "filling_fraction": 0.23016193069625804,
+      "filling_fraction_change": 0.01204583676188073,
+      "liquid_centroid_advance_nm": 15.935603601685626,
+      "target_roi": {
+        "definition": "The central 0.81 um by 0.81 um post-and-channel unit in the selected crop. Filling is evaluated only over lattice cells classified as fluid/open-boundary material, not over solid pixels.",
+        "initial_filling_fraction": 2.6511038896416238e-14,
+        "final_filling_fraction": 1.4079905534784069e-08,
+        "filling_fraction_change": 1.4079879023745173e-08,
+        "uptake_volume_m3": 5.436241291068011e-25,
+        "normalized_uptake_by_crop_volume": 9.35975842541969e-10,
+        "fluid_cells": 3861,
+        "lattice_index_bounds": [
+          80,
+          80,
+          161,
+          161
+        ]
+      },
+      "inventory_plus_boundary_flux_residual": 0.035841076811884295,
+      "max_mach": 0.009489920975590014,
+      "mean_pressure_gauge_pa": 36335.43085933432,
+      "pressure_range_gauge_pa": [
+        -124981.04982427327,
+        296946.13673894026
+      ],
+      "phase_range": [
+        8.398615136684384e-12,
+        1.0000836452329547
+      ],
+      "geometry_audit_status": "PASS_GEOMETRY_AUDIT",
+      "geometry_mask_sha256": "8a3c09fa67d10f3d481c7f03d338601a3ced76e669779793715f3a7c85cefbbc"
+    }
+  ],
+  "viscosity_study": [
+    {
+      "case": "sim_h_theta60_final228477",
+      "status": "SIM_H_CASE_HOLD",
+      "runtime_status": "EC1XT240_REDUCED_RUNTIME_HOLD",
+      "solver_exit_code": 1,
+      "theta_deg": 60.0,
+      "liquid_dynamic_viscosity_Pa_s": 0.001,
+      "pressure_scale_id": "final_state_228477_pa",
+      "gauge_pressure_Pa": 228477.1244673609,
+      "grid_dx_nm": 10.0,
+      "grid_nx": 241,
+      "grid_ny": 241,
+      "interface_width_cells": 5.0,
+      "physical_interface_width_nm": 50.0,
+      "liquid_tau": 0.6,
+      "gas_tau": 0.515,
+      "expected_gas_tau_from_shared_numerical_timestep": 0.515,
+      "phase_tau": 0.8,
+      "reduced_model_numerical_dt_s": 5.033333333333332e-12,
+      "steps": 8000,
+      "pressure_ramp_steps": 4000,
+      "hold_steps_completed": 4000,
+      "intrusion_classification": "OBSERVABLE",
+      "resolved_front_advance_cells": 8,
+      "resolved_front_advance_nm": 80.0,
+      "downstream_uptake_cell_equivalents": 378.0373805129967,
+      "downstream_uptake_volume_m3": 3.780373805129968e-18,
+      "normalized_downstream_uptake": 0.006508796000636985,
+      "filling_fraction": 0.23016193069625804,
+      "filling_fraction_change": 0.01204583676188073,
+      "liquid_centroid_advance_nm": 15.935603601685626,
+      "target_roi": {
+        "definition": "The central 0.81 um by 0.81 um post-and-channel unit in the selected crop. Filling is evaluated only over lattice cells classified as fluid/open-boundary material, not over solid pixels.",
+        "initial_filling_fraction": 2.6511038896416238e-14,
+        "final_filling_fraction": 1.4079905534784069e-08,
+        "filling_fraction_change": 1.4079879023745173e-08,
+        "uptake_volume_m3": 5.436241291068011e-25,
+        "normalized_uptake_by_crop_volume": 9.35975842541969e-10,
+        "fluid_cells": 3861,
+        "lattice_index_bounds": [
+          80,
+          80,
+          161,
+          161
+        ]
+      },
+      "inventory_plus_boundary_flux_residual": 0.035841076811884295,
+      "max_mach": 0.009489920975590014,
+      "mean_pressure_gauge_pa": 36335.43085933432,
+      "pressure_range_gauge_pa": [
+        -124981.04982427327,
+        296946.13673894026
+      ],
+      "phase_range": [
+        8.398615136684384e-12,
+        1.0000836452329547
+      ],
+      "geometry_audit_status": "PASS_GEOMETRY_AUDIT",
+      "geometry_mask_sha256": "8a3c09fa67d10f3d481c7f03d338601a3ced76e669779793715f3a7c85cefbbc"
+    }
+  ],
+  "raw_artifact_policy": "Raw mask, geometry audit, VTK, solver log, and effective command remain in the external study root; only compact derivatives are packaged in Git.",
+  "final_status_reason": "SIM-H 60-degree baseline completed without NaN and remained bounded/low-Mach/observable, but its inventory-plus-boundary-flux residual is 3.5841%, above the frozen 1% gate. Contact-angle and viscosity sensitivity runs were not launched.",
+  "ec1_regression_after_outlet_generalization": {
+    "status": "EC1XT240_REDUCED_RUNTIME_PASS",
+    "resolved_front_advance_nm": 50.0,
+    "resolved_uptake_volume_m3": 4.0465951483982884e-19,
+    "max_mach": 0.004077854187748025,
+    "inventory_plus_boundary_flux_residual": 0.004658255566943708,
+    "frozen_10nm_uptake_volume_m3": 4.0465951483894123e-19,
+    "frozen_10nm_front_advance_nm": 50.0
+  },
+  "results_package": {
+    "summary_repo_relative": "results/summaries/sim_h_reduced_study.json",
+    "tables_repo_relative": [
+      "results/tables/sim_h_contact_angle.csv",
+      "results/tables/sim_h_viscosity_endpoints.csv",
+      "results/tables/ec1xt240_vs_sim_h.csv"
+    ],
+    "figures_repo_relative": [
+      "results/figures/ec1xt240_geometry.svg",
+      "results/figures/sim_h_geometry.svg",
+      "results/figures/ec1xt240_phase_theta60.png",
+      "results/figures/sim_h_phase_theta60.png",
+      "results/figures/ec1xt240_vs_sim_h_normalized_uptake.svg"
+    ],
+    "raw_artifact_policy": "Raw mask, VTK, solver log, and effective commands remain external."
+  }
+}

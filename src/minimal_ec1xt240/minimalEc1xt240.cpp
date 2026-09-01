@@ -57,6 +57,7 @@ struct SURFACE_TENSION_N_M : public descriptors::FIELD_BASE<1> { };
 struct CONTACT_ANGLE_DEG : public descriptors::FIELD_BASE<1> { };
 struct PRESSURE_DRIVE_PA : public descriptors::FIELD_BASE<1> { };
 struct CASE_LABEL : public descriptors::TYPED_FIELD_BASE<std::string,1> { };
+struct GEOMETRY_SOURCE : public descriptors::TYPED_FIELD_BASE<std::string,1> { };
 struct STRAIGHT_CHANNEL : public descriptors::FIELD_BASE<1> { };
 struct STRAIGHT_CHANNEL_WIDTH_M : public descriptors::FIELD_BASE<1> { };
 struct WETTING_DROPLET : public descriptors::FIELD_BASE<1> { };
@@ -194,6 +195,29 @@ T smoothstep(T x)
   return x*x*x*(T(10)+x*(T(-15)+T(6)*x));
 }
 
+void trimConvectiveOutletCorners(SuperGeometry<T,2>& geometry)
+{
+  // OpenLB 1.9's convective phase-field outlet accepts only a flat normal.
+  // Keep material 4 only where both transverse neighbours are also outlet
+  // cells; reclassify the one-cell stripe endpoints as wall material 5.
+  // This is evaluated per local block. The current production launcher is
+  // single-rank, while the local-neighbour test remains valid for each block.
+  for (int iC=0; iC<geometry.getLoadBalancer().size(); ++iC) {
+    auto& block = geometry.getBlockGeometry(iC);
+    std::vector<LatticeR<2>> corners;
+    block.forCoreSpatialLocations([&](LatticeR<2> r) {
+      if (block.getMaterial(r) != 4) return;
+      if (block.getMaterial({r[0],r[1]-1}) != 4
+          || block.getMaterial({r[0],r[1]+1}) != 4) {
+        corners.push_back(r);
+      }
+    });
+    for (const auto& r : corners) block.set(r,5);
+  }
+  geometry.getStatisticsStatus() = true;
+  geometry.updateStatistics(false);
+}
+
 Mesh<T,MinimalCase::d> createMesh(MinimalCase::ParametersD& params)
 {
   IndicatorCuboid2D<T> domain(params.get<parameters::DOMAIN_EXTENT>(),{0.,0.});
@@ -236,6 +260,16 @@ void prepareGeometry(MinimalCase& c)
   }
   geometry.clean();
   geometry.innerClean();
+  if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
+    // `setConvectivePhaseFieldBoundary` is defined only for a flat discrete
+    // normal.  A multi-channel OAS crop can end a fluid stripe against a wall
+    // at the artificial x outlet, which leaves a one-cell outlet corner with
+    // no flat normal.  Reclassify only those transverse endpoint voxels as
+    // wall: the remaining material-4 cells are the open, flat parts of each
+    // physical outlet stripe.  The EC1 baseline is re-run after this
+    // generalization so its frozen QoI compatibility is checked explicitly.
+    trimConvectiveOutletCorners(geometry);
+  }
   geometry.checkForErrors();
   if (c.getParameters().get<parameters::OPEN_BOUNDARY>() > T(.5)) {
     geometry.getStatistics().print();
@@ -695,7 +729,7 @@ void writeSummary(MinimalCase& c, const Snapshot& initial, const Snapshot& final
     << "  \"case_id\": \"" << c.getParameters().get<parameters::CASE_LABEL>() << "\",\n"
     << "  \"status\": \"" << status << "\",\n"
     << "  \"claim\": \"reduced 2-D OAS wetting/intrusion model driven by an OF350 EC1XT240 zone-mean pressure scale surrogate; source-backed forcing magnitude only, not a claimed lateral pressure drop across the OAS crop; not full 3-D or perfectGas reproduction\",\n"
-    << "  \"geometry_source\": \"inputs/layouts/SIM-EC1XT240.OAS\",\n"
+    << "  \"geometry_source\": \"" << c.getParameters().get<parameters::GEOMETRY_SOURCE>() << "\",\n"
     << "  \"mask_file\": \"" << std::filesystem::path(c.getParameters().get<parameters::MASK_INPUT>()).filename().string() << "\",\n"
     << "  \"planview_dx_m\": " << dx << ",\n"
     << "  \"geometry_depth_m\": " << c.getParameters().get<parameters::PHYSICAL_GROOVE_DEPTH_M>() << ",\n"
@@ -899,6 +933,7 @@ int main(int argc, char* argv[])
   params.set<parameters::CONTACT_ANGLE_DEG>(T(90));
   params.set<parameters::PRESSURE_DRIVE_PA>(T());
   params.set<parameters::CASE_LABEL>("minimal_ec1xt240_oas_phasefield");
+  params.set<parameters::GEOMETRY_SOURCE>("inputs/layouts/SIM-EC1XT240.OAS");
   params.set<parameters::STRAIGHT_CHANNEL>(T());
   params.set<parameters::STRAIGHT_CHANNEL_WIDTH_M>(T(120e-9));
   params.set<parameters::WETTING_DROPLET>(T());

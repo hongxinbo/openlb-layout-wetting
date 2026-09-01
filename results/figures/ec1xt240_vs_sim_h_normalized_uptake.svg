@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="440" viewBox="0 0 700 440">
+<rect width="700" height="440" fill="#fff"/>
+<text x="350" y="29" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">Common-endpoint normalized downstream uptake</text>
+<line x1="105" y1="365" x2="665" y2="365" stroke="#222"/>
+<line x1="105" y1="48" x2="105" y2="365" stroke="#222"/>
+<line x1="105" y1="365.00" x2="665" y2="365.00" stroke="#e6e6e6"/>
+<text x="93" y="369.00" text-anchor="end" font-family="Arial" font-size="11">0</text>
+<line x1="105" y1="302.00" x2="665" y2="302.00" stroke="#e6e6e6"/>
+<text x="93" y="306.00" text-anchor="end" font-family="Arial" font-size="11">0.001497</text>
+<line x1="105" y1="239.00" x2="665" y2="239.00" stroke="#e6e6e6"/>
+<text x="93" y="243.00" text-anchor="end" font-family="Arial" font-size="11">0.002994</text>
+<line x1="105" y1="176.00" x2="665" y2="176.00" stroke="#e6e6e6"/>
+<text x="93" y="180.00" text-anchor="end" font-family="Arial" font-size="11">0.004491</text>
+<line x1="105" y1="113.00" x2="665" y2="113.00" stroke="#e6e6e6"/>
+<text x="93" y="117.00" text-anchor="end" font-family="Arial" font-size="11">0.005988</text>
+<line x1="105" y1="50.00" x2="665" y2="50.00" stroke="#e6e6e6"/>
+<text x="93" y="54.00" text-anchor="end" font-family="Arial" font-size="11">0.007485</text>
+<rect x="225" y="305.87" width="120" height="59.13" fill="#157A9C"/>
+<text x="285" y="297.87" text-anchor="middle" font-family="Arial" font-size="12">0.00140507</text>
+<text x="285" y="387" text-anchor="middle" font-family="Arial" font-size="13">EC1XT240</text>
+<rect x="475" y="91.09" width="120" height="273.91" fill="#B34700"/>
+<text x="535" y="83.09" text-anchor="middle" font-family="Arial" font-size="12">0.0065088</text>
+<text x="535" y="387" text-anchor="middle" font-family="Arial" font-size="13">SIM-H</text>
+<text x="28" y="220" text-anchor="middle" transform="rotate(-90 28 220)" font-family="Arial" font-size="13">uptake volume / crop volume (-)</text>
+<text x="350" y="426" text-anchor="middle" font-family="Arial" font-size="11">SIM-H bar is recorded but not interpreted as a validated geometry ranking because its 60 deg baseline misses the conservation gate.</text>
+</svg>
