@@ -11,7 +11,10 @@
 - EC1XT240初步几何审计：已记录。
 - OpenFOAM 350参数来源审计：已建立初稿。
 - OpenLB reduced physical baseline：`EC1XT240_REDUCED_BASELINE_PASS`；真实OAS
-  平面、表面张力、润湿、OF350位移导出的压力驱动和排气近似已通过最小组件门。
+  平面、表面张力、润湿、OF350 EC1XT240区域平均压力尺度代理和排气近似已通过最小组件门。
+- 首次共同终点 production 参数研究：`EC1XT240_PRODUCTION_STUDY_HOLD`；全部案例稳定，
+  但独立8 nm OAS栅格的 uptake 与10 nm相差23.13%，超过预先声明的20%工程稳健性门。
+  结果保留为探索性参数比较，见`docs/EC1XT240_PRODUCTION_RESULTS.md`。
 - 该结果是受限的二维 reduced baseline，不是100 um显式三维、局部`perfectGas`、
   严格OF350回归或实验验证；见`docs/EC1XT240_PHYSICAL_BASELINE.md`。
 
