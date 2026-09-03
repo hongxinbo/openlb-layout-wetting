@@ -1,0 +1,21 @@
+{
+  "status": "OPENLB_3D_API_AUDIT_HOLD",
+  "openlb_git_describe": "1.9.0-19-g3dedbdd2",
+  "openlb_commit": "3dedbdd2c4d5e911eda3784643dd419b211951d0",
+  "compile_audit": "OPENLB_3D_COMPILE_AUDIT_PASS",
+  "available": [
+    "descriptors::D3Q19",
+    "ConservativePhaseFieldBGKdynamics",
+    "LiangPostProcessor",
+    "IsoPhaseFieldCurvedWall3D::Processor",
+    "SuperVTMwriter3D",
+    "WellBalancedCahnHilliardBGKdynamics and WellBalancedCahnHilliardPostProcessor"
+  ],
+  "closest_official_3d_candidate": "examples/multiComponent/contactAngle3d: well-balanced Cahn-Hilliard two-phase surface-tension and wetting model",
+  "limitations": [
+    "boundary::PhaseFieldCurvedWall has no 3-D specialization",
+    "phaseFieldInletOutlet3D implementation is commented out",
+    "no verified moving-wall plus conservative-phase-field plus wetting integration"
+  ],
+  "flow_decision": "3D_VERTICAL_INTRUSION_HOLD_NOT_RUN_API_LIMITATION"
+}

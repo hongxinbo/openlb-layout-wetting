@@ -1,5 +1,9 @@
 # Minimal EC1XT240 OpenLB model
 
+> 2026-09-03 applicability notice: this entire 2-D model and its results are
+> `PRELIMINARY_REDUCED_MODEL`. It validates reusable components but is not the
+> real top-down imprint/groove-filling process.
+
 ## Geometry audit
 
 - Source: `inputs/layouts/SIM-EC1XT240.OAS`, layer `1/0`.

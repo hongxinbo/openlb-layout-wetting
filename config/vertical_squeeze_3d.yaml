@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "case_id": "vertical_squeeze_3d_two_groove_baseline",
+  "status": "GEOMETRY_STAGE",
+  "coordinate_system": {
+    "x_y": "OAS layout plane",
+    "z": "vertical groove-depth and template-motion direction",
+    "groove_top_z_m": 0.0,
+    "groove_bottom_z_m": -0.0001,
+    "primary_drive_direction": "negative_z"
+  },
+  "geometry": {
+    "dx_m": 2.0e-8,
+    "nx": 30,
+    "ny": 12,
+    "nz_groove": 5000,
+    "nz_upper_film": 50,
+    "wall_width_cells": 6,
+    "groove_width_cells": 6,
+    "pattern_x": ["wall", "groove", "wall", "groove", "wall"],
+    "vent": "positive-y end of both grooves",
+    "bottom": "solid",
+    "top": "template boundary"
+  },
+  "materials": {
+    "1": "groove fluid domain; initially gas",
+    "2": "upper-film fluid domain; initially liquid",
+    "3": "solid wall or groove bottom",
+    "4": "positive-y gas vent",
+    "5": "top template boundary"
+  },
+  "physics": {
+    "liquid_density_kg_m3": 1510.0,
+    "liquid_dynamic_viscosity_pa_s": 0.001,
+    "surface_tension_n_m": 0.0309,
+    "contact_angle_deg_through_liquid": 60.0,
+    "gas_model": "REDUCED_VENTED_GAS",
+    "pressure_scale_surrogate_pa_gauge": 228477.1244673609,
+    "pressure_scale_label": "OF350_ZONE_MEAN_PRESSURE_SCALE_SURROGATE",
+    "requested_model": "D3Q19 conservative phase field plus Liang coupling and 3-D wetting",
+    "closest_official_3d_candidate": "WellBalancedCahnHilliardBGKdynamics plus WellBalancedCahnHilliardPostProcessor from contactAngle3d",
+    "flow_status": "HOLD: candidate does not demonstrate the required top-pressure plus longitudinal phase vent"
+  },
+  "template_motion_reference": {
+    "initial_film_thickness_m": 1.0e-6,
+    "final_displacement_m": -9.35e-7,
+    "final_film_thickness_m": 6.5e-8,
+    "duration_s": 1.0,
+    "law": "10*s^3 - 15*s^4 + 6*s^5",
+    "implementation_status": "MOVING_TEMPLATE_IMPLEMENTATION_HOLD"
+  }
+}

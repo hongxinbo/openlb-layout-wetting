@@ -1,5 +1,9 @@
 # EC1XT240 reduced physical baseline
 
+> 2026-09-03 applicability notice: this 2-D plan-view baseline is now
+> `PRELIMINARY_REDUCED_MODEL`. Its lateral intrusion is not a final physical
+> groove-filling result.
+
 ## Decision
 
 **Status: EC1XT240_REDUCED_BASELINE_PASS.**
