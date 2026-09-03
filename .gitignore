@@ -47,3 +47,7 @@ results/**
 !results/tables/**
 !results/figures/
 !results/figures/**
+results/figures/**/*.vtp
+
+# Case-local executables without filename extensions
+src/vertical_squeeze_3d/apiAudit3d

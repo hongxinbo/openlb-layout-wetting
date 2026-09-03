@@ -1,6 +1,6 @@
-# Active project scope — EC1XT240-first reset
+# Active project scope — 3-D vertical squeeze reset
 
-**Status: `PROJECT_SCOPE_RESET_PASS` (2026-08-29).** This document is the
+**Status: `PROJECT_3D_RESET_PASS` (2026-09-03).** This document is the
 active scope authority for new work. It supersedes the mandatory ordering in
 legacy regression specifications while retaining those specifications and all
 their evidence as historical records.
@@ -8,9 +8,9 @@ their evidence as historical records.
 > OpenFOAM350 is a parameter/model reference and sanity reference. Quantitative
 > OpenLB350 reproduction is not a prerequisite for EC1XT240.
 
-> The current research priority is to establish the simplest stable real-OAS
-> EC1XT240 wetting/intrusion baseline under the confirmed reduced physical
-> interpretation. It is not a full 3-D or moving-mesh imprint reproduction.
+> The final physical model must resolve x, y and z. The upper template moves in
+> negative z, squeezes the film above z=0, and liquid enters a fixed 100 um
+> groove from above. Lateral x intrusion is not the production physics.
 
 ## Retained
 
@@ -25,6 +25,9 @@ their evidence as historical records.
   OF350's 1 um to roughly 65 nm layer is the distinct moving upper liquid
   film/gap: the upper template descends and squeezes that film into the fixed
   grooves. It must never be used as the EC1 groove depth.
+- All 2-D EC1XT240 and SIM-H results are retained as
+  `PRELIMINARY_REDUCED_MODEL`; their former labels describe their historical
+  numerical gates, not final groove-filling validity.
 
 ## Archived, not deleted
 
@@ -50,22 +53,19 @@ These are not declared scientifically false; they are deferred research work.
    liquid, gas, temperature and surface-tension inputs are frozen for this
    stage as `OF350_TRANSFER_BASELINE`; they are not universal measured EC1
    material properties.
-2. **Phase B — Minimal real-OAS smoke baseline:** the fixed-depth, reduced
-   two-phase plan-view case proves OAS parsing, periodic-x compatibility,
-   finite phase-field execution, basic transport, and VTK/result output.
-3. **Phase C — frozen physical-definition input:** groove depth is fixed at
-   100 um; an upper film moves from 1.0 um toward about 65 nm as the template
-   takes the source-backed -0.935 um quintic displacement over 1 s. The
-   template presses downward and squeezes the upper liquid film into the
-   grooves. The first reduced model uses a vented-gas approximation and a
-   `LITERATURE_ASSUMPTION` liquid-measured 60 deg contact angle.
-4. **Phase D — reduced physical EC1 baseline:** use explicit OAS walls,
-   fixed-depth metadata, conservative phase field, surface tension, wetting,
-   and a non-arbitrary `OF350_REDUCED_PRESSURE_DRIVE`. This is a reduced 2-D
-   plan-view model, not a full 3-D process claim.
-5. **Phase E — validation/studies:** conservation, stability, grid and
-   relaxation sensitivity, then same-layout parameter and same-parameter
-   layout studies.
+2. **Phase B — 3-D API and geometry gate:** audit the installed OpenLB source,
+   then verify an explicit 600 nm x 240 nm x 101 um two-groove volume at 20 nm.
+3. **Phase C — fixed-geometry vertical baseline:** upper film initially liquid,
+   groove initially gas, -z top pressure/loading, and a declared longitudinal
+   gas vent. Main QoIs are penetration depth and groove liquid volume.
+4. **Phase D — moving-template component:** only after vertical intrusion
+   passes, test the 1.0 um to approximately 65 nm quintic template motion in a
+   simple 3-D box with conservative displacement accounting.
+5. **Phase E — full minimal squeeze:** couple moving template, wetting,
+   surface tension, gas vent and the fixed 100 um groove.
+6. **Phase F — real OAS:** find the minimum representative EC1XT240 repeat
+   unit, extrude white pixels as fluid grooves and pink layer-1/0 pixels as
+   fixed solid columns; SIM-H and parameter sweeps remain later work.
 
 `MINIMAL_240_SMOKE_PASS` is a numerical pipeline/geometry/stability result.
 Its reported inventory residual is diagnostic, not a formal conservation gate;
@@ -101,5 +101,9 @@ universally applicable EC1XT240 material property.
   to the real OAS crop as an independent numerical sidecar. If reused, its
   `h` denotes an upper-film/reduced control-volume thickness, never the 100 um
   groove depth.
-- `NEXT = EC1XT240_REDUCED_BASELINE` — component-validate a wetting-aware,
-  pressure-driven, vented-gas 2-D OAS model with no additional Darcy resistance.
+- `OPENLB_3D_API_AUDIT_HOLD` — core 3-D types exist, but the audited checkout's
+  3-D multiphase inlet/outlet implementation is commented out.
+- `3D_GEOMETRY_PASS` — explicit 100 um groove plus 1 um upper film passes
+  geometry, connectivity and installed-ParaView checks.
+- `NEXT = RESOLVE_VALIDATED_3D_PHASE_OPEN_BOUNDARIES` — do not launch a closed
+  incompressible gas pocket or restore lateral x forcing as a workaround.

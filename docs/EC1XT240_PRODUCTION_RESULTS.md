@@ -1,5 +1,9 @@
 # EC1XT240 production numerical robustness and parameter study
 
+> 2026-09-03 applicability notice: these 2-D results are retained as
+> `PRELIMINARY_REDUCED_MODEL` evidence only. They must not be interpreted as
+> the real top-down 3-D imprint process.
+
 **Status: EC1XT240_PRODUCTION_STUDY_HOLD.**  The frozen reduced baseline from merged PR #2 is unchanged; `src/minimal_ec1xt240/minimalEc1xt240.cpp` was not modified on this branch.
 
 This package is a common-endpoint numerical study of the reduced 2-D, vented-gas OAS model. OF350 EC1XT240 zone-mean pressure minus ambient supplies only a source-backed forcing magnitude; it is not a claimed lateral pressure drop across the 2.4 um crop. Nothing here claims full 3-D, moving mesh, local perfectGas, strict OF350 regression, or experimental validation.

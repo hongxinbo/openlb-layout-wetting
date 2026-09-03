@@ -2,7 +2,9 @@
 
 这是研究14个OAS微/纳米版图中液体浸润与压力挤入过程的长期Git项目。
 
-首个目标是 `SIM-EC1XT240.OAS`：先完成显式狭缝二维验证和排气基线，再做三维代表单元。第二个目标是 `SIM-H.OAS` 回字形结构。模型稳定并通过验证后，再比较不同沟槽尺寸、间距与排列。
+首个目标是 `SIM-EC1XT240.OAS` 的真实三维竖直挤压/沟槽灌注：模板沿 -z
+下压上方液膜，液体从 z=0 上方进入固定 100 um 沟槽。旧二维横向模型只作为
+`PRELIMINARY_REDUCED_MODEL` 保留。
 
 ## 当前状态
 
@@ -10,13 +12,13 @@
 - 14个OAS输入：已复制并记录SHA-256。
 - EC1XT240初步几何审计：已记录。
 - OpenFOAM 350参数来源审计：已建立初稿。
-- OpenLB reduced physical baseline：`EC1XT240_REDUCED_BASELINE_PASS`；真实OAS
-  平面、表面张力、润湿、OF350 EC1XT240区域平均压力尺度代理和排气近似已通过最小组件门。
-- 首次共同终点 production 参数研究：`EC1XT240_PRODUCTION_STUDY_HOLD`；全部案例稳定，
-  但独立8 nm OAS栅格的 uptake 与10 nm相差23.13%，超过预先声明的20%工程稳健性门。
-  结果保留为探索性参数比较，见`docs/EC1XT240_PRODUCTION_RESULTS.md`。
-- 该结果是受限的二维 reduced baseline，不是100 um显式三维、局部`perfectGas`、
-  严格OF350回归或实验验证；见`docs/EC1XT240_PHYSICAL_BASELINE.md`。
+- 3-D API 审计：`OPENLB_3D_API_AUDIT_HOLD`；D3Q19、保守相场、Liang 和
+  3-D wetting kernel 存在，但本机版本的 3-D multiphase inlet/outlet 源码被注释。
+- 3-D 双沟槽几何：`3D_GEOMETRY_PASS`；20 nm、30 x 12 x 5050、1,818,000 cells，
+  已由 ParaView 6.1.1 读取并生成 x-y/x-z/y-z 切片。
+- 固定几何流动：`3D_VERTICAL_INTRUSION_HOLD_NOT_RUN_API_LIMITATION`。
+- 移动模板与真实 OAS：HOLD/NOT_RUN；没有用封闭不可压气体、横向入口或删除格子层绕过。
+- 旧 2-D baseline 和 production study 全部保留，不能作为最终压印物理结果。
 
 ## 先读这些文件
 
@@ -26,14 +28,17 @@
 4. `docs/PHYSICS_SPEC.md`：第一版物理模型。
 5. `docs/PARAMETER_PROVENANCE.md`：参数来源和可用性。
 6. `docs/VALIDATION_PLAN.md`：进入正式模拟前的验证门。
+7. `docs/OPENLB_3D_API_AUDIT.md`：本机 1.9 的 3-D API 证据与限制。
+8. `docs/3D_GEOMETRY_AUDIT.md`：显式 z 几何、连通性和 ParaView 门。
 
 ## 本机依赖
 
 - OpenLB：通过 `OPENLB_ROOT` 指定，默认 `$HOME/Documents/openlb`。
 - 当前核对版本：`1.9.0-19-g3dedbdd2`。
 - 参考例程：
-  - `examples/porousMedia/gasStorage2d/gasStorage2d.cpp`
-  - `examples/multiComponent/bubbleChannel2d/bubbleChannel2d.cpp`
+  - `examples/multiComponent/contactAngle3d/contactAngle3d.cpp`
+  - `examples/multiComponent/rayleighTaylor3d/rayleighTaylor3d.cpp`
+  - `examples/fsi/taylorCouette3d/taylorCouette3d.cpp`
 
 不要直接修改OpenLB源码；研究案例留在本仓库。
 
@@ -50,14 +55,13 @@ $HOME/ResearchData/openlb-layout-wetting/
 ## 路线
 
 ```text
-几何与物理冻结
-  -> 单相/界面/接触角验证
-  -> EC1XT240二维排气基线
-  -> 压力和阻力对照
-  -> 封闭困气分支
-  -> EC1XT240三维代表单元
-  -> SIM-H三维
-  -> 其他版图参数扫描
+OpenLB 3-D API审计
+  -> 显式双沟槽3-D几何/ParaView
+  -> 固定几何自上而下排气基线
+  -> 移动模板组件
+  -> 最小3-D squeeze filling
+  -> EC1XT240真实OAS三维代表单元
+  -> SIM-H和其他版图
 ```
 
 ## Git规则

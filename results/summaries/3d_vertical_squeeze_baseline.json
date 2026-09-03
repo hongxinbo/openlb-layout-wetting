@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "case_id": "vertical_squeeze_3d_two_groove_baseline",
+  "openlb_3d_api_audit": "OPENLB_3D_API_AUDIT_HOLD",
+  "geometry_status": "3D_GEOMETRY_PASS",
+  "vertical_intrusion_status": "3D_VERTICAL_INTRUSION_HOLD_NOT_RUN_API_LIMITATION",
+  "moving_template_status": "MOVING_TEMPLATE_IMPLEMENTATION_HOLD",
+  "squeeze_filling_status": "3D_SQUEEZE_FILLING_HOLD_NOT_RUN",
+  "real_oas_status": "REAL_OAS_3D_EC1_HOLD_NOT_RUN",
+  "geometry": {
+    "dimensions_m": [6e-7, 2.4e-7, 1.01e-4],
+    "cells": [30, 12, 5050],
+    "total_cells": 1818000,
+    "groove_width_m": 1.2e-7,
+    "groove_depth_m": 1e-4,
+    "upper_film_thickness_m": 1e-6,
+    "vent": "positive-y longitudinal end of both grooves"
+  },
+  "qoi": {
+    "penetration_depth_um": null,
+    "groove_filling_fraction": null,
+    "max_mach": null,
+    "phase_range": null,
+    "liquid_conservation_residual": null
+  },
+  "hold_reason": "OpenLB 1.9 phaseFieldInletOutlet3D implementation is commented out; no validated conservative-phase 3-D top-pressure plus gas-vent path",
+  "claim_boundary": "geometry pass only; no flow, moving-template, or OAS physical result"
+}

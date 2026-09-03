@@ -1,0 +1,26 @@
+{
+  "status": "3D_GEOMETRY_PASS",
+  "case_id": "vertical_squeeze_3d_two_groove_baseline",
+  "dimensions_m": {"x": 6e-7, "y": 2.4e-7, "z_total": 1.01e-4, "groove_depth": 1e-4, "upper_film": 1e-6},
+  "lattice": {"nx": 30, "ny": 12, "nz": 5050, "total_cells": 1818000, "dx_m": 2e-8},
+  "groove_width_m": 1.2e-7,
+  "material_cell_counts": {"1": 599880, "2": 17640, "3": 1140132, "4": 59988, "5": 360},
+  "connectivity": [
+    {"groove": 1, "component_cells": 677508, "reaches_upper_film": true, "reaches_positive_y_vent": true},
+    {"groove": 2, "component_cells": 677508, "reaches_upper_film": true, "reaches_positive_y_vent": true}
+  ],
+  "paraview": {
+    "version": "6.1.1",
+    "read_status": "PARAVIEW_GEOMETRY_READ_PASS",
+    "cell_count": 1818000,
+    "cell_arrays": ["material_id", "initial_liquid_phase"]
+  },
+  "artifacts": {
+    "geometry_vti": "results/vertical_squeeze_3d_geometry/vertical_squeeze_3d_geometry.vti",
+    "geometry_vti_sha256": "835402b66dbaa3905f30decb74de4ca41812451777910c94f369c9ad74dcb110",
+    "xy_png_sha256": "5aaf7abb3d675d449b65fc14035632a4f54470727464d64fd88e14bc3a486be0",
+    "xz_png_sha256": "af345a0e863f645100f0a7ec68329bc40717daad00d0d942cfdfe32161689398",
+    "yz_png_sha256": "ec164b05a3063e129977b7faa95a1075d6d87690909e17dbfbde8a15871fb861"
+  },
+  "claim_boundary": "geometry and installed-ParaView readability only; no flow result"
+}
