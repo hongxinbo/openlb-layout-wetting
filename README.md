@@ -2,9 +2,9 @@
 
 这是研究14个OAS微/纳米版图中液体浸润与压力挤入过程的长期Git项目。
 
-首个目标是 `SIM-EC1XT240.OAS` 的真实三维竖直挤压/沟槽灌注：模板沿 -z
-下压上方液膜，液体从 z=0 上方进入固定 100 um 沟槽。旧二维横向模型只作为
-`PRELIMINARY_REDUCED_MODEL` 保留。
+当前物理堆叠已更正为：上方图案化模具、空气间隙、平基底上的液滴、下方平基底。
+本阶段仅做固定模具预压松弛，x/y 周期，无横向入口、压差或排气口；模具下压和困气
+压缩留给后续。旧二维横向模型只作为 `PRELIMINARY_REDUCED_MODEL` 保留。
 
 ## 当前状态
 
@@ -19,6 +19,14 @@
 - 固定几何流动：`3D_VERTICAL_INTRUSION_HOLD_NOT_RUN_API_LIMITATION`。
 - 移动模板与真实 OAS：HOLD/NOT_RUN；没有用封闭不可压气体、横向入口或删除格子层绕过。
 - 旧 2-D baseline 和 production study 全部保留，不能作为最终压印物理结果。
+- OF350 液滴审计：对齐阵列为 15 x 9、半径 52 um、节距 350 um；冻结源中未找到
+  交错阵列坐标，后者 HOLD。
+- 预压多尺度审计：20 nm 统一网格约 1.84e12 cells / 559--735 TB，明确采用宏观液滴
+  与微观 OAS 分离。
+- 3-D 液滴组件：官方 well-balanced Cahn--Hilliard 路径完成 3000 步，但接触角与
+  相场下界门失败，`PREPRESS_DROPLET_COMPONENT_FAIL`；物理周期单元未继续运行。
+- 上模具 OAS 方向预览：ParaView 读取通过；层极性与真实初始间隙未冻结，保持
+  `TOP_MOLD_OAS_GEOMETRY_HOLD`。
 
 ## 先读这些文件
 

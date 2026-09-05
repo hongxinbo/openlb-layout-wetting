@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "case_id": "3d_periodic_prepress",
+  "coordinate_system": {
+    "x_y": "substrate and droplet-layout plane",
+    "z": "vertical, from flat substrate toward fixed top mold"
+  },
+  "droplets": {
+    "droplet_layout": "regular",
+    "of350_radius_m": 5.2e-5,
+    "of350_initializer_shape": "cylinder spanning the 1 um OpenFOAM layer",
+    "regular_pitch_x_m": 3.5e-4,
+    "regular_pitch_y_m": 3.5e-4,
+    "regular_source_count": 135,
+    "regular_source_grid": [15, 9],
+    "staggered_coordinates": null,
+    "staggered_status": "HOLD_SOURCE_COORDINATES_NOT_FOUND"
+  },
+  "boundaries": {
+    "x": "periodic",
+    "y": "periodic",
+    "bottom": "fixed solid wetting wall",
+    "top": "fixed solid mold wall",
+    "pressure_inlet_outlet": false,
+    "gas_vent": false,
+    "mold_motion": false
+  },
+  "wetting": {
+    "theta_substrate_deg": 60.0,
+    "theta_substrate_status": "PROVISIONAL_WETTING_BASELINE",
+    "theta_mold_deg": null,
+    "theta_mold_status": "UNKNOWN"
+  },
+  "component_test": {
+    "implementation": "OpenLB examples/multiComponent/contactAngle3d",
+    "model": "WellBalancedCahnHilliardBGKdynamics plus WellBalancedCahnHilliardPostProcessor",
+    "wall_path": "setBouzidiBoundary plus setBouzidiWellBalanced",
+    "solver_to_physical_axes": {"solver_x": "x", "solver_y": "z", "solver_z": "y"},
+    "domain_lattice": [60, 45, 60],
+    "droplet_diameter_lattice": 28,
+    "interface_width_lattice": 4,
+    "max_steps": 3000,
+    "observed_status": "PREPRESS_DROPLET_COMPONENT_FAIL"
+  },
+  "physical_periodic_case": {
+    "cell_m": [3.5e-4, 3.5e-4, null],
+    "gap_status": "PROVISIONAL_COMPONENT_GAP_REQUIRED",
+    "run_status": "HOLD_DROPLET_VOLUME_AND_GAP_NOT_SOURCE_BACKED"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "case_id": "3d_periodic_prepress",
+  "source": {
+    "repository": "hongxinbo/git_template_3r5cBoard_350",
+    "commit": "0a08409b211daeb4daf53d6bf5c8bb4143928894",
+    "set_fields_sha256": "60d05f9c79aa899a65ff53200854dfd6d1820b6716c6b235d23b1e0f33b54667",
+    "radius_m": 0.000052,
+    "diameter_m": 0.000104,
+    "initializer_shape": "cylinderToCell through a one-cell 1 um layer",
+    "regular_count": 135,
+    "regular_grid": [15, 9],
+    "pitch_x_m": 0.00035,
+    "pitch_y_m": 0.00035,
+    "staggered_coordinates": null,
+    "physical_precontact_gap_m": null
+  },
+  "feasibility": {
+    "status": "PREPRESS_MULTISCALE_FEASIBILITY_PASS",
+    "uniform_20nm_grid": [17500, 17500, 6000],
+    "uniform_20nm_cells": 1837500000000,
+    "population_only_memory_tb": 558.6,
+    "working_memory_estimate_tb": 735.0,
+    "decision": "two-scale macro droplet plus micro OAS architecture required"
+  },
+  "component": {
+    "model": "WellBalancedCahnHilliardBGKdynamics plus WellBalancedCahnHilliardPostProcessor",
+    "wall_path": "setBouzidiBoundary plus setBouzidiWellBalanced",
+    "physical_boundaries": {"x": "periodic", "y": "periodic", "bottom": "fixed wall", "top": "fixed wall"},
+    "grid": [60, 45, 60],
+    "geometry_nodes": 171166,
+    "droplet_diameter_lattice": 28,
+    "theta_target_deg": 60.0,
+    "theta_measured_deg": 67.31137331801446,
+    "footprint_diameter_m": 0.00003233015407938639,
+    "height_m": 0.000010762712508816868,
+    "phase_range": [-0.02851478010416031, 1.003449559211731],
+    "max_velocity_lattice": 0.0008117937832139432,
+    "max_velocity_m_s": 0.0032256707155384357,
+    "mass_relative_drift": -0.002642661100253463,
+    "pressure_range_lattice": [-0.00020074390340596437, 0.0011043465929105878],
+    "periodic_max_abs_difference": {"x": 0.0, "y": 0.0},
+    "steps": 3000,
+    "wall_time_s": 594.331,
+    "cpu_time_s": 199.2,
+    "status": "PREPRESS_DROPLET_COMPONENT_FAIL",
+    "failed_gates": ["phase_bounded_minus_0p02_to_1p02", "contact_angle_within_5_deg"]
+  },
+  "acceptance_statuses": {
+    "OF350_DROPLET_SOURCE_AUDIT": "HOLD_STAGGERED_COORDINATES_AND_PRECONTACT_GAP_MISSING_REGULAR_SUBAUDIT_PASS",
+    "PREPRESS_MULTISCALE_FEASIBILITY": "PASS",
+    "PREPRESS_DROPLET_COMPONENT": "FAIL",
+    "REGULAR_PREPRESS_PERIODIC": "HOLD_COMPONENT_FAIL_AND_3D_VOLUME_GAP_UNKNOWN",
+    "STAGGERED_PREPRESS_PERIODIC": "HOLD_SOURCE_COORDINATES_NOT_FOUND",
+    "TOP_MOLD_OAS_GEOMETRY": "HOLD_POLARITY_AND_GAP_NOT_FROZEN"
+  },
+  "claim_boundary": "fixed-mold pre-press audit only; no physical periodic macro baseline, mold motion, trapped-air compression, or OAS flow was run"
+}
