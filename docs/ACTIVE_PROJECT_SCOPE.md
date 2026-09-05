@@ -46,7 +46,7 @@ release gates for EC1XT240.
 
 These are not declared scientifically false; they are deferred research work.
 
-## Active roadmap
+## Historical PR #5 roadmap
 
 1. **Phase A — historical/reference evidence:** retain OF350, R1, Darcy, gas
    and moving-depth work as provenance and diagnostics. The source-backed
@@ -67,6 +67,21 @@ These are not declared scientifically false; they are deferred research work.
    unit, extrude white pixels as fluid grooves and pink layer-1/0 pixels as
    fixed solid columns; SIM-H and parameter sweeps remain later work.
 
+The sequence above records PR #5 history and is no longer the active physical
+route after the corrected top-mold stack was accepted.
+
+## Active roadmap after the top-mold correction
+
+1. Retain the OpenLB 3-D API and geometry audits as provenance.
+2. Validate a stable 3-D sessile droplet with physical x/y periodicity and
+   fixed wetting walls; no inlet, outlet, vent, or mold motion.
+3. Build the macro pre-press periodic droplet model only after the component
+   passes.
+4. Validate a moving patterned top mold together with a trapped/compressible-air
+   closure.
+5. Couple the macro state to the micro OAS squeeze/filling model.
+6. Compare layouts only after the preceding gates pass.
+
 `MINIMAL_240_SMOKE_PASS` is a numerical pipeline/geometry/stability result.
 Its reported inventory residual is diagnostic, not a formal conservation gate;
 the label is neither physical validation nor experimental validation.
@@ -79,7 +94,7 @@ the label is neither physical validation nor experimental validation.
 | liquid viscosity 1e-3 Pa s | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
 | surface tension 0.0309 N/m | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
 | contact angle 60 deg, through liquid | literature anchors | `LITERATURE_ASSUMPTION` | 30/60/85/120 deg |
-| groove/wall depth 100 um | group confirmation | `PHYSICAL_BASELINE` | No current sweep |
+| top-mold cavity depth 100 um | senior-confirmed input | `SENIOR_CONFIRMED_INPUT` | No current sweep |
 | upper-film displacement | OF350 EC1XT240 source | `OF350_TRANSFER_BASELINE` | No baseline sweep |
 | gas representation | reduced vented gas | `MODEL_ASSUMPTION` | Yes |
 | Darcy tensor | OF350 diagnostic/reference only | `STUDY_VARIABLE` after double-count audit | Yes |

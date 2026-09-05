@@ -33,7 +33,7 @@ the open-boundary API gate for later intrusion cases.
 
 ## Component runs
 
-External run root:
+Historical run root:
 `$HOME/ResearchData/openlb-layout-wetting/prepress_component_pr6_run*`.
 
 - run1: CLI vector was passed incorrectly; the default 120 x 75 x 120 domain
@@ -47,7 +47,9 @@ External run root:
   interface width 4, 60 degrees. See the compact JSON for the final observed
   outcome. It completed 3000 steps in 594.331 s wall time (199.200 s CPU).
 
-Run3 remained finite and its peak lattice velocity fell to 0.0008118
+Corrected reanalysis of run3 used only the physical-fluid crop and the audited
+lower wall at solver y=0.5. Run3 remained finite and its peak lattice velocity
+fell to 0.0008118
 (0.003226 m/s under this component converter). Its physical x/y periodic edge
 differences were both exactly zero. Liquid inventory changed from 5459.363 to
 5444.936 lattice-volume units, or -0.2643%. The final fitted footprint diameter
@@ -56,6 +58,19 @@ fit gave 67.31 degrees rather than 60 degrees, and phi ranged from -0.02851 to
 1.00345. Those miss the +/-5 degree and [-0.02,1.02] gates, respectively.
 Therefore the status is **PREPRESS_DROPLET_COMPONENT_FAIL**, not PASS.
 
+Because run3 still failed, exactly one targeted higher-resolution retry was
+run with the unchanged official executable: 88 x 66 x 88 domain, 48-cell
+droplet, interface width 7, `dx=0.583333 um`, and 10,000 steps. It completed
+with exit code 0 in 1203 s. The final physical-fluid phase range was
+[-0.0339947, 1.0099523], so its lower bound still failed. The circle fit used
+34 points across 17 rows and gave 65.036 degrees with 0.01466-lattice RMSE;
+the independent tangent estimate was 58.164 degrees. Their 6.872-degree
+difference failed the estimator-consistency gate. Mass drift was +0.2415%,
+maximum lattice velocity fell to 0.0003362, and both periodic mismatches were
+zero. The last-three angle range (1.453 degrees) and height relative range
+(1.774%) also missed their stationarity gates. The retry status is therefore
+**PREPRESS_DROPLET_COMPONENT_FAIL**. No second retry was run.
+
 The final fluid pressure range was -0.0002007 to 0.0011043 in lattice pressure
 units. This component converter has a 23841.1 Pa pressure factor, but the
 hydrodynamic pressure field is diagnostic only and is not an imposed pressure
@@ -63,8 +78,10 @@ drop.
 
 The component cannot be marked PASS unless the final field is finite, phase is
 bounded, mass drift is within 0.5%, spurious velocity is low/non-growing, and
-the measured angle is within 5 degrees of the target. Missing diagnostics are
-not interpreted as zero.
+the measured angle is within 5 degrees of the target. The primary circle and
+independent tangent estimates must also agree within 5 degrees, and the late
+angle, footprint, height, and inventory histories must pass their documented
+stationarity gates. Missing diagnostics are not interpreted as zero.
 
 Committed ParaView images are `docs/assets/prepress_top_physical_xy.png`,
 `prepress_vertical_physical_xz.png`, `prepress_vertical_physical_yz.png`,

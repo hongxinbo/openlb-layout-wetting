@@ -23,8 +23,9 @@
   交错阵列坐标，后者 HOLD。
 - 预压多尺度审计：20 nm 统一网格约 1.84e12 cells / 559--735 TB，明确采用宏观液滴
   与微观 OAS 分离。
-- 3-D 液滴组件：官方 well-balanced Cahn--Hilliard 路径完成 3000 步，但接触角与
-  相场下界门失败，`PREPRESS_DROPLET_COMPONENT_FAIL`；物理周期单元未继续运行。
+- 3-D 液滴组件：`PREPRESS_DROPLET_COMPONENT_FAIL`；run3 修正复核和唯一一次
+  48格直径、10,000步加密验证均未通过物理流体相场下界，后者也未通过角度/稳态门。
+  结果见 `results/summaries/`，物理周期单元未继续运行。
 - 上模具 OAS 方向预览：ParaView 读取通过；层极性与真实初始间隙未冻结，保持
   `TOP_MOLD_OAS_GEOMETRY_HOLD`。
 
@@ -64,12 +65,12 @@ $HOME/ResearchData/openlb-layout-wetting/
 
 ```text
 OpenLB 3-D API审计
-  -> 显式双沟槽3-D几何/ParaView
-  -> 固定几何自上而下排气基线
-  -> 移动模板组件
-  -> 最小3-D squeeze filling
-  -> EC1XT240真实OAS三维代表单元
-  -> SIM-H和其他版图
+  -> 3-D几何方向审计
+  -> x/y周期的3-D静置液滴润湿组件验证
+  -> 宏观预压周期液滴模型
+  -> 移动图案化上模具与困气模型
+  -> 微观OAS挤压/填充模型
+  -> 版图比较
 ```
 
 ## Git规则

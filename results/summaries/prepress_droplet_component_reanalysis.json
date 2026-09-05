@@ -1,0 +1,332 @@
+{
+  "status": "PREPRESS_DROPLET_COMPONENT_FAIL",
+  "physics_run_changed": false,
+  "domain_lattice": [
+    60,
+    45,
+    60
+  ],
+  "dx_m": 1e-06,
+  "theta_target_deg": 60.0,
+  "wall_plane_lattice": 0.5,
+  "phase_tolerance": [
+    -0.02,
+    1.02
+  ],
+  "initial_liquid_inventory": 5459.36279296875,
+  "checkpoints": [
+    {
+      "step": 500,
+      "source_vti": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/prepress_component_pr6_run3/tmp/vtkData/data/contactAngle3d_iT0000500iC00000.vti",
+      "finite": true,
+      "phase_range_global": [
+        -0.036257028579711914,
+        1.0165231227874756
+      ],
+      "phase_range_physical_fluid": [
+        -0.036257028579711914,
+        1.0165231227874756
+      ],
+      "liquid_inventory": 5479.23876953125,
+      "liquid_inventory_relative_drift": 0.0036407136356826787,
+      "max_velocity_lattice": 0.003072523744776845,
+      "max_velocity_m_s": 0.012208703825108242,
+      "periodic_max_abs_difference": {
+        "physical_x": 0.0,
+        "physical_y": 0.0
+      },
+      "contact_angle": {
+        "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+        "fit_points": 24,
+        "fit_rows": 12,
+        "fit_rmse_lattice": 0.07912450817195502,
+        "circle_center_lattice": [
+          30.000000000000007,
+          -1.1011434216109635
+        ],
+        "circle_radius_lattice": 14.41577593574113,
+        "wall_plane_lattice": 0.5,
+        "contact_angle_primary_deg": 83.62306718926258,
+        "contact_angle_tangent_diagnostic_deg": 67.71135224641,
+        "tangent_side_estimates_deg": [
+          67.7113522464101,
+          67.71135224640989
+        ],
+        "footprint_diameter_lattice": 28.653162867154823,
+        "height_lattice": 12.814632514130167,
+        "footprint_diameter_m": 2.8653162867154823e-05,
+        "height_m": 1.2814632514130166e-05
+      }
+    },
+    {
+      "step": 1000,
+      "source_vti": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/prepress_component_pr6_run3/tmp/vtkData/data/contactAngle3d_iT0001000iC00000.vti",
+      "finite": true,
+      "phase_range_global": [
+        -0.034035030752420425,
+        1.0113341808319092
+      ],
+      "phase_range_physical_fluid": [
+        -0.034035030752420425,
+        1.0113341808319092
+      ],
+      "liquid_inventory": 5472.65185546875,
+      "liquid_inventory_relative_drift": 0.0024341783105375076,
+      "max_velocity_lattice": 0.0025543104857206345,
+      "max_velocity_m_s": 0.010149578258115799,
+      "periodic_max_abs_difference": {
+        "physical_x": 0.0,
+        "physical_y": 0.0
+      },
+      "contact_angle": {
+        "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+        "fit_points": 22,
+        "fit_rows": 11,
+        "fit_rmse_lattice": 0.05116910099219936,
+        "circle_center_lattice": [
+          30.000000000000004,
+          -2.646268287630562
+        ],
+        "circle_radius_lattice": 15.262226564085577,
+        "wall_plane_lattice": 0.5,
+        "contact_angle_primary_deg": 78.10332514238033,
+        "contact_angle_tangent_diagnostic_deg": 63.976420624958315,
+        "tangent_side_estimates_deg": [
+          63.976420624958365,
+          63.976420624958266
+        ],
+        "footprint_diameter_lattice": 29.868816886895917,
+        "height_lattice": 12.115958276455014,
+        "footprint_diameter_m": 2.9868816886895915e-05,
+        "height_m": 1.2115958276455014e-05
+      }
+    },
+    {
+      "step": 1500,
+      "source_vti": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/prepress_component_pr6_run3/tmp/vtkData/data/contactAngle3d_iT0001500iC00000.vti",
+      "finite": true,
+      "phase_range_global": [
+        -0.033393744379282,
+        1.0082165002822876
+      ],
+      "phase_range_physical_fluid": [
+        -0.033393744379282,
+        1.0082165002822876
+      ],
+      "liquid_inventory": 5464.58935546875,
+      "liquid_inventory_relative_drift": 0.0009573576071426176,
+      "max_velocity_lattice": 0.0017955944640561938,
+      "max_velocity_m_s": 0.007134812558871927,
+      "periodic_max_abs_difference": {
+        "physical_x": 0.0,
+        "physical_y": 0.0
+      },
+      "contact_angle": {
+        "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+        "fit_points": 20,
+        "fit_rows": 10,
+        "fit_rmse_lattice": 0.030416294547577348,
+        "circle_center_lattice": [
+          29.999999999999993,
+          -3.9249385289656757
+        ],
+        "circle_radius_lattice": 16.02497051831835,
+        "wall_plane_lattice": 0.5,
+        "contact_angle_primary_deg": 73.97076997898188,
+        "contact_angle_tangent_diagnostic_deg": 60.981781756550504,
+        "tangent_side_estimates_deg": [
+          60.98178175655058,
+          60.98178175655043
+        ],
+        "footprint_diameter_lattice": 30.803869830126697,
+        "height_lattice": 11.600031989352676,
+        "footprint_diameter_m": 3.08038698301267e-05,
+        "height_m": 1.1600031989352676e-05
+      }
+    },
+    {
+      "step": 2000,
+      "source_vti": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/prepress_component_pr6_run3/tmp/vtkData/data/contactAngle3d_iT0002000iC00000.vti",
+      "finite": true,
+      "phase_range_global": [
+        -0.03259889408946037,
+        1.006029725074768
+      ],
+      "phase_range_physical_fluid": [
+        -0.03259889408946037,
+        1.006029725074768
+      ],
+      "liquid_inventory": 5457.44189453125,
+      "liquid_inventory_relative_drift": -0.0003518539636116459,
+      "max_velocity_lattice": 0.0013594399206340313,
+      "max_velocity_m_s": 0.0054017481190385295,
+      "periodic_max_abs_difference": {
+        "physical_x": 0.0,
+        "physical_y": 0.0
+      },
+      "contact_angle": {
+        "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+        "fit_points": 20,
+        "fit_rows": 10,
+        "fit_rmse_lattice": 0.023496428738000587,
+        "circle_center_lattice": [
+          30.00000000000001,
+          -4.895165842464095
+        ],
+        "circle_radius_lattice": 16.63605560684792,
+        "wall_plane_lattice": 0.5,
+        "contact_angle_primary_deg": 71.07649026526346,
+        "contact_angle_tangent_diagnostic_deg": 58.54991009051845,
+        "tangent_side_estimates_deg": [
+          58.54991009051843,
+          58.549910090518466
+        ],
+        "footprint_diameter_lattice": 31.473832412748514,
+        "height_lattice": 11.240889764383823,
+        "footprint_diameter_m": 3.1473832412748514e-05,
+        "height_m": 1.1240889764383822e-05
+      }
+    },
+    {
+      "step": 2500,
+      "source_vti": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/prepress_component_pr6_run3/tmp/vtkData/data/contactAngle3d_iT0002500iC00000.vti",
+      "finite": true,
+      "phase_range_global": [
+        -0.030651608482003212,
+        1.0044662952423096
+      ],
+      "phase_range_physical_fluid": [
+        -0.030651608482003212,
+        1.0044662952423096
+      ],
+      "liquid_inventory": 5450.87841796875,
+      "liquid_inventory_relative_drift": -0.0015540962053167155,
+      "max_velocity_lattice": 0.001043928088620305,
+      "max_velocity_m_s": 0.004148058699413668,
+      "periodic_max_abs_difference": {
+        "physical_x": 0.0,
+        "physical_y": 0.0
+      },
+      "contact_angle": {
+        "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+        "fit_points": 20,
+        "fit_rows": 10,
+        "fit_rmse_lattice": 0.017469808542726287,
+        "circle_center_lattice": [
+          30.000000000000007,
+          -5.653781480147245
+        ],
+        "circle_radius_lattice": 17.12541403696561,
+        "wall_plane_lattice": 0.5,
+        "contact_angle_primary_deg": 68.94056361235631,
+        "contact_angle_tangent_diagnostic_deg": 56.812272637841644,
+        "tangent_side_estimates_deg": [
+          56.81227263784176,
+          56.812272637841524
+        ],
+        "footprint_diameter_lattice": 31.963152499845535,
+        "height_lattice": 10.971632556818363,
+        "footprint_diameter_m": 3.1963152499845534e-05,
+        "height_m": 1.0971632556818363e-05
+      }
+    },
+    {
+      "step": 3000,
+      "source_vti": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/prepress_component_pr6_run3/tmp/vtkData/data/contactAngle3d_iT0003000iC00000.vti",
+      "finite": true,
+      "phase_range_global": [
+        -0.02851478010416031,
+        1.003449559211731
+      ],
+      "phase_range_physical_fluid": [
+        -0.02851478010416031,
+        1.003449559211731
+      ],
+      "liquid_inventory": 5444.935546875,
+      "liquid_inventory_relative_drift": -0.002642661175097433,
+      "max_velocity_lattice": 0.0008117937832139432,
+      "max_velocity_m_s": 0.0032256707155384357,
+      "periodic_max_abs_difference": {
+        "physical_x": 0.0,
+        "physical_y": 0.0
+      },
+      "contact_angle": {
+        "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+        "fit_points": 20,
+        "fit_rows": 10,
+        "fit_rmse_lattice": 0.012364752720465286,
+        "circle_center_lattice": [
+          29.999999999999993,
+          -6.258228236264806
+        ],
+        "circle_radius_lattice": 17.520940745081674,
+        "wall_plane_lattice": 0.5,
+        "contact_angle_primary_deg": 67.31137331801446,
+        "contact_angle_tangent_diagnostic_deg": 55.48981213372667,
+        "tangent_side_estimates_deg": [
+          55.489812133726794,
+          55.48981213372656
+        ],
+        "footprint_diameter_lattice": 32.330154079386396,
+        "height_lattice": 10.762712508816868,
+        "footprint_diameter_m": 3.233015407938639e-05,
+        "height_m": 1.0762712508816868e-05
+      }
+    }
+  ],
+  "late_time_summary": {
+    "steps": [
+      1000,
+      1500,
+      2000,
+      2500,
+      3000
+    ],
+    "theta_last_three_deg": [
+      71.07649026526346,
+      68.94056361235631,
+      67.31137331801446
+    ],
+    "max_velocity_last_five_lattice": [
+      0.0025543104857206345,
+      0.0017955944640561938,
+      0.0013594399206340313,
+      0.001043928088620305,
+      0.0008117937832139432
+    ],
+    "footprint_last_three_lattice": [
+      31.473832412748514,
+      31.963152499845535,
+      32.330154079386396
+    ],
+    "height_last_three_lattice": [
+      11.240889764383823,
+      10.971632556818363,
+      10.762712508816868
+    ],
+    "inventory_last_three": [
+      5457.44189453125,
+      5450.87841796875,
+      5444.935546875
+    ]
+  },
+  "core_checks": {
+    "finite_fields": true,
+    "physical_fluid_phase_bounded": false,
+    "liquid_inventory_drift_le_0p5_percent": true,
+    "max_lattice_velocity_le_0p01": true,
+    "periodic_mismatch_le_1e_8": true
+  },
+  "diagnostic_and_equilibrium_checks": {
+    "fit_available": true,
+    "fit_rmse_le_0p5_lattice": true,
+    "contact_angle_error_le_5_deg": false,
+    "primary_tangent_difference_le_5_deg": false,
+    "late_velocity_non_growing": true,
+    "late_angle_range_le_1_deg": false,
+    "late_footprint_relative_range_le_1_percent": false,
+    "late_height_relative_range_le_1_percent": false,
+    "late_inventory_relative_range_le_0p1_percent": false
+  },
+  "claim_boundary": "sessile-droplet component only; no pressure inlet, gas vent, mold motion, physical periodic macro cell, or OAS flow"
+}

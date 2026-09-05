@@ -14,11 +14,17 @@ It uses the real `SIM-EC1XT240.OAS` crop rasterized at 10 nm in
 255 = OAS polygon/solid and 0 = accessible space. For a mold, this is applied
 provisionally as polygon = mold solid and background = cavity.
 
+The **cavity depth remains 100 um**, provenance
+`SENIOR_CONFIRMED_INPUT`. The previously confirmed 100 um fixed groove depth is
+now interpreted as the recess depth of the patterned top mold rather than a
+groove etched into the lower substrate; no contradictory evidence was found.
+This value is independent of the old 1 um OF350 thin-film layer.
+
 The geometry stays HOLD because no fabrication/source artifact independently
 freezes whether the OAS layer is positive mold solid or negative cavity, and
-the physical pre-contact gap and cavity depth are not established. The preview
-therefore proves orientation and data plumbing only, not final mold polarity or
-dimensions. It must not be used for flow.
+the physical pre-contact gap is not established. The preview therefore proves
+orientation and data plumbing only, not final mold polarity or gap. It must not
+be used for flow.
 
 ParaView 6.1.1 successfully read 1,152,000 cells with `material_id` and
 `liquid_phase` and wrote:

@@ -40,11 +40,25 @@
     "droplet_diameter_lattice": 28,
     "interface_width_lattice": 4,
     "max_steps": 3000,
-    "observed_status": "PREPRESS_DROPLET_COMPONENT_FAIL"
+    "observed_status": "PREPRESS_DROPLET_COMPONENT_FAIL",
+    "targeted_retry": {
+      "domain_lattice": [88, 66, 88],
+      "droplet_diameter_lattice": 48,
+      "interface_width_lattice": 7,
+      "dx_m": 5.833333333333333e-7,
+      "max_steps": 10000,
+      "observed_status": "PREPRESS_DROPLET_COMPONENT_FAIL"
+    }
   },
   "physical_periodic_case": {
     "cell_m": [3.5e-4, 3.5e-4, null],
     "gap_status": "PROVISIONAL_COMPONENT_GAP_REQUIRED",
     "run_status": "HOLD_DROPLET_VOLUME_AND_GAP_NOT_SOURCE_BACKED"
+  },
+  "top_mold": {
+    "cavity_depth_m": 0.0001,
+    "cavity_depth_provenance": "SENIOR_CONFIRMED_INPUT",
+    "orientation": "recess in patterned top mold, opening downward",
+    "oas_layer_polarity_status": "HOLD"
   }
 }
