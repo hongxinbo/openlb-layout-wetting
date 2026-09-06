@@ -1,0 +1,37 @@
+{
+  "case_id": "A0C_CORRECTED_OFFICIAL_DEFAULT",
+  "status": "CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS",
+  "openlb": {"version": "1.9.0-19-g3dedbdd2", "commit": "3dedbdd2c4d5e911eda3784643dd419b211951d0"},
+  "source_build_provenance": {
+    "official_source_sha256": "5add087940a524bed7d35a4e3aceaef3d37e1a115956be730cc59bc36ce92afc",
+    "corrected_source_sha256": "be44994427ebd3b38d7bbb69707b78e6abf7d2cd3f30edbed4c7f2bc723c4798",
+    "diagnostic_patch_sha256": "242d06f1309e7a21026972f1426a09903a594cd27790f004f5e81f770056eb31",
+    "libolbcore_sha256": "9429ca298beffaa218c05c79cf3594c775fde6ae9c74db5b978bf40cca74d729",
+    "executable_sha256": "42e112b5cfe8e28a5dc08bf12cafa87419bb1fd41bce57ca45d93834a4e3f8c6"
+  },
+  "command": "scripts/run_corrected_contactangle3d.sh /Users/hongxinbo/ResearchData/openlb-layout-wetting/contactangle3d_isolation/A0C_CORRECTED_OFFICIAL_DEFAULT",
+  "mpi_ranks": 1,
+  "explicit_overrides": [],
+  "runtime_seconds": 6244.776,
+  "last_step": 24000,
+  "termination_reason": "three consecutive corrected-angle relative changes below 5e-4",
+  "checkpoint_history_csv": "results/tables/corrected_official_contactangle3d_timeseries.csv",
+  "checkpoint_count": 25,
+  "final_metrics": {
+    "theta_corrected_deg": 99.4454,
+    "theta_independent_circle_deg": 99.44784020743553,
+    "theta_difference_deg": 0.0024402074355265313,
+    "independent_circle_last_three_range_deg": 0.07531168025097656,
+    "corrected_relative_changes_last_three": [0.0004580732131873146, 0.0003864166497273526, 0.00032591310995553653],
+    "phase_min_fluid": -0.011690013110637665,
+    "phase_max_fluid": 1.000016689300537,
+    "finite": true,
+    "min_tau_eff": 0.5143887937068939,
+    "raw_inventory": 87909.07459890819,
+    "inventory_drift": -0.00009628594000349249,
+    "max_velocity_lattice": 0.000024859356926754117,
+    "circle_fit_rmse": 0.006713870663588995
+  },
+  "next": "PROJECT_WETTING_PARAMETER_ISOLATION",
+  "claim_boundary": "This validates the official 100-degree component formulation with a corrected diagnostic. It does not validate any project-specific parameter case."
+}

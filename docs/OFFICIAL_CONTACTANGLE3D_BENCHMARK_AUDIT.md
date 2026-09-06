@@ -277,3 +277,22 @@ interpolation write loop interpolationF3D.hh:314–317;
 chemical potential phaseFieldCoupling.h:763–765;
 linear tau interpolation phaseFieldCoupling.h:1104–1120;
 converter dx/dt construction unitConverter.h:920–942.
+
+## Corrected local A0C resolution
+
+The historical diagnosis above remains the evidence for why the installed
+example's reporter is not a release observable. A project-local copy with only
+the two diagnostic fixes (the two-double `STATISTIC` buffer/component-0 read
+and the prior-y top crossing) was run with every official physical default
+unchanged. A0C stopped cleanly at step 24000 after three consecutive corrected
+relative changes below 5e-4. Its corrected angle is 99.4454 degrees; the
+independent many-point circle is 99.447840 degrees, a 0.002440-degree
+difference. Fields remained finite, raw inventory drift was -0.00963%, and
+minimum effective tau was 0.514389.
+
+The corrected benchmark is therefore `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`.
+Its provenance and complete checkpoint history are committed in
+`docs/CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md`,
+`results/summaries/corrected_official_contactangle3d.json`, and
+`results/tables/corrected_official_contactangle3d_timeseries.csv`. Active NEXT
+is `PROJECT_WETTING_PARAMETER_ISOLATION`; no project-specific case has run.

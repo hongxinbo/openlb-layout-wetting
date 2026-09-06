@@ -8,10 +8,12 @@
 
 ## 当前状态
 
-- PR #6 官方基准诊断：`OFFICIAL_EXAMPLE_REPRODUCTION_HOLD`。未修改例程的
-  官方角度与场几何不符，源码存在插值缓冲区维数及顶部坐标错误；详见
-  `docs/OFFICIAL_CONTACTANGLE3D_BENCHMARK_AUDIT.md`。不启动项目参数阶梯。
-  历史组件 FAIL 标签保持不变；当前 NEXT 为 `RESOLVE_3D_WETTING_FORMULATION`。
+- PR #6 官方 3-D 润湿基准：`CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`。在不改变
+  官方求解器物理的前提下，项目本地修正了诊断缓冲区和顶部坐标；100 度 A0C 于
+  24000 步收敛至 99.4454 度，独立圆拟合为 99.447840 度。详见
+  `docs/CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md`、`results/summaries/` 和
+  `results/tables/`。历史组件 FAIL 标签保持不变；当前 NEXT 为
+  `PROJECT_WETTING_PARAMETER_ISOLATION`，尚未启动任何项目参数案例。
 
 
 - 项目骨架：已建立。

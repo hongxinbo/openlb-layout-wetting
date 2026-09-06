@@ -9,9 +9,12 @@ investigations remain evidence, not the active physical stack.
 no lateral liquid inlet, no gas vent and no mold motion. Later pressing requires
 a moving top mold and a separately validated trapped/compressed-air closure.
 
-Current task: reproduce the unmodified official 3-D wetting benchmark, validate
-its observable, and only after A0 passes isolate project parameter substitutions.
-See `OFFICIAL_CONTACTANGLE3D_BENCHMARK_AUDIT.md` and the isolation summary.
+The corrected local diagnostic has now validated the official 100-degree 3-D
+wetting benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at
+step 24000 to 99.4454 degrees, independently checked as 99.447840 degrees.
+The next gate is `PROJECT_WETTING_PARAMETER_ISOLATION`; no project parameter
+substitution has been run. See `CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md` and
+`results/summaries/corrected_official_contactangle3d.json`.
 
 ## Retained
 
