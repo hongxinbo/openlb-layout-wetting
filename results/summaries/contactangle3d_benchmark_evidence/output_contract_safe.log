@@ -1,0 +1,16 @@
+
+    ┃
+    ┃  ┏━━━━┓      ▁▁▁▁                   ▁▁    ▁▁▁▁
+    ┃  ┃    ┃     ╱ ▁▁ ╲▁▁▁▁  ▁▁▁  ▁▁▁▁  ╱ ╱   ╱ ▁▁ ╲
+ ┏━━╋━┓┃    ┃    ╱ ╱ ╱ ╱ ▁▁ ╲╱ ▁ ╲╱ ▁▁ ╲╱ ╱   ╱ ╱▁╱ ╱
+ ┃  ┗━╋╋━━━━┻┓  ╱ ╱▁╱ ╱ ╱▁╱ ╱  ▁▁╱ ╱ ╱ ╱ ╱▁▁▁╱ ╱▁╱ ╱
+ ┃    ┃┃     ┃  ╲▁▁▁▁╱ ▁▁▁▁╱╲▁▁▁╱▁╱ ╱▁╱▁▁▁▁▁╱▁▁▁▁▁╱
+ ┗━━━━┛┃     ┃      ╱▁╱ ==========================>>
+       ┗━━━━━┛
+
+[initialize] Version  : 1.9.0-19-g3dedbdd2
+[initialize] Platform : CPU_SISD
+[initialize] Parallel : MPI
+[initialize] MPI      : 1 ranks
+[ThreadPool] Sucessfully initialized, numThreads=1
+BUFFER_PROBE target_dim=2 success=1 first=0 second_before=456 second_after=0

@@ -1,0 +1,403 @@
+{
+  "verdict": "OFFICIAL_EXAMPLE_REPRODUCTION_HOLD",
+  "a0_status": "HOLD",
+  "reviewed_head": "895dfe2c920cfc98e6ba441306677b4b0fe57270",
+  "openlb_commit": "3dedbdd2c4d5e911eda3784643dd419b211951d0",
+  "source_sha256": "5add087940a524bed7d35a4e3aceaef3d37e1a115956be730cc59bc36ce92afc",
+  "executable_sha256": "60b49aac251532d9dee9da7853e2743189137d6b4646caf3bbb1c94401876907",
+  "explicit_overrides": [],
+  "command": "$OPENLB_ROOT/examples/multiComponent/contactAngle3d/contactAngle3d",
+  "raw_directory": "$HOME/ResearchData/openlb-layout-wetting/contactangle3d_isolation/A0",
+  "runtime_s": 573.8076363749999,
+  "exit_status": -15,
+  "termination": "Agent sent SIGTERM after checkpoint 2000: official diagnostic produced NaN / nonphysical angle; source audit identified scalar-buffer overflow and top-coordinate error. Not solver natural convergence or numerical divergence.",
+  "last_saved_step": 2000,
+  "theta_target_deg": 100,
+  "theta_official_raw": [
+    "nan",
+    "0.28836",
+    "nan"
+  ],
+  "analysis": {
+    "domain": [
+      120,
+      75,
+      120
+    ],
+    "wall_y": 0.5,
+    "inventory_definition": "sum(1-phi), unclipped, x=0..Nx z=0..Nz y=1..Ny-1; excludes wall and halo; step zero is after first collision, not pre-collision",
+    "official_converged": false,
+    "checkpoints": [
+      {
+        "step": 0,
+        "source_file": "contactAngle3d_iT0000000iC00000.vti",
+        "source_sha256": "045fac07459e90549f5e17e735016c8bc4cb1ca1f3cf7198d40c52d75558a7fa",
+        "finite": true,
+        "phase_min": -0.021301662549376488,
+        "phase_max": 1.0193562507629395,
+        "phase_min_fluid": -0.021301662549376488,
+        "phase_max_fluid": 1.0193562507629395,
+        "raw_inventory": 87917.53982187274,
+        "clipped_inventory": 87925.80770031549,
+        "max_velocity_lattice": 0.01194104552268982,
+        "theta_official_deg": null,
+        "official_replayed": {
+          "angle_deg": 25.097614203631206,
+          "points": [
+            [
+              25.081502527693175,
+              2.0
+            ],
+            [
+              94.91849747230683,
+              2.0
+            ],
+            [
+              60.0,
+              9.025056510295713
+            ]
+          ]
+        },
+        "corrected_three_point": {
+          "angle_deg": 89.22611132582544,
+          "points": [
+            [
+              25.081502527693175,
+              2.0
+            ],
+            [
+              94.91849747230683,
+              2.0
+            ],
+            [
+              60.0,
+              35.00177991716943
+            ]
+          ]
+        },
+        "circle": {
+          "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+          "fit_points": 66,
+          "fit_rows": 33,
+          "fit_rmse_lattice": 0.020637540942864442,
+          "circle_center_lattice": [
+            59.999999999999986,
+            0.019482111062288254
+          ],
+          "circle_radius_lattice": 34.989334945257546,
+          "wall_plane_lattice": 0.5,
+          "contact_angle_primary_deg": 89.2131170096057,
+          "contact_angle_tangent_diagnostic_deg": 84.19024134160925,
+          "tangent_side_estimates_deg": [
+            84.19024134160935,
+            84.19024134160915
+          ],
+          "footprint_diameter_lattice": 69.97207049873062,
+          "height_lattice": 34.508817056319835,
+          "footprint_diameter_m": 6.997207049873062e-05,
+          "height_m": 3.4508817056319834e-05
+        },
+        "mass_drift": 0.0,
+        "clipped_inventory_drift": 0.0
+      },
+      {
+        "step": 1000,
+        "source_file": "contactAngle3d_iT0001000iC00000.vti",
+        "source_sha256": "dfadab6253cfddc13928b666d591ef7e864608680033325daa106796cf7c1607",
+        "finite": true,
+        "phase_min": -0.021370762959122658,
+        "phase_max": 1.008448600769043,
+        "phase_min_fluid": -0.021370762959122658,
+        "phase_max_fluid": 1.008448600769043,
+        "raw_inventory": 87850.35610249257,
+        "clipped_inventory": 87854.66371316461,
+        "max_velocity_lattice": 0.0012581321643665433,
+        "theta_official_deg": 0.28836,
+        "official_replayed": {
+          "angle_deg": 90.10907235966974,
+          "points": [
+            [
+              25.568964934749143,
+              2.0
+            ],
+            [
+              94.43103506525085,
+              2.0
+            ],
+            [
+              60.0,
+              35.02650284188031
+            ]
+          ]
+        },
+        "corrected_three_point": {
+          "angle_deg": 89.97472750851071,
+          "points": [
+            [
+              25.568964934749143,
+              2.0
+            ],
+            [
+              94.43103506525085,
+              2.0
+            ],
+            [
+              60.0,
+              34.94915675749433
+            ]
+          ]
+        },
+        "circle": {
+          "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+          "fit_points": 66,
+          "fit_rows": 33,
+          "fit_rmse_lattice": 0.09210537649909553,
+          "circle_center_lattice": [
+            60.000000000000036,
+            0.3977936581354413
+          ],
+          "circle_radius_lattice": 34.71269918230844,
+          "wall_plane_lattice": 0.5,
+          "contact_angle_primary_deg": 89.83130091789423,
+          "contact_angle_tangent_diagnostic_deg": 87.99997189759097,
+          "tangent_side_estimates_deg": [
+            87.99997189759094,
+            87.99997189759098
+          ],
+          "footprint_diameter_lattice": 69.42509743270426,
+          "height_lattice": 34.61049284044388,
+          "footprint_diameter_m": 6.942509743270426e-05,
+          "height_m": 3.461049284044388e-05
+        },
+        "mass_drift": -0.0007641674177448678,
+        "clipped_inventory_drift": -0.0008091365778903398
+      },
+      {
+        "step": 2000,
+        "source_file": "contactAngle3d_iT0002000iC00000.vti",
+        "source_sha256": "b244528e028974746af700aa1eb09bc56fdbdc5b2f607bd65586ac9cd87cbc83",
+        "finite": true,
+        "phase_min": -0.016413304954767227,
+        "phase_max": 1.004284381866455,
+        "phase_min_fluid": -0.016413304954767227,
+        "phase_max_fluid": 1.004284381866455,
+        "raw_inventory": 87868.55839717296,
+        "clipped_inventory": 87778.03143506899,
+        "max_velocity_lattice": 0.0010197353549301624,
+        "theta_official_deg": null,
+        "official_replayed": {
+          "angle_deg": 93.66013997014817,
+          "points": [
+            [
+              25.99696172302914,
+              2.0
+            ],
+            [
+              94.00303827697086,
+              2.0
+            ],
+            [
+              60.0,
+              36.680770951594205
+            ]
+          ]
+        },
+        "corrected_three_point": {
+          "angle_deg": 91.15814164149745,
+          "points": [
+            [
+              25.99696172302914,
+              2.0
+            ],
+            [
+              94.00303827697086,
+              2.0
+            ],
+            [
+              60.0,
+              35.20021090765566
+            ]
+          ]
+        },
+        "circle": {
+          "fit_method": "circle fit to paired phi=0.5 crossings in the central vertical plane",
+          "fit_points": 66,
+          "fit_rows": 33,
+          "fit_rmse_lattice": 0.12012694195191893,
+          "circle_center_lattice": [
+            59.99999999999998,
+            1.1956168900771615
+          ],
+          "circle_radius_lattice": 34.28697952085227,
+          "wall_plane_lattice": 0.5,
+          "contact_angle_primary_deg": 91.16250096039207,
+          "contact_angle_tangent_diagnostic_deg": 89.21860073494028,
+          "tangent_side_estimates_deg": [
+            89.21860073494044,
+            89.21860073494014
+          ],
+          "footprint_diameter_lattice": 68.55984485996399,
+          "height_lattice": 34.98259641092943,
+          "footprint_diameter_m": 6.855984485996399e-05,
+          "height_m": 3.498259641092943e-05
+        },
+        "mass_drift": -0.0005571291553313501,
+        "clipped_inventory_drift": -0.0016806927239176484
+      }
+    ]
+  },
+  "first_breaking_project_parameter": null,
+  "ladder_status": "NOT_RUN_A0_HOLD",
+  "late_time_convergence": null,
+  "late_time_note": "Only steps 0,1000,2000 available; not a relaxed late-time window. Circle rises and velocity falls; these transient trends do not establish equilibrium.",
+  "diagnostics": {
+    "circle_reproduces_official": false,
+    "circle_vs_corrected_three_point_difference_deg": 0.0043593188946147166,
+    "tangent_hard_gate": "INVALID_LEGACY_ESTIMATOR_LIMITED_TO_0_90_DEGREES",
+    "phase_hard_gate": "UNVALIDATED: final transient is within [-0.02,1.02], earlier transient is outside; no functioning relaxed official baseline, so neither case A nor B established",
+    "prior_labels": "UNCHANGED"
+  },
+  "next": "RESOLVE_3D_WETTING_FORMULATION",
+  "model_rejected": false,
+  "claim_boundary": "Official executable reproduction blocked by diagnostic defects; cannot judge underlying model suitability or isolate project substitutions. No macro/OAS/pressing run.",
+  "build_provenance": {
+    "config.mk": "7d346f38c2fb8cf9018cc85fb1a80dda4fed7ec4e7d24e846a2de7088a5b3cbf",
+    "build/lib/libolbcore.a": "9429ca298beffaa218c05c79cf3594c775fde6ae9c74db5b978bf40cca74d729"
+  },
+  "compiler": "Apple clang version 17.0.0 (clang-1700.0.13.5)",
+  "converter_cases": {
+    "A0": {
+      "dx_m": 1e-06,
+      "dt_s": 1.8518518518518518e-07,
+      "tau_phi1": 1,
+      "tau_phi0": 0.52,
+      "omega_phi1": 1,
+      "omega_phi0": 1.923076923076923,
+      "tau_ch": 1,
+      "omega_ch": 1,
+      "nu_lattice_phi1": 0.16666666666666666,
+      "nu_lattice_phi0": 0.006666666666666672,
+      "density_lattice": [
+        1,
+        1
+      ],
+      "density_factor": 1000,
+      "sigma_lattice": 0.01,
+      "sigma_unit_factor": 0.02916,
+      "implied_sigma_physical": 0.0002916,
+      "required_lattice_sigma_for_OF350": 1.0596707818930042,
+      "nu_physical_droplet_phi0": 3.6e-08
+    },
+    "A2_mapping_only_NOT_RUN": {
+      "dx_m": 1e-06,
+      "dt_s": 2.5166666666666666e-07,
+      "tau_phi1": 1,
+      "tau_phi0": 0.52,
+      "omega_phi1": 1,
+      "omega_phi0": 1.923076923076923,
+      "tau_ch": 1,
+      "omega_ch": 1,
+      "nu_lattice_phi1": 0.16666666666666666,
+      "nu_lattice_phi0": 0.006666666666666672,
+      "density_lattice": [
+        1,
+        1
+      ],
+      "density_factor": 1000,
+      "sigma_lattice": 0.01,
+      "sigma_unit_factor": 0.015788781193807288,
+      "implied_sigma_physical": 0.00015788781193807287,
+      "required_lattice_sigma_for_OF350": 1.9570858333333334,
+      "nu_physical_droplet_phi0": 2.6490066225165563e-08
+    },
+    "A3_mapping_only_NOT_RUN": {
+      "dx_m": 1e-06,
+      "dt_s": 2.5166666666666666e-07,
+      "tau_phi1": 1,
+      "tau_phi0": 0.52,
+      "omega_phi1": 1,
+      "omega_phi0": 1.923076923076923,
+      "tau_ch": 1,
+      "omega_ch": 1,
+      "nu_lattice_phi1": 0.16666666666666666,
+      "nu_lattice_phi0": 0.006666666666666672,
+      "density_lattice": [
+        1,
+        1
+      ],
+      "density_factor": 1510,
+      "sigma_lattice": 0.01,
+      "sigma_unit_factor": 0.023841059602649005,
+      "implied_sigma_physical": 0.00023841059602649006,
+      "required_lattice_sigma_for_OF350": 1.2960833333333335,
+      "nu_physical_droplet_phi0": 2.6490066225165563e-08
+    },
+    "previous_d48_command_audit": {
+      "dx_m": 5.833333333333333e-07,
+      "dt_s": 8.563657407784208e-08,
+      "tau_phi1": 1,
+      "tau_phi0": 0.52,
+      "omega_phi1": 1,
+      "omega_phi0": 1.923076923076923,
+      "tau_ch": 1,
+      "omega_ch": 1,
+      "nu_lattice_phi1": 0.16666666666666666,
+      "nu_lattice_phi0": 0.006666666666666672,
+      "density_lattice": [
+        1,
+        1
+      ],
+      "density_factor": 1510,
+      "sigma_lattice": 0.01,
+      "sigma_unit_factor": 0.040870387886658845,
+      "implied_sigma_physical": 0.00040870387886658845,
+      "required_lattice_sigma_for_OF350": 0.7560486111776434,
+      "nu_physical_droplet_phi0": 2.6490066224e-08
+    }
+  },
+  "official_dat_file_note": "Empty original file preserved; SIGTERM before ofstream flush. Original angle outputs retained in run.log.",
+  "diagnostic_builds": {
+    "source_modified": false,
+    "overrides": [
+      "--MAX_LATTICE_T",
+      "0"
+    ],
+    "O1_asan": {
+      "exit_status": 0,
+      "reported_step0_angle": 25.0975,
+      "asan_error_detected": false
+    },
+    "O0_asan": {
+      "exit_status": 0,
+      "reported_step0_angle": 25.0975,
+      "asan_error_detected": false
+    },
+    "claim_boundary": "Full-example startup probes are not benchmark PASS and did not detect an ASan error; separate minimal API-contract probe did."
+  },
+  "minimal_output_contract_probe": {
+    "source": "tests/contactangle3d_output_contract.cpp",
+    "source_sha256": "fe5b6444336986656b490b913a4ef0d0a056b185649967ad6d83906fcdd89a12",
+    "safe_exit_status": 0,
+    "target_dimension": 2,
+    "second_component_before": 456,
+    "second_component_after": 0,
+    "scalar_shell_exit_status": 134,
+    "asan_error": "stack-buffer-overflow",
+    "access": "WRITE of size 8",
+    "location": "src/functors/analytical/interpolationF3D.hh:316",
+    "physics_simulation": false
+  },
+  "external_probe_hashes": {
+    "run.log": "83115ff82dd00d11064f26ff6d3fd4743e8893a798d5476fd776b21eba9f9fc9",
+    "run_O0/run.log": "2aeed6503adf24fb942e5561a0949b007d0cb8ac1556d74fa8c0538eb4d733a4",
+    "contactAngle3d_asan": "e54b0c24ae1b02d330569f3f88bab3255efab1ef399b9d758d94e1b7403162e6",
+    "contactAngle3d_asan_O0": "93d7c78911d0b6178df76818c3414a7ad4e5d6e1b8b73100e68e129032bd3a8c",
+    "output_contract": "96fcb06888990256fe74490406b7a995a2463ab41d559f1db532b9c7caf0d96b",
+    "output_contract_safe.log": "fd28b86953b4229835ad1cf1c3af6c52b599498c55c1e536e30f593dbf79b587",
+    "output_contract_scalar.log": "5e74087bb455555f9fc952cc9b404ef63ff98baa7f94f8db1e50226dc821633f",
+    "build_retry.log": "ac0899189008029cf477e3512a2fb3d714416c895fd28f69bfda0b95edf7bee4",
+    "build_O0.log": "e7e57624b187f00d9c3d6c34a7293b87f51eff75a03880c6f7c0bee23ea50898",
+    "build_contract.log": "325c0cfcbd1df2ae9c2527134611cb70991f51327f9af3f2f938e0f2cd000adc"
+  },
+  "probe_wall_runtime_note": "Not recorded by initial manual diagnostic invocations; OpenLB timer excludes preparation. Benchmark A0 wall runtime is recorded separately. Reusable probe runner records future wall times."
+}

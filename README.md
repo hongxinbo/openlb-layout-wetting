@@ -8,6 +8,12 @@
 
 ## 当前状态
 
+- PR #6 官方基准诊断：`OFFICIAL_EXAMPLE_REPRODUCTION_HOLD`。未修改例程的
+  官方角度与场几何不符，源码存在插值缓冲区维数及顶部坐标错误；详见
+  `docs/OFFICIAL_CONTACTANGLE3D_BENCHMARK_AUDIT.md`。不启动项目参数阶梯。
+  历史组件 FAIL 标签保持不变；当前 NEXT 为 `RESOLVE_3D_WETTING_FORMULATION`。
+
+
 - 项目骨架：已建立。
 - 14个OAS输入：已复制并记录SHA-256。
 - EC1XT240初步几何审计：已记录。

@@ -1,16 +1,17 @@
-# Active project scope — 3-D vertical squeeze reset
+# Active project scope — periodic pre-press and wetting benchmark
 
-**Status: `PROJECT_3D_RESET_PASS` (2026-09-03).** This document is the
-active scope authority for new work. It supersedes the mandatory ordering in
-legacy regression specifications while retaining those specifications and all
-their evidence as historical records.
+This document is the active scope authority for PR #6 on
+`codex/3d-periodic-prepress`. Historical PR #5 geometry and open-boundary
+investigations remain evidence, not the active physical stack.
 
-> OpenFOAM350 is a parameter/model reference and sanity reference. Quantitative
-> OpenLB350 reproduction is not a prerequisite for EC1XT240.
+**Active stack:** patterned TOP mold + air gap + droplet(s) on a flat substrate
++ flat bottom substrate. Pre-press has physical x/y periodicity, fixed walls,
+no lateral liquid inlet, no gas vent and no mold motion. Later pressing requires
+a moving top mold and a separately validated trapped/compressed-air closure.
 
-> The final physical model must resolve x, y and z. The upper template moves in
-> negative z, squeezes the film above z=0, and liquid enters a fixed 100 um
-> groove from above. Lateral x intrusion is not the production physics.
+Current task: reproduce the unmodified official 3-D wetting benchmark, validate
+its observable, and only after A0 passes isolate project parameter substitutions.
+See `OFFICIAL_CONTACTANGLE3D_BENCHMARK_AUDIT.md` and the isolation summary.
 
 ## Retained
 
@@ -22,9 +23,9 @@ their evidence as historical records.
   old result is relabelled or deleted.
 - `SIM-EC1XT240.OAS` remains the sole XY authority for active EC1 geometry.
 - The confirmed physical wall/groove depth is **100 um** and remains fixed.
-  OF350's 1 um to roughly 65 nm layer is the distinct moving upper liquid
-  film/gap: the upper template descends and squeezes that film into the fixed
-  grooves. It must never be used as the EC1 groove depth.
+  Provenance is `SENIOR_CONFIRMED_INPUT`; it is the top-mold cavity depth.
+  OF350's 1 um initializer is a cylinderToCell patch, not a resolved sessile
+  droplet volume and not this cavity depth.
 - All 2-D EC1XT240 and SIM-H results are retained as
   `PRELIMINARY_REDUCED_MODEL`; their former labels describe their historical
   numerical gates, not final groove-filling validity.
@@ -95,8 +96,8 @@ the label is neither physical validation nor experimental validation.
 | surface tension 0.0309 N/m | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
 | contact angle 60 deg, through liquid | literature anchors | `LITERATURE_ASSUMPTION` | 30/60/85/120 deg |
 | top-mold cavity depth 100 um | senior-confirmed input | `SENIOR_CONFIRMED_INPUT` | No current sweep |
-| upper-film displacement | OF350 EC1XT240 source | `OF350_TRANSFER_BASELINE` | No baseline sweep |
-| gas representation | reduced vented gas | `MODEL_ASSUMPTION` | Yes |
+| later mold displacement | OF350 reference only; active schedule UNKNOWN | deferred pressing input | No current run |
+| gas representation | pre-press unvented; later trapped/compressed air | closure validation required | Deferred |
 | Darcy tensor | OF350 diagnostic/reference only | `STUDY_VARIABLE` after double-count audit | Yes |
 | dx, tau, interface width | implementation | `NUMERICAL` | sensitivity only |
 
@@ -104,7 +105,7 @@ the label is neither physical validation nor experimental validation.
 successful OF350 calculation. It does not mean an independently measured,
 universally applicable EC1XT240 material property.
 
-## Current release labels
+## Historical release labels (not active benchmark gates)
 
 - `PROJECT_SCOPE_RESET_PASS`
 - `PASS_GEOMETRY_AUDIT`
@@ -120,5 +121,18 @@ universally applicable EC1XT240 material property.
   3-D multiphase inlet/outlet implementation is commented out.
 - `3D_GEOMETRY_PASS` — explicit 100 um groove plus 1 um upper film passes
   geometry, connectivity and installed-ParaView checks.
-- `NEXT = RESOLVE_VALIDATED_3D_PHASE_OPEN_BOUNDARIES` — do not launch a closed
-  incompressible gas pocket or restore lateral x forcing as a workaround.
+- Historical PR #5 next step was `RESOLVE_VALIDATED_3D_PHASE_OPEN_BOUNDARIES`;
+  this is archived and is not the active NEXT.
+
+## Preserved multiscale inputs and active next step
+
+OF350 regular initializer: radius 52 um, footprint diameter 104 um, 15 x 9 =
+135 patches, pitch 350 um x 350 um. It is a 1 um-thick cylinderToCell patch,
+not a resolved 3-D sessile-droplet volume. Macro droplet + micro OAS scale
+separation is required; one-scale 20 nm macro+micro DNS remains rejected.
+No real OAS geometry or flow is changed by this diagnostic task.
+
+`NEXT = RESOLVE_3D_WETTING_FORMULATION` while the official reproduction is HOLD.
+Only a validated formulation can release `MACRO_PREPRESS_PERIODIC_DROPLET_BASELINE`.
+The current HOLD does not establish that the underlying well-balanced PDE model
+is unsuitable; the official diagnostic itself must first be made trustworthy.

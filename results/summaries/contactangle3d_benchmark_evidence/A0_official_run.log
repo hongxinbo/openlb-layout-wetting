@@ -1,0 +1,109 @@
+
+    ┃
+    ┃  ┏━━━━┓      ▁▁▁▁                   ▁▁    ▁▁▁▁
+    ┃  ┃    ┃     ╱ ▁▁ ╲▁▁▁▁  ▁▁▁  ▁▁▁▁  ╱ ╱   ╱ ▁▁ ╲
+ ┏━━╋━┓┃    ┃    ╱ ╱ ╱ ╱ ▁▁ ╲╱ ▁ ╲╱ ▁▁ ╲╱ ╱   ╱ ╱▁╱ ╱
+ ┃  ┗━╋╋━━━━┻┓  ╱ ╱▁╱ ╱ ╱▁╱ ╱  ▁▁╱ ╱ ╱ ╱ ╱▁▁▁╱ ╱▁╱ ╱
+ ┃    ┃┃     ┃  ╲▁▁▁▁╱ ▁▁▁▁╱╲▁▁▁╱▁╱ ╱▁╱▁▁▁▁▁╱▁▁▁▁▁╱
+ ┗━━━━┛┃     ┃      ╱▁╱ ==========================>>
+       ┗━━━━━┛
+
+[initialize] Version  : 1.9.0-19-g3dedbdd2
+[initialize] Platform : CPU_SISD
+[initialize] Parallel : MPI
+[initialize] MPI      : 1 ranks
+[ThreadPool] Sucessfully initialized, numThreads=1
+[Case] 
+[Case] -- OpenLB Case Components --
+[Case] names::NavierStokes = SuperLattice<double, olb::descriptors::D3Q19<olb::descriptors::RHO, olb::descriptors::NABLARHO, olb::descriptors::FORCE, olb::descriptors::EXTERNAL_FORCE, olb::descriptors::TAU_EFF>>
+[Case] names::Component1   = SuperLattice<double, olb::descriptors::D3Q19<olb::descriptors::FORCE, olb::descriptors::SOURCE, olb::descriptors::SOURCE_OLD, olb::descriptors::PHIWETTING, olb::descriptors::VELOCITY, olb::descriptors::OLD_PHIU, olb::descriptors::STATISTIC, olb::descriptors::CHEM_POTENTIAL, olb::descriptors::BOUNDARY>>
+[Case] 
+[Case] -- Parameters --
+[Case] OVERLAP                    = 3
+[Case] THETA                      = 100
+[Case] INTERFACE_WIDTH            = 4
+[Case] RHO_LIQUID                 = 1
+[Case] LATTICE_STAT_ITER_T        = 1000
+[Case] NU_LIQUID                  = 9e-07
+[Case] C_RHO                      = 1000
+[Case] PHYS_CHAR_LENGTH           = 7e-05
+[Case] SURFACE_TENSION            = 0.01
+[Case] LATTICE_RELAXATION_TIME_PF = 1
+[Case] LATTICE_VTK_ITER_T         = 1000
+[Case] LATTICE_RELAXATION_TIME    = 1
+[Case] MAX_LATTICE_T              = 500000
+[Case] LATTICE_RELAXATION_TIME_2  = 0.52
+[Case] RESOLUTION                 = 70
+[Case] RHO_VAPOR                  = 1
+[Case] DOMAIN_EXTENT              = [120 75 120]
+[Case] 
+[prepareGeometry] Prepare Geometry ...
+[Directories] Directory ./tmp/ created.
+[Directories] Directory ./tmp/imageData/ created.
+[Directories] Directory ./tmp/imageData/data/ created.
+[Directories] Directory ./tmp/vtkData/ created.
+[Directories] Directory ./tmp/vtkData/data/ created.
+[Directories] Directory ./tmp/gnuplotData/ created.
+[Directories] Directory ./tmp/gnuplotData/data/ created.
+[Directories] Directory ./tmp/introspectionData/ created.
+[SuperGeometry3D] cleaned 0 outer boundary voxel(s)
+[SuperGeometry3D] cleaned 0 inner boundary voxel(s)
+[SuperGeometryStatistics3D] updated
+[SuperGeometry3D] the model is correct!
+[CuboidDecomposition] -- Cuboid Structure Statistics --
+[CuboidDecomposition]  Number of Cuboids: 	1
+[CuboidDecomposition]  Delta       : 		1
+[CuboidDecomposition]  Ratio  (min): 		0.628099
+[CuboidDecomposition]         (max): 		1.59211
+[CuboidDecomposition]  Nodes  (min): 		1112716
+[CuboidDecomposition]         (max): 		1112716
+[CuboidDecomposition]  Weight (min): 		1112716
+[CuboidDecomposition]         (max): 		1112716
+[CuboidDecomposition] ---------------------------------
+[SuperGeometryStatistics3D] materialNumber=1; count=1083434; minPhysR=(0,1,0); maxPhysR=(120,74,120)
+[SuperGeometryStatistics3D] materialNumber=2; count=29282; minPhysR=(0,0,0); maxPhysR=(120,75,120)
+[SuperGeometryStatistics3D] countTotal[1e6]=1.11272
+[prepareGeometry] Prepare Geometry ... OK
+[prepareLattice] Prepare Lattice ...
+[UnitConverter] ----------------- UnitConverter information -----------------
+[UnitConverter] -- Parameters:
+[UnitConverter] Resolution:                       N=              70
+[UnitConverter] Lattice velocity:                 latticeU=       0
+[UnitConverter] Lattice relaxation frequency:     omega=          1
+[UnitConverter] Lattice relaxation time:          tau=            1
+[UnitConverter] Characteristical length(m):       charL=          7e-05
+[UnitConverter] Characteristical speed(m/s):      charU=          0
+[UnitConverter] Phys. kinematic viscosity(m^2/s): charNu=         9e-07
+[UnitConverter] Phys. density(kg/m^d):            charRho=        1000
+[UnitConverter] Characteristical pressure(N/m^2): charPressure=   0
+[UnitConverter] Mach number:                      machNumber=     0
+[UnitConverter] Reynolds number:                  reynoldsNumber= 0
+[UnitConverter] Knudsen number:                   knudsenNumber=  nan
+[UnitConverter] Characteristical CFL number:      charCFLnumber=  0
+[UnitConverter] 
+[UnitConverter] -- Conversion factors:
+[UnitConverter] Voxel length(m):                  physDeltaX=     1e-06
+[UnitConverter] Time step(s):                     physDeltaT=     1.85185e-07
+[UnitConverter] Velocity factor(m/s):             physVelocity=   5.4
+[UnitConverter] Density factor(kg/m^3):           physDensity=    1000
+[UnitConverter] Mass factor(kg):                  physMass=       1e-15
+[UnitConverter] Viscosity factor(m^2/s):          physViscosity=  5.4e-06
+[UnitConverter] Force factor(N):                  physForce=      2.916e-08
+[UnitConverter] Pressure factor(N/m^2):           physPressure=   29160
+[UnitConverter] -------------------------------------------------------------
+[prepareLattice] Prepare Lattice ... OK
+[Timer] step=0; percent=0; passedTime=0.604; remTime=301999; MLUPs=0
+[LatticeStatistics] step=0; physT=0; maxCFL=1.49167e-154; avgEnergy=0; avgRho=1
+[LatticeStatistics] step=0; physT=0; maxCFL=1.49167e-154; avgEnergy=0; avgRho=0.918853
+[getResults] Numerical Contact angle: nan
+[getResults] Analytical contact angle: 100
+[Timer] step=1000; percent=0.2; passedTime=248.576; remTime=124039; MLUPs=4.48726
+[LatticeStatistics] step=1000; physT=0.000185185; maxCFL=0.00126226; avgEnergy=2.42709e-08; avgRho=1
+[LatticeStatistics] step=1000; physT=0.000185185; maxCFL=0.00126226; avgEnergy=2.42709e-08; avgRho=0.918915
+[getResults] Numerical Contact angle: 0.28836
+[getResults] Analytical contact angle: 100
+[Timer] step=2000; percent=0.4; passedTime=533.116; remTime=132746; MLUPs=3.91058
+[LatticeStatistics] step=2000; physT=0.00037037; maxCFL=0.00102115; avgEnergy=3.1735e-08; avgRho=1
+[LatticeStatistics] step=2000; physT=0.00037037; maxCFL=0.00102115; avgEnergy=3.1735e-08; avgRho=0.918898
+[getResults] Numerical Contact angle: nan
+[getResults] Analytical contact angle: 100

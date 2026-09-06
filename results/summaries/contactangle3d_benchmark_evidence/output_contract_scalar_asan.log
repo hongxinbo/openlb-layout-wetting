@@ -1,0 +1,93 @@
+
+    ┃
+    ┃  ┏━━━━┓      ▁▁▁▁                   ▁▁    ▁▁▁▁
+    ┃  ┃    ┃     ╱ ▁▁ ╲▁▁▁▁  ▁▁▁  ▁▁▁▁  ╱ ╱   ╱ ▁▁ ╲
+ ┏━━╋━┓┃    ┃    ╱ ╱ ╱ ╱ ▁▁ ╲╱ ▁ ╲╱ ▁▁ ╲╱ ╱   ╱ ╱▁╱ ╱
+ ┃  ┗━╋╋━━━━┻┓  ╱ ╱▁╱ ╱ ╱▁╱ ╱  ▁▁╱ ╱ ╱ ╱ ╱▁▁▁╱ ╱▁╱ ╱
+ ┃    ┃┃     ┃  ╲▁▁▁▁╱ ▁▁▁▁╱╲▁▁▁╱▁╱ ╱▁╱▁▁▁▁▁╱▁▁▁▁▁╱
+ ┗━━━━┛┃     ┃      ╱▁╱ ==========================>>
+       ┗━━━━━┛
+
+[initialize] Version  : 1.9.0-19-g3dedbdd2
+[initialize] Platform : CPU_SISD
+[initialize] Parallel : MPI
+[initialize] MPI      : 1 ranks
+[ThreadPool] Sucessfully initialized, numThreads=1
+=================================================================
+==25855==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x00016f2a2a08 at pc 0x000100b856f4 bp 0x00016f2a1e30 sp 0x00016f2a1e28
+WRITE of size 8 at 0x00016f2a2a08 thread T0
+    #0 0x000100b856f0 in olb::AnalyticalFfromSuperF3D<double, double>::operator()(double*, double const*) interpolationF3D.hh:316
+    #1 0x000100b84be0 in main contactangle3d_output_contract.cpp:19
+    #2 0x000198f42b94  (<unknown module>)
+
+Address 0x00016f2a2a08 is located in stack of thread T0 at offset 2312 in frame
+    #0 0x000100b84450 in main contactangle3d_output_contract.cpp:7
+
+  This frame has 17 object(s):
+    [32, 36) 'argc.addr'
+    [48, 56) 'argv.addr'
+    [80, 232) 'box' (line 9)
+    [304, 328) 'agg.tmp' (line 9)
+    [368, 392) 'ref.tmp' (line 9)
+    [432, 456) 'agg.tmp2' (line 9)
+    [496, 520) 'ref.tmp4' (line 9)
+    [560, 624) 'mesh' (line 10)
+    [656, 664) 'ref.tmp9' (line 10)
+    [688, 692) 'ref.tmp10' (line 10)
+    [704, 1736) 'lattice' (line 12)
+    [1872, 1968) 'phi' (line 13)
+    [2000, 2104) 'interpol' (line 14)
+    [2144, 2160) 'output' (line 15)
+    [2176, 2200) 'pos' (line 15)
+    [2240, 2264) 'ref.tmp27' (line 17)
+    [2304, 2312) 'scalar' (line 18) <== Memory access at offset 2312 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow interpolationF3D.hh:316 in olb::AnalyticalFfromSuperF3D<double, double>::operator()(double*, double const*)
+Shadow bytes around the buggy address:
+  0x00016f2a2780: 00 00 00 00 00 00 00 00 00 f2 f2 f2 f2 f2 f2 f2
+  0x00016f2a2800: f2 f2 f2 f2 f2 f2 f2 f2 f2 f2 00 00 00 00 00 00
+  0x00016f2a2880: 00 00 00 00 00 00 f2 f2 f2 f2 00 00 00 00 00 00
+  0x00016f2a2900: 00 00 00 00 00 00 00 f2 f2 f2 f2 f2 00 00 f2 f2
+  0x00016f2a2980: 00 00 00 f2 f2 f2 f2 f2 f8 f8 f8 f2 f2 f2 f2 f2
+=>0x00016f2a2a00: 00[f3]f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+  0x00016f2a2a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x00016f2a2b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x00016f2a2b80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x00016f2a2c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x00016f2a2c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==25855==ABORTING
+[hongxinbodeMacBook-Air:25855] *** Process received signal ***
+[hongxinbodeMacBook-Air:25855] Signal: Abort trap: 6 (6)
+[hongxinbodeMacBook-Air:25855] Signal code:  (0)
+[hongxinbodeMacBook-Air:25855] [ 0] 0   libsystem_platform.dylib            0x000000019931d6a4 _sigtramp + 56
+[hongxinbodeMacBook-Air:25855] [ 1] 0   libsystem_pthread.dylib             0x00000001992e3848 pthread_kill + 296
+[hongxinbodeMacBook-Air:25855] [ 2] 0   libsystem_c.dylib                   0x00000001991ecaf0 abort + 124
+[hongxinbodeMacBook-Air:25855] [ 3] 0   libclang_rt.asan_osx_dynamic.dylib  0x0000000101fa5aa0 _ZN11__sanitizer6AtexitEPFvvE + 0
+[hongxinbodeMacBook-Air:25855] [ 4] 0   libclang_rt.asan_osx_dynamic.dylib  0x0000000101fa51c0 _ZN11__sanitizer3DieEv + 108
+[hongxinbodeMacBook-Air:25855] [ 5] 0   libclang_rt.asan_osx_dynamic.dylib  0x0000000101f8916c _ZN6__asan16ErrorDescription5PrintEv + 0
+[hongxinbodeMacBook-Air:25855] [ 6] 0   libclang_rt.asan_osx_dynamic.dylib  0x0000000101f883c8 _ZN6__asan18ReportGenericErrorEmmmmbmjb + 1968
+[hongxinbodeMacBook-Air:25855] [ 7] 0   libclang_rt.asan_osx_dynamic.dylib  0x0000000101f89f7c __asan_report_store8 + 64
+[hongxinbodeMacBook-Air:25855] [ 8] 0   output_contract                     0x0000000100b856f4 _ZN3olb23AnalyticalFfromSuperF3DIddEclEPdPKd + 516
+[hongxinbodeMacBook-Air:25855] [ 9] 0   output_contract                     0x0000000100b84be4 main + 1952
+[hongxinbodeMacBook-Air:25855] [10] 0   dyld                                0x0000000198f42b98 start + 6076
+[hongxinbodeMacBook-Air:25855] *** End of error message ***
