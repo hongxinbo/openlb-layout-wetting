@@ -135,7 +135,18 @@ not a resolved 3-D sessile-droplet volume. Macro droplet + micro OAS scale
 separation is required; one-scale 20 nm macro+micro DNS remains rejected.
 No real OAS geometry or flow is changed by this diagnostic task.
 
-`NEXT = RESOLVE_3D_WETTING_FORMULATION` while the official reproduction is HOLD.
-Only a validated formulation can release `MACRO_PREPRESS_PERIODIC_DROPLET_BASELINE`.
-The current HOLD does not establish that the underlying well-balanced PDE model
-is unsuitable; the official diagnostic itself must first be made trustworthy.
+Historical unmodified-reporter evidence remains `OFFICIAL_EXAMPLE_REPRODUCTION_HOLD`.
+The corrected local observable resolves that diagnostic limitation:
+`CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`.
+
+`NEXT = PROJECT_WETTING_PARAMETER_ISOLATION`.
+
+This releases only the isolated sessile-droplet wetting component. It does not
+release a macro periodic cell, infer a 3-D droplet volume, or validate trapped
+air, mold motion, or OAS flow.
+
+The isolation gate is now `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`: B1
+validates the provisional 60-degree wetting component, and B2 validates the
+frozen converter-V1 physical-surface-tension mapping. `NEXT =
+RESOLVE_MACRO_DROPLET_VOLUME_AND_PRECONTACT_GAP`. This does not authorize the
+macro periodic model because both physical inputs remain unknown.

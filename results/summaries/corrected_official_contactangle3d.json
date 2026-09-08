@@ -9,7 +9,8 @@
     "libolbcore_sha256": "9429ca298beffaa218c05c79cf3594c775fde6ae9c74db5b978bf40cca74d729",
     "executable_sha256": "42e112b5cfe8e28a5dc08bf12cafa87419bb1fd41bce57ca45d93834a4e3f8c6"
   },
-  "command": "scripts/run_corrected_contactangle3d.sh /Users/hongxinbo/ResearchData/openlb-layout-wetting/contactangle3d_isolation/A0C_CORRECTED_OFFICIAL_DEFAULT",
+  "runner_api": "scripts/run_corrected_contactangle3d.sh CORRECTED_EXTERNAL_BUILD_DIRECTORY NEW_EXTERNAL_OUTPUT_DIRECTORY [CONTACTANGLE3D_OPTION ...]",
+  "execution_command": "/Users/hongxinbo/ResearchData/openlb-layout-wetting/contactangle3d_isolation/A0C_build_v2/contactAngle3d_corrected",
   "mpi_ranks": 1,
   "explicit_overrides": [],
   "runtime_seconds": 6244.776,

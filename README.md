@@ -14,6 +14,11 @@
   `docs/CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md`、`results/summaries/` 和
   `results/tables/`。历史组件 FAIL 标签保持不变；当前 NEXT 为
   `PROJECT_WETTING_PARAMETER_ISOLATION`，尚未启动任何项目参数案例。
+- PR #6 参数隔离：`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`。B1 的 60 度
+  科学润湿门通过（其超出原运行预算单列为执行政策偏差）；冻结 phi≈0 液滴转换器后，
+  B2 用 `sigma_LB=0.002073733333` 映射 0.0309 N/m，并于 101000 步收敛到
+  61.7938 度。NEXT 为 `RESOLVE_MACRO_DROPLET_VOLUME_AND_PRECONTACT_GAP`；没有
+  启动宏观周期单元、真实空气或压印案例。
 
 
 - 项目骨架：已建立。
