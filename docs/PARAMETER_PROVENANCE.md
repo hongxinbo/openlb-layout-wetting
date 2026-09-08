@@ -20,7 +20,7 @@
 | 墙体材料 | null | UNKNOWN | 决定接触角和滑移 |
 | 温度 | 293 K | OF350_TRANSFER_BASELINE | `0.org/T` |
 | 接触角 | 60 deg, liquid-measured | LITERATURE_ASSUMPTION | 不是本项目实测；30/60/85/120 deg 敏感性 |
-| 驱动方式 | moving upper film -> pressure-driven reduced plan-view | CONFIRMED_GROUP_INPUT | 上模板向下挤压上方液膜进入固定深度沟槽 |
+| 驱动方式 | top punch downward motion | REFERENCE / transferred schedule evidence | OF350 的 1 um、-0.935 um/1 s quintic 仅作首个数值组件参考，不是最终 EC1 轨迹 |
 | 气体出口 | reduced vented gas | MODEL_ASSUMPTION | 不声明复现OF350 local perfectGas |
 | 理想狭缝渗透率 | 1.2e-15 m2 | DERIVED_START | `b^2/12`, `b=120 nm` |
 | 理想逆渗透率 | 8.3e14 m-2 | DERIVED_START | `12/b^2` |

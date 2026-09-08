@@ -1,6 +1,7 @@
 # 验证计划
 
-> 2026-09-03: V0--V7 保留为组件/历史验证证据；生产模型的当前顺序由
+> V0--V8 保留为组件/历史验证证据。当前生产顺序为：单相/自由表面公式审计、
+> 首周期固定几何、移动冲头单液体填充、再到空气/困气与两相验证；
 > `docs/ACTIVE_PROJECT_SCOPE.md`、`docs/OPENLB_3D_API_AUDIT.md` 和
 > `docs/3D_GEOMETRY_AUDIT.md` 控制。任何二维前沿只能是
 > `PRELIMINARY_REDUCED_MODEL` 指标。

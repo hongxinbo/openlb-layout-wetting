@@ -139,14 +139,19 @@ Historical unmodified-reporter evidence remains `OFFICIAL_EXAMPLE_REPRODUCTION_H
 The corrected local observable resolves that diagnostic limitation:
 `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`.
 
-`NEXT = PROJECT_WETTING_PARAMETER_ISOLATION`.
+Historical text above is retained as evidence. The active next gate is
+`FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`, preceded by a source-backed
+single-phase/free-surface and moving-boundary formulation audit.
 
 This releases only the isolated sessile-droplet wetting component. It does not
 release a macro periodic cell, infer a 3-D droplet volume, or validate trapped
 air, mold motion, or OAS flow.
 
-The isolation gate is now `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`: B1
+The isolation gate is `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`: B1
 validates the provisional 60-degree wetting component, and B2 validates the
 frozen converter-V1 physical-surface-tension mapping. `NEXT =
-RESOLVE_MACRO_DROPLET_VOLUME_AND_PRECONTACT_GAP`. This does not authorize the
-macro periodic model because both physical inputs remain unknown.
+FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`. The active sequence is:
+validated wetting component -> first-period single-phase formulation audit ->
+fixed first-period geometry -> moving punch + liquid filling -> air/trapped-air
+model -> two-phase pressing -> OAS/layout comparison. Air is deferred so that
+moving-punch liquid filling is isolated first.
