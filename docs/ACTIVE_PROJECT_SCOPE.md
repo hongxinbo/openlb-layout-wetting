@@ -4,17 +4,20 @@ This document is the active scope authority for PR #6 on
 `codex/3d-periodic-prepress`. Historical PR #5 geometry and open-boundary
 investigations remain evidence, not the active physical stack.
 
-**Active stack:** patterned TOP mold + air gap + droplet(s) on a flat substrate
-+ flat bottom substrate. Pre-press has physical x/y periodicity, fixed walls,
-no lateral liquid inlet, no gas vent and no mold motion. Later pressing requires
-a moving top mold and a separately validated trapped/compressed-air closure.
+**Active stack:** first-period, single-liquid free-surface/void formulation
+audit for a patterned TOP mold moving downward above a flat substrate. The
+cavities open downward; their fixed physical depth is 100 um. This stage has no
+physical air, trapped-air closure, macro droplet, lateral inlet, or layout
+comparison. A free-surface implementation may use an internal cell type named
+`Gas` to denote a numerical void; that is not a physical liquid/air model.
 
-The corrected local diagnostic has now validated the official 100-degree 3-D
-wetting benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at
-step 24000 to 99.4454 degrees, independently checked as 99.447840 degrees.
-The next gate is `PROJECT_WETTING_PARAMETER_ISOLATION`; no project parameter
-substitution has been run. See `CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md` and
-`results/summaries/corrected_official_contactangle3d.json`.
+The corrected local diagnostic validated the official 100-degree 3-D wetting
+benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
+24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
+project substitutions then passed B1/B2 as
+`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The active next gate is
+`FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`, beginning with
+`SINGLE_PHASE_MOVING_PUNCH_FORMULATION_AUDIT.md`.
 
 ## Retained
 
@@ -74,17 +77,18 @@ These are not declared scientifically false; they are deferred research work.
 The sequence above records PR #5 history and is no longer the active physical
 route after the corrected top-mold stack was accepted.
 
-## Active roadmap after the top-mold correction
+## Active roadmap after wetting isolation
 
-1. Retain the OpenLB 3-D API and geometry audits as provenance.
-2. Validate a stable 3-D sessile droplet with physical x/y periodicity and
-   fixed wetting walls; no inlet, outlet, vent, or mold motion.
-3. Build the macro pre-press periodic droplet model only after the component
-   passes.
-4. Validate a moving patterned top mold together with a trapped/compressible-air
-   closure.
-5. Couple the macro state to the micro OAS squeeze/filling model.
-6. Compare layouts only after the preceding gates pass.
+1. Retain the OpenLB 3-D API, geometry, and completed wetting audits as
+   provenance.
+2. Audit a source-backed first-period single-liquid free-surface/void and
+   moving-boundary formulation.
+3. Only after that audit passes, construct the fixed representative first-period
+   geometry and validate M0 static identity.
+4. Validate M1 flat moving-wall displacement accounting, then M2 patterned
+   first-period liquid entry.
+5. Add air/trapped-air physics and validate the two-phase pressing model.
+6. Only then compare OAS/layout variants.
 
 `MINIMAL_240_SMOKE_PASS` is a numerical pipeline/geometry/stability result.
 Its reported inventory residual is diagnostic, not a formal conservation gate;

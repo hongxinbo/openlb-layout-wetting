@@ -2,9 +2,10 @@
 
 这是研究14个OAS微/纳米版图中液体浸润与压力挤入过程的长期Git项目。
 
-当前物理堆叠已更正为：上方图案化模具、空气间隙、平基底上的液滴、下方平基底。
-本阶段仅做固定模具预压松弛，x/y 周期，无横向入口、压差或排气口；模具下压和困气
-压缩留给后续。旧二维横向模型只作为 `PRELIMINARY_REDUCED_MODEL` 保留。
+当前活动门是首周期单液体自由表面/数值空隙与移动上模具的公式 API 审计。上方图案化
+模具向下运动、下方为平基底、模具腔向下开口且深度固定为 100 um；本阶段不引入物理
+空气、困气、宏观液滴、全尺寸 EC1 或版图比较。旧二维模型只作为
+`PRELIMINARY_REDUCED_MODEL` 保留。
 
 ## 当前状态
 
@@ -12,15 +13,13 @@
   官方求解器物理的前提下，项目本地修正了诊断缓冲区和顶部坐标；100 度 A0C 于
   24000 步收敛至 99.4454 度，独立圆拟合为 99.447840 度。详见
   `docs/CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md`、`results/summaries/` 和
-  `results/tables/`。历史组件 FAIL 标签保持不变；当前 NEXT 为
-  `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`。NEXT 为
+  `results/tables/`。历史组件 FAIL 标签保持不变；参数隔离已通过，当前 NEXT 为
   `FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`，须先完成单相自由表面与
   移动固壁 API 审计。
 - PR #6 参数隔离：`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`。B1 的 60 度
   科学润湿门通过（其超出原运行预算单列为执行政策偏差）；冻结 phi≈0 液滴转换器后，
   B2 用 `sigma_LB=0.002073733333` 映射 0.0309 N/m，并于 101000 步收敛到
-  61.7938 度。NEXT 为 `RESOLVE_MACRO_DROPLET_VOLUME_AND_PRECONTACT_GAP`；没有
-  启动宏观周期单元、真实空气或压印案例。
+  61.7938 度。宏观周期单元、真实空气和压印案例均未启动。
 
 
 - 项目骨架：已建立。
@@ -82,9 +81,10 @@ $HOME/ResearchData/openlb-layout-wetting/
 OpenLB 3-D API审计
   -> 3-D几何方向审计
   -> x/y周期的3-D静置液滴润湿组件验证
-  -> 宏观预压周期液滴模型
-  -> 移动图案化上模具与困气模型
-  -> 微观OAS挤压/填充模型
+  -> 首周期单液体自由表面/移动冲头公式审计
+  -> 固定首周期几何与M0静态身份检查
+  -> M1平壁移动与M2图案化首周期液体填充
+  -> 空气/困气两相压印模型
   -> 版图比较
 ```
 
