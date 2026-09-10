@@ -18,7 +18,7 @@ benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
 24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
 project substitutions then passed B1/B2 as
 `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The active next gate is
-`CONTINUOUS_SINGLE_PHASE_MOVING_BOUNDARY_AUDIT`, while
+`RESOLVE_SOURCE_BACKED_CONTINUOUS_SUBGRID_Q_UPDATE_API`, while
 `FIXED_GAP_DRIVING_MODE_HOLD_INPUT` remains open for Track A.
 
 ## Retained
