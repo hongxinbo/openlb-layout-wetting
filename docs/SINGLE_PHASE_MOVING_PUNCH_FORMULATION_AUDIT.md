@@ -2,7 +2,7 @@
 
 ## Decision
 
-`SINGLE_PHASE_FILLING_FORMULATION_HOLD_API`
+`CONTINUOUS_MOVING_FREESURFACE_ROUTE_HOLD_API`
 
 Audit target: installed OpenLB `3dedbdd2c4d5e911eda3784643dd419b211951d0`
 at `$OPENLB_ROOT` (locally `/Users/hongxinbo/Documents/openlb`). No OpenLB
@@ -18,8 +18,10 @@ or lifecycle API that combines all of the following in one calculation:
    each solid/topology change; and
 4. a conservative displaced-volume and liquid-inventory accounting procedure.
 
-Accordingly, M0, M1, and M2 are **not run**. A static capability is insufficient
-evidence for a production moving-punch filling baseline.
+This HOLD applies only to one running calculation with continuously changing
+solid occupancy and free-surface state. Senior guidance now selects a separate
+active route: independently initialized, fixed-geometry cases at a sequence of
+punch gaps. It avoids in-run topology changes and is not blocked by this result.
 
 ## Terminology and project boundary
 
@@ -33,7 +35,7 @@ or other two-component model is therefore not called single phase here.
 
 | Candidate | Initially unfilled cavity | Explicit physical gas | Liquid inventory | Moving solid and topology | Project decision | Source evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| OpenLB 3-D free surface / void | Internal `Gas` and `Interface` cell types with `MASS` and `EPSILON` fields | No; internal `Gas` is numerical void | The built-in stages redistribute excess mass while converting interface/fluid/void states; conservation has not been established for moving-solid changes | 3-D free-surface stages exist, but no audited source example couples them to changing solid material occupancy or reinitializes the affected fields | **HOLD** for moving punch | `examples/freeSurface/fallingDrop3d`, `breakingDam3d`; `src/dynamics/freeSurfacePostProcessor3D.hh` |
+| OpenLB 3-D free surface / void | Internal `Gas` and `Interface` cell types with `MASS` and `EPSILON` fields | No; internal `Gas` is numerical void | The built-in stages redistribute excess mass while converting interface/fluid/void states; conservation has not been established for moving-solid changes | 3-D free-surface stages exist, but no audited source example couples them to changing solid material occupancy or reinitializes the affected fields | **HOLD** only for the continuous moving/free-surface route | `examples/freeSurface/fallingDrop3d`, `breakingDam3d`; `src/dynamics/freeSurfacePostProcessor3D.hh` |
 | Incompressible one-fluid without free surface | Cannot represent an arbitrary empty cavity | No | Defined only if the entire domain is liquid, which defeats groove-filling | A wall velocity may be prescribed, but there is no liquid/void front | **REJECT** | Navier--Stokes examples and boundary API do not add a void state |
 | Equal-density Cahn-Hilliard / phase field | A second order-parameter phase fills the cavity | Yes, numerically a second phase | Depends on the two-phase formulation | Outside this requested one-liquid baseline and cannot silently stand for absent air | **REJECT** | Existing wetting component is a distinct two-phase validation, not this baseline |
 | FSI / porous moving embedded element | No empty-cavity representation by itself | No | Single-fluid flow only | `taylorCouette3d` has moving-wall-model/FSI fields, but does not use the FreeSurface descriptor, fields, setup, or free-surface stages | **HOLD** as a partial capability only | `examples/fsi/taylorCouette3d/taylorCouette3d.cpp` |
@@ -86,12 +88,14 @@ the unverified moving/free-surface physics that this task forbids inventing.
 
 ## Smallest justified next option
 
-Obtain or develop an OpenLB-maintainer-reviewed integration example/API for a
-3-D free-surface lattice with a prescribed moving solid and explicit
-conservative cell-activation/deactivation handling. Once that source-backed
-path exists, repeat this audit and then run M0, M1, and M2 in order. Until then:
+For a continuous free-surface route, obtain or develop an
+OpenLB-maintainer-reviewed integration example/API for a 3-D free-surface
+lattice with a prescribed moving solid and explicit conservative
+cell-activation/deactivation handling. The current group route instead starts
+with independently initialized static gaps; it must pass its own M0/M1/M2 gates
+before free-surface or two-phase work. For the continuous route:
 
-- `FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE = HOLD`;
+- `CONTINUOUS_MOVING_FREESURFACE_ROUTE = HOLD`;
 - `DROPLET_VOLUME_STATUS = UNKNOWN / DEFERRED_TO_LATER_MULTIPHASE_MODEL`;
 - `PRECONTACT_GAP_STATUS = UNKNOWN / REFERENCE_VALUE_AVAILABLE`;
 - no OF350 reference motion is promoted to a physical EC1 schedule; and

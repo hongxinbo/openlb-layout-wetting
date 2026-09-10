@@ -4,20 +4,21 @@ This document is the active scope authority for PR #6 on
 `codex/3d-periodic-prepress`. Historical PR #5 geometry and open-boundary
 investigations remain evidence, not the active physical stack.
 
-**Active stack:** first-period, single-liquid free-surface/void formulation
-audit for a patterned TOP mold moving downward above a flat substrate. The
-cavities open downward; their fixed physical depth is 100 um. This stage has no
-physical air, trapped-air closure, macro droplet, lateral inlet, or layout
-comparison. A free-surface implementation may use an internal cell type named
-`Gas` to denote a numerical void; that is not a physical liquid/air model.
+**Active stack:** quasi-static, single-phase, fixed-gap right-angle validation.
+Each punch position is a new, independently initialized static Eulerian lattice:
+geometry and Bouzidi links are built before lattice initialization and remain
+frozen during that case. The patterned TOP punch is above a flat substrate, and
+its cavities open downward; physical cavity depth remains 100 um. This stage
+has no free surface, wetting dynamics, droplet, physical air, trapped-air
+closure, macro droplet, lateral inlet, or layout comparison.
 
 The corrected local diagnostic validated the official 100-degree 3-D wetting
 benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
 24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
 project substitutions then passed B1/B2 as
 `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The active next gate is
-`FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`, beginning with
-`SINGLE_PHASE_MOVING_PUNCH_FORMULATION_AUDIT.md`.
+`QUASI_STATIC_SINGLE_PHASE_FIXED_GAP_BASELINE`, beginning with a source-backed
+Bouzidi/q audit and static right-angle M0 geometry regression.
 
 ## Retained
 
@@ -81,13 +82,12 @@ route after the corrected top-mold stack was accepted.
 
 1. Retain the OpenLB 3-D API, geometry, and completed wetting audits as
    provenance.
-2. Audit a source-backed first-period single-liquid free-surface/void and
-   moving-boundary formulation.
-3. Only after that audit passes, construct the fixed representative first-period
-   geometry and validate M0 static identity.
-4. Validate M1 flat moving-wall displacement accounting, then M2 patterned
-   first-period liquid entry.
-5. Add air/trapped-air physics and validate the two-phase pressing model.
+2. Validate a single-phase fixed-gap right-angle geometry and its static
+   Bouzidi links (M0).
+3. After the group confirms the fixed-gap driving mode, validate M1
+   single-phase hydrodynamics and then a quasi-static fixed-gap sweep (M2).
+4. Move to one/few-period patterned geometry only after those gates pass.
+5. Add free surface/wetting/droplet/air, then validate two-phase filling.
 6. Only then compare OAS/layout variants.
 
 `MINIMAL_240_SMOKE_PASS` is a numerical pipeline/geometry/stability result.
@@ -143,9 +143,11 @@ Historical unmodified-reporter evidence remains `OFFICIAL_EXAMPLE_REPRODUCTION_H
 The corrected local observable resolves that diagnostic limitation:
 `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`.
 
-Historical text above is retained as evidence. The active next gate is
-`FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`, preceded by a source-backed
-single-phase/free-surface and moving-boundary formulation audit.
+Historical text above is retained as evidence. The continuous moving/free-surface
+limitation is `CONTINUOUS_MOVING_FREESURFACE_ROUTE_HOLD_API`. The active next
+gate is `QUASI_STATIC_SINGLE_PHASE_FIXED_GAP_BASELINE`: static geometry per
+gap, no in-run material relabeling, free-surface reconstruction, or
+boundary-link rebuilding.
 
 This releases only the isolated sessile-droplet wetting component. It does not
 release a macro periodic cell, infer a 3-D droplet volume, or validate trapped
@@ -154,8 +156,7 @@ air, mold motion, or OAS flow.
 The isolation gate is `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`: B1
 validates the provisional 60-degree wetting component, and B2 validates the
 frozen converter-V1 physical-surface-tension mapping. `NEXT =
-FIRST_PERIOD_SINGLE_PHASE_MOVING_PUNCH_BASELINE`. The active sequence is:
-validated wetting component -> first-period single-phase formulation audit ->
-fixed first-period geometry -> moving punch + liquid filling -> air/trapped-air
-model -> two-phase pressing -> OAS/layout comparison. Air is deferred so that
-moving-punch liquid filling is isolated first.
+QUASI_STATIC_SINGLE_PHASE_FIXED_GAP_BASELINE`. The active sequence is:
+validated wetting/material mapping -> single-phase fixed-gap right-angle
+validation -> quasi-static gap sweep -> one/few-period patterned geometry ->
+free-surface/wetting/droplet/air -> two-phase filling -> layout comparison.
