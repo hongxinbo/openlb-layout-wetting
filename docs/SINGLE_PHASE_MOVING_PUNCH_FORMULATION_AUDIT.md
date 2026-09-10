@@ -19,9 +19,10 @@ or lifecycle API that combines all of the following in one calculation:
 4. a conservative displaced-volume and liquid-inventory accounting procedure.
 
 This HOLD applies only to one running calculation with continuously changing
-solid occupancy and free-surface state. Senior guidance now selects a separate
-active route: independently initialized, fixed-geometry cases at a sequence of
-punch gaps. It avoids in-run topology changes and is not blocked by this result.
+solid occupancy and free-surface state. Fixed-geometry gap cases remain a useful
+component validation route, but not the final pressing model. The final target
+remains a continuous moving punch; its simpler single-phase boundary mechanics
+are separately audited in `CONTINUOUS_SINGLE_PHASE_MOVING_BOUNDARY_AUDIT.md`.
 
 ## Terminology and project boundary
 

@@ -3,6 +3,13 @@
   "case_id": "quasi_static_M0_right_angle",
   "stage": "STATIC_RIGHT_ANGLE_GEOMETRY",
   "driving_mode": "UNKNOWN",
+  "supported_driving_modes": [
+    "UNKNOWN",
+    "PRESSURE_DRIVEN",
+    "MOVING_WALL_VELOCITY",
+    "BODY_FORCE",
+    "OTHER_GROUP_METHOD"
+  ],
   "geometry_status": "NUMERICAL_COMPONENT_GEOMETRY",
   "claim_boundary": "Static geometry and Bouzidi-link regression only; no flow, pressure, wall motion, free surface, wetting, droplet, or air physics.",
   "geometry": {

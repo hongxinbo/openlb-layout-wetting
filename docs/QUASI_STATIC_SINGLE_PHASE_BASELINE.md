@@ -11,6 +11,9 @@ The route first validates single-phase fixed-gap hydrodynamics. Free surface,
 wetting dynamics, droplets, physical air, and trapped-air physics are later
 stages and are absent here.
 
+`QUASI_STATIC_FIXED_GAP_ROLE = COMPONENT_VALIDATION_ONLY`. It does not replace
+the final physical target, `FINAL_PRESSING_TARGET = CONTINUOUS_MOVING_PUNCH`.
+
 ## M0 result
 
 `QUASI_STATIC_M0_GEOMETRY_PASS`

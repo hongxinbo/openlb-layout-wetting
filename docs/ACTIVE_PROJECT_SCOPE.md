@@ -4,21 +4,22 @@ This document is the active scope authority for PR #6 on
 `codex/3d-periodic-prepress`. Historical PR #5 geometry and open-boundary
 investigations remain evidence, not the active physical stack.
 
-**Active stack:** quasi-static, single-phase, fixed-gap right-angle validation.
-Each punch position is a new, independently initialized static Eulerian lattice:
-geometry and Bouzidi links are built before lattice initialization and remain
-frozen during that case. The patterned TOP punch is above a flat substrate, and
-its cavities open downward; physical cavity depth remains 100 um. This stage
-has no free surface, wetting dynamics, droplet, physical air, trapped-air
-closure, macro droplet, lateral inlet, or layout comparison.
+**Active stack:** two single-phase component tracks. Track A is quasi-static
+fixed-gap right-angle validation; each punch position is a new static Eulerian
+lattice with geometry and Bouzidi links frozen after initialization. Track B
+audits continuous moving-boundary mechanics before any interface coupling.
+The patterned TOP punch is above a flat substrate and cavities open downward;
+physical cavity depth remains 100 um. Neither track has free surface, wetting
+dynamics, droplet, physical air, trapped-air closure, macro droplet, lateral
+inlet, or layout comparison.
 
 The corrected local diagnostic validated the official 100-degree 3-D wetting
 benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
 24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
 project substitutions then passed B1/B2 as
 `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The active next gate is
-`QUASI_STATIC_SINGLE_PHASE_FIXED_GAP_BASELINE`, beginning with a source-backed
-Bouzidi/q audit and static right-angle M0 geometry regression.
+`CONTINUOUS_SINGLE_PHASE_MOVING_BOUNDARY_AUDIT`, while
+`FIXED_GAP_DRIVING_MODE_HOLD_INPUT` remains open for Track A.
 
 ## Retained
 
@@ -82,11 +83,12 @@ route after the corrected top-mold stack was accepted.
 
 1. Retain the OpenLB 3-D API, geometry, and completed wetting audits as
    provenance.
-2. Validate a single-phase fixed-gap right-angle geometry and its static
-   Bouzidi links (M0).
-3. After the group confirms the fixed-gap driving mode, validate M1
-   single-phase hydrodynamics and then a quasi-static fixed-gap sweep (M2).
-4. Move to one/few-period patterned geometry only after those gates pass.
+2. Track A: retain M0 and, after group driving-mode confirmation, validate M1
+   single-phase hydrodynamics and the M2 quasi-static gap sequence.
+3. Track B: audit and validate continuous subgrid moving-wall q/velocity
+   mechanics before considering topology-changing motion.
+4. Move to one/few-period patterned geometry only after both component tracks
+   have source-backed conservative paths.
 5. Add free surface/wetting/droplet/air, then validate two-phase filling.
 6. Only then compare OAS/layout variants.
 
@@ -144,10 +146,12 @@ The corrected local observable resolves that diagnostic limitation:
 `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`.
 
 Historical text above is retained as evidence. The continuous moving/free-surface
-limitation is `CONTINUOUS_MOVING_FREESURFACE_ROUTE_HOLD_API`. The active next
-gate is `QUASI_STATIC_SINGLE_PHASE_FIXED_GAP_BASELINE`: static geometry per
-gap, no in-run material relabeling, free-surface reconstruction, or
-boundary-link rebuilding.
+limitation is `CONTINUOUS_MOVING_FREESURFACE_ROUTE_HOLD_API`. Fixed-gap work is
+`COMPONENT_VALIDATION_ONLY`; the final pressing target remains
+`CONTINUOUS_MOVING_PUNCH`. The current Track-B result is
+`CONTINUOUS_SUBGRID_MOVING_WALL_HOLD_API`, and the next required evidence is a
+source-backed continuous q-update lifecycle. Track A retains
+`FIXED_GAP_DRIVING_MODE_HOLD_INPUT`.
 
 This releases only the isolated sessile-droplet wetting component. It does not
 release a macro periodic cell, infer a 3-D droplet volume, or validate trapped
@@ -156,7 +160,8 @@ air, mold motion, or OAS flow.
 The isolation gate is `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`: B1
 validates the provisional 60-degree wetting component, and B2 validates the
 frozen converter-V1 physical-surface-tension mapping. `NEXT =
-QUASI_STATIC_SINGLE_PHASE_FIXED_GAP_BASELINE`. The active sequence is:
-validated wetting/material mapping -> single-phase fixed-gap right-angle
-validation -> quasi-static gap sweep -> one/few-period patterned geometry ->
+CONTINUOUS_SINGLE_PHASE_MOVING_BOUNDARY_AUDIT`. The active sequence is:
+validated wetting/material mapping -> fixed-gap and continuous-moving-boundary
+single-phase component validation -> quasi-static gap sweep and source-backed
+continuous topology path -> one/few-period patterned geometry ->
 free-surface/wetting/droplet/air -> two-phase filling -> layout comparison.
