@@ -2,7 +2,7 @@
 
 ## Decision
 
-`RESOLVED_MOVING_PUNCH_ROUTE_HOLD_API`
+`FORCE_DRIVEN_RESOLVED_PARTICLE_EXAMPLES_DO_NOT_ESTABLISH_PRESCRIBED_TRAJECTORY`
 
 `NEXT = RESOLVE_SOURCE_BACKED_PRESCRIBED_RESOLVED_PUNCH_TRAJECTORY_API`
 
@@ -13,11 +13,11 @@ FreeSurface, droplet, wetting, gas, or OAS-punch case was built or run. The
 accepted wetting isolation, M0 geometry result, and both ordinary-Bouzidi HOLDs
 remain unchanged.
 
-The checkout contains useful, distinct moving-object facilities. It does not
-contain an audited 3-D example or public lifecycle that prescribes a rigid
-object's complete translation history while keeping its distributed resolved
-copies synchronized and then couples that object to the liquid. This missing
-hard gate prevents R0.
+The checkout contains useful, distinct moving-object facilities. This audit's
+force-driven resolved-particle examples do not establish a prescribed
+trajectory. The later centrifugal-pump-specific audit documents a prescribed
+HLBM rotation route separately; it does not erase this result or establish the
+required translating-punch re-embedding lifecycle.
 
 ## Separate mechanisms in the installed source
 

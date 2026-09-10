@@ -18,7 +18,7 @@ benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
 24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
 project substitutions then passed B1/B2 as
 `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The active next gate is
-`RESOLVE_SOURCE_BACKED_PRESCRIBED_RESOLVED_PUNCH_TRAJECTORY_API`, while
+`RESOLVE_SOURCE_BACKED_TRANSLATING_REFERENCE_LATTICE_REEMBEDDING_API`, while
 `FIXED_GAP_DRIVING_MODE_HOLD_INPUT` remains open for Track A.
 
 ## Retained
@@ -85,9 +85,10 @@ route after the corrected top-mold stack was accepted.
    provenance.
 2. Track A: retain M0 and, after group driving-mode confirmation, validate M1
    single-phase hydrodynamics and the M2 quasi-static gap sequence.
-3. Track B: retain the ordinary-Bouzidi q/topology HOLDs, then obtain a
-   source-backed prescribed resolved-particle trajectory lifecycle before any
-   continuous single-phase punch component.
+3. Track B: retain the ordinary-Bouzidi q/topology HOLDs. The centrifugal-pump
+   HLBM route proves prescribed rotation, but requires a source-backed
+   translating-reference-lattice re-embedding lifecycle before any continuous
+   single-phase punch component.
 4. Move to one/few-period patterned geometry only after both component tracks
    have source-backed conservative paths.
 5. Add free surface/wetting/droplet/air, then validate two-phase filling.
@@ -152,12 +153,14 @@ limitation is `CONTINUOUS_MOVING_FREESURFACE_ROUTE_HOLD_API`. Fixed-gap work is
 `CONTINUOUS_MOVING_PUNCH`. The ordinary Track-B results remain
 `CONTINUOUS_SUBGRID_MOVING_WALL_HOLD_API` and
 `CONTINUOUS_TOPOLOGY_CHANGING_BOUNDARY_HOLD_API`. The resolved-object audit
-adds `RESOLVED_MOVING_PUNCH_ROUTE_HOLD_API`: HLBM/resolved particles avoid
-material relabeling by applying fixed-lattice porous coupling, and arbitrary
-3-D shapes are source-backed, but no installed 3-D example validates externally
-prescribed translation, zero rotation, and parallel footprint synchronization.
-The next required evidence is
-`RESOLVE_SOURCE_BACKED_PRESCRIBED_RESOLVED_PUNCH_TRAJECTORY_API`. Track A
+scopes the generic resolved-particle evidence as
+`FORCE_DRIVEN_RESOLVED_PARTICLE_EXAMPLES_DO_NOT_ESTABLISH_PRESCRIBED_TRAJECTORY`.
+`centrifugalPump3d` additionally proves external HLBM rotation and reaction
+torque measurement without force feedback into the trajectory. It does not
+prove translation: `ELEMENT_U_TRANSLATION` supplies wall velocity only and
+`UpdatePorosityO` does not scan untagged newly reached cells. The active result
+is `PRESCRIBED_TRANSLATION_HOLD_API`; the next required evidence is
+`RESOLVE_SOURCE_BACKED_TRANSLATING_REFERENCE_LATTICE_REEMBEDDING_API`. Track A
 retains `FIXED_GAP_DRIVING_MODE_HOLD_INPUT`.
 
 This releases only the isolated sessile-droplet wetting component. It does not

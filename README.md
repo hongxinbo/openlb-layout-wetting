@@ -15,10 +15,11 @@
   24000 步收敛至 99.4454 度，独立圆拟合为 99.447840 度。详见
   `docs/CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md`、`results/summaries/` 和
   `results/tables/`。历史组件 FAIL 标签保持不变；参数隔离已通过，当前 NEXT 为
-  `RESOLVE_SOURCE_BACKED_PRESCRIBED_RESOLVED_PUNCH_TRAJECTORY_API`；固定间隙 M0
-  已通过，但 M1 仍等待组内驱动方式确认。resolved-particle/HLBM 源码具有固定格点的
-  多孔/浸没耦合和任意形状能力，却没有审计到 3-D 外部规定平移、零转动及跨 cuboid
-  同步的完整例程，故 `RESOLVED_MOVING_PUNCH_ROUTE_HOLD_API`；未构建或运行 R0。
+  `RESOLVE_SOURCE_BACKED_TRANSLATING_REFERENCE_LATTICE_REEMBEDDING_API`；固定间隙
+  M0 已通过，但 M1 仍等待组内驱动方式确认。centrifugalPump3d 已证明 HLBM 转子的
+  外部规定旋转和反力矩仅记录、不反馈轨迹；但其 `ELEMENT_U_TRANSLATION` 只设置壁速度，
+  不移动 reference-porosity footprint，且更新算子不扫描新进入的未标记格点。因此
+  `PRESCRIBED_TRANSLATION_HOLD_API`，未释放连续冲头路线，亦未构建或运行 R0。
 - PR #6 参数隔离：`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`。B1 的 60 度
   科学润湿门通过（其超出原运行预算单列为执行政策偏差）；冻结 phi≈0 液滴转换器后，
   B2 用 `sigma_LB=0.002073733333` 映射 0.0309 N/m，并于 101000 步收敛到
