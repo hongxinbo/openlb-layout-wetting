@@ -17,12 +17,12 @@ The corrected local diagnostic validated the official 100-degree 3-D wetting
 benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
 24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
 project substitutions then passed B1/B2 as
-`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The translating reference-lattice
-design is now a project-local extension in validation:
-`PRESCRIBED_TRANSLATION_PROJECT_EXTENSION_IN_VALIDATION`. Its official static
-P0 parity passes, but real multi-cuboid overlap inspection is
-`TRANSLATING_REEMBEDDING_COMMUNICATION_HOLD`; therefore `NEXT =
-RESOLVE_TRANSLATING_REEMBEDDING_COMMUNICATION`. Meanwhile
+`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The project-local translating
+reference-lattice writer now passes official static parity and serial
+multi-cuboid field communication as `TRANSLATING_REEMBEDDING_RUNTIME_PASS`.
+`RESOLVED_MOVING_PUNCH_ROUTE_PASS_SINGLE_PHASE` remains unreleased because no
+hydrodynamic collision/stream validation has run. `NEXT =
+BUILD_R0A_PRESCRIBED_LATERAL_TRANSLATION_HYDRODYNAMIC_COMPONENT`. Meanwhile
 `FIXED_GAP_DRIVING_MODE_HOLD_INPUT` remains open for Track A.
 
 ## Retained
@@ -163,8 +163,8 @@ scopes the generic resolved-particle evidence as
 torque measurement without force feedback into the trajectory. It does not
 prove translation: `ELEMENT_U_TRANSLATION` supplies wall velocity only and
 `UpdatePorosityO` does not scan untagged newly reached cells. The active result
-is `PRESCRIBED_TRANSLATION_PROJECT_EXTENSION_IN_VALIDATION`; the next required
-evidence is `RESOLVE_TRANSLATING_REEMBEDDING_COMMUNICATION`. Track A
+is `TRANSLATING_REEMBEDDING_RUNTIME_PASS`; the next required evidence is
+`BUILD_R0A_PRESCRIBED_LATERAL_TRANSLATION_HYDRODYNAMIC_COMPONENT`. Track A
 retains `FIXED_GAP_DRIVING_MODE_HOLD_INPUT`.
 
 This releases only the isolated sessile-droplet wetting component. It does not

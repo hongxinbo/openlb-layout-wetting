@@ -1,0 +1,30 @@
+{
+  "root_cause": "TRANSLATING_REEMBEDDING_COMMUNICATION_DIRTY_FLAG_ROOT_CAUSE_PASS",
+  "guarded_full_overlap_mismatch_components": [0, 0, 96],
+  "representative_stale_shared_face": {
+    "cuboid": 1,
+    "local_overlap_coordinate": [-1, 4, 3],
+    "physical_coordinate": [14, 4, 3],
+    "expected_porosity": 0.8421052631578947,
+    "actual_porosity": 1,
+    "expected_velocity": [0.001, 0, 0],
+    "actual_velocity": [0, 0, 0]
+  },
+  "communication_mode": "project::hlbm::TranslatingEmbeddingCommunication",
+  "requested_fields": ["POROSITY", "VELOCITY"],
+  "requested_overlap": 1,
+  "serial_checkpoints": {
+    "translation_cells": [0, 2, 4],
+    "core_field_mismatch_components": [0, 0, 0],
+    "overlap_field_mismatch_components": [0, 0, 0],
+    "max_centroid_error": 8.881784197001252e-15,
+    "solid_fraction_drift": 0,
+    "old_footprint_clear_fail_count": 0,
+    "stale_footprint_error": 0,
+    "missing_footprint_error": 0,
+    "fractional_interface_cells": 116
+  },
+  "serial_status": "TRANSLATING_REEMBEDDING_COMMUNICATION_PASS_SERIAL_MULTICUBOID",
+  "mpi_status": "TRANSLATING_REEMBEDDING_MPI_NOT_RUN",
+  "mpi_note": "Two-rank smoke launch completed, but the present result collector is rank-local and does not establish the required global MPI metrics."
+}

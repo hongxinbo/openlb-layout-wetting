@@ -134,9 +134,22 @@ static unsigned overlapMismatchCount(SuperLattice<T,DESCRIPTOR>& lattice,
       const T expectedP = writer.porosity(physR,translation);
       const auto expectedU = expectedP < 1. ? velocity : Vector<T,3>{};
       const auto& cell = block.get(loc);
-      if (std::abs(cell.template getField<POROSITY>() - expectedP) > 1e-12) ++mismatch;
+      const auto actualP = cell.template getField<POROSITY>();
+      const auto actualU = cell.template getField<VELOCITY>();
+      const bool porosityMismatch = std::abs(actualP - expectedP) > 1e-12;
+      bool velocityMismatch = false;
       for (int q=0; q<3; ++q) {
-        if (std::abs(cell.template getField<VELOCITY>()[q] - expectedU[q]) > 1e-12) ++mismatch;
+        velocityMismatch = velocityMismatch || std::abs(actualU[q] - expectedU[q]) > 1e-12;
+      }
+      if (porosityMismatch || velocityMismatch) {
+        if (mismatch == 0) {
+          std::cerr << "OVERLAP_SAMPLE cuboid=" << load.glob(iC)
+                    << " loc=(" << loc[0] << "," << loc[1] << "," << loc[2] << ")"
+                    << " phys=(" << physR[0] << "," << physR[1] << "," << physR[2] << ")"
+                    << " expectedP=" << expectedP << " actualP=" << actualP
+                    << " expectedUx=" << expectedU[0] << " actualUx=" << actualU[0] << '\n';
+        }
+        mismatch += unsigned(porosityMismatch) + 3*unsigned(velocityMismatch);
       }
     });
   }
@@ -181,6 +194,7 @@ int main(int argc, char* argv[])
   embedding.initialize();
 
   project::hlbm::TranslatingPorosityEmbedding3D<T,DESCRIPTOR> writer(reference);
+  decltype(writer)::configureCommunication(project);
   writer.rewrite(project, Vector<T,3>{}, Vector<T,3>{});
   const auto officialStatic = snapshot(official);
   const auto projectStatic = snapshot(project);
@@ -201,9 +215,18 @@ int main(int argc, char* argv[])
   const auto projectVelocity = snapshot(project);
   const auto velocityDifference = compare(officialVelocity,projectVelocity);
 
+  // Reproduce the prior guarded-Full behavior after Evaluation has cleared the
+  // dirty flag. The core writer is unchanged; only communication differs.
+  const std::vector<Vector<T,3>> translations{{0.,0.,0.},{2.,0.,0.},{4.,0.,0.}};
+  std::vector<unsigned> guardedOverlapMismatch;
+  for (const auto& translation : translations) {
+    writer.rewrite(project, translation, physicalU/converter.getConversionFactorVelocity(), false);
+    guardedOverlapMismatch.emplace_back(overlapMismatchCount(project,writer,translation,
+      physicalU/converter.getConversionFactorVelocity()));
+  }
+
   // P1 is deliberately field-only. Each call performs the actual full-domain
   // SuperLattice rewrite and then the Full-stage overlap communication.
-  const std::vector<Vector<T,3>> translations{{0.,0.,0.},{2.,0.,0.},{4.,0.,0.}};
   std::vector<Snapshot> p1Snapshots;
   std::vector<Metrics> p1Metrics;
   for (const auto& translation : translations) {
@@ -264,6 +287,7 @@ int main(int argc, char* argv[])
          << "  \"communication_status\": \"" << (overlapMismatch == 0 ? "TRANSLATING_REEMBEDDING_COMMUNICATION_PASS_SERIAL_MULTICUBOID" : "TRANSLATING_REEMBEDDING_COMMUNICATION_HOLD") << "\",\n"
          << "  \"cuboids\": 2,\n  \"mpi_ranks\": " << singleton::mpi().getSize() << ",\n"
          << "  \"translation_cells\": 4,\n"
+         << "  \"guarded_full_overlap_mismatches\": [" << guardedOverlapMismatch[0] << "," << guardedOverlapMismatch[1] << "," << guardedOverlapMismatch[2] << "],\n"
          << "  \"max_position_error\": " << p1PositionError << ",\n"
          << "  \"max_solid_fraction_drift\": " << p1VolumeDrift << ",\n"
          << "  \"fractional_interface_cells\": " << p1Metrics.back().fractional << ",\n"

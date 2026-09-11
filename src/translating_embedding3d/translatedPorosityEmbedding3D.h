@@ -11,6 +11,10 @@
 // and populations are not touched.
 namespace project::hlbm {
 
+// A dedicated stage avoids SuperLattice::_communicationNeeded, which direct
+// BlockLattice field writes do not update.
+struct TranslatingEmbeddingCommunication { };
+
 template <typename T>
 struct ReferenceCuboidPorosity {
   olb::Vector<T,3> lower;
@@ -33,6 +37,15 @@ class TranslatingPorosityEmbedding3D {
 public:
   TranslatingPorosityEmbedding3D(const ReferenceCuboidPorosity<T>& reference)
     : _reference(reference) { }
+
+  template <typename LATTICE>
+  static void configureCommunication(LATTICE& lattice) {
+    auto& communicator = lattice.getCommunicator(TranslatingEmbeddingCommunication{});
+    communicator.template requestField<olb::descriptors::POROSITY>();
+    communicator.template requestField<olb::descriptors::VELOCITY>();
+    communicator.requestOverlap(1);
+    communicator.exchangeRequests();
+  }
 
   // This is the installed ReferenceLatticePorosityF sampling rule evaluated
   // after x -> x - translation.  Translation changes the footprint; velocity
@@ -62,7 +75,8 @@ public:
   template <typename LATTICE>
   void rewrite(LATTICE& lattice,
                const olb::Vector<T,3>& translation,
-               const olb::Vector<T,3>& velocity) const {
+               const olb::Vector<T,3>& velocity,
+               bool explicitCommunication=true) const {
     const auto& load = lattice.getLoadBalancer();
     for (int iC=0; iC<load.size(); ++iC) {
       auto& block = lattice.getBlock(iC);
@@ -79,7 +93,12 @@ public:
       olb::ProcessingContext::Simulation);
     lattice.template setProcessingContext<olb::Array<olb::descriptors::VELOCITY>>(
       olb::ProcessingContext::Simulation);
-    lattice.communicate();
+    if (explicitCommunication) {
+      lattice.getCommunicator(TranslatingEmbeddingCommunication{}).communicate();
+    } else {
+      // Diagnostic legacy behavior: guarded by _communicationNeeded.
+      lattice.communicate();
+    }
   }
 
 private:

@@ -46,8 +46,10 @@ The project now contains an actual OpenLB writer and official P0 comparison in
 `src/translating_embedding3d/`. It reproduces the installed reference-raster
 averaging instead of the earlier sharp binary prototype. P0 is
 `TRANSLATING_REEMBEDDING_STATIC_PARITY_PASS`, including a nonzero static wall
-velocity check. The runtime writer calls `SuperLattice::communicate()` after
-each full rewrite, but explicit two-cuboid overlap inspection currently finds
-48 mismatched field components after translation. Consequently P1 and MPI are
-blocked at `TRANSLATING_REEMBEDDING_COMMUNICATION_HOLD`; this document's older
-Python P0/P1 results remain only algorithmic evidence.
+velocity check. Direct block writes originally left the guarded Full
+communicator stale after translation. The writer now uses an explicit
+project-local one-layer communicator for `POROSITY` and `VELOCITY`; serial
+two-cuboid P1 passes as `TRANSLATING_REEMBEDDING_RUNTIME_PASS`. MPI remains
+`TRANSLATING_REEMBEDDING_MPI_NOT_RUN` because the current result collector is
+not globally reduced. This document's older Python P0/P1 results remain only
+algorithmic evidence.
