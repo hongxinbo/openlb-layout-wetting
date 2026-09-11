@@ -39,3 +39,15 @@ because it does not exercise an OpenLB communicator or MPI transport.
 `R0A_PRESCRIBED_LATERAL_TRANSLATION = NOT_RUN`: actual OpenLB field writing,
 official-path P0 parity, and communicator validation must pass first. No
 FreeSurface, wetting, air, or material relabeling is included.
+
+## OpenLB runtime update
+
+The project now contains an actual OpenLB writer and official P0 comparison in
+`src/translating_embedding3d/`. It reproduces the installed reference-raster
+averaging instead of the earlier sharp binary prototype. P0 is
+`TRANSLATING_REEMBEDDING_STATIC_PARITY_PASS`, including a nonzero static wall
+velocity check. The runtime writer calls `SuperLattice::communicate()` after
+each full rewrite, but explicit two-cuboid overlap inspection currently finds
+48 mismatched field components after translation. Consequently P1 and MPI are
+blocked at `TRANSLATING_REEMBEDDING_COMMUNICATION_HOLD`; this document's older
+Python P0/P1 results remain only algorithmic evidence.

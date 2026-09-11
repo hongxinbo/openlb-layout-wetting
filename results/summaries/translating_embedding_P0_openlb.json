@@ -1,0 +1,18 @@
+{
+  "status": "TRANSLATING_REEMBEDDING_STATIC_PARITY_PASS",
+  "tolerance": 9.9999999999999998e-13,
+  "official_fractional_porosity_cells": 116,
+  "project_fractional_porosity_cells": 116,
+  "max_abs_porosity_difference": 0,
+  "L1_porosity_difference": 0,
+  "RMS_porosity_difference": 0,
+  "bulk_mismatch_count": 0,
+  "overlap_mismatch_count": 0,
+  "official_integrated_solid_fraction": 52,
+  "project_integrated_solid_fraction": 52,
+  "official_centroid": [7.6821862348178236,5.6821862348178138,4.6821862348178165],
+  "project_centroid": [7.6821862348178236,5.6821862348178138,4.6821862348178165],
+  "static_velocity_max_difference": 0,
+  "nonzero_velocity_porosity_max_difference": 0,
+  "nonzero_velocity_max_difference": 0
+}
