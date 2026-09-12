@@ -17,11 +17,12 @@ Do not run R0A, R0B, continuous moving punch, moving geometry, or translated HLB
 ## Active release order
 
 1. **XY0 — PASS:** canonical 3-D single-phase parallel-plate Poiseuille resistance validation; see `docs/XY_SINGLE_PHASE_RESISTANCE_METHOD.md`.
-2. **XY1 — NEXT:** simple fixed patterned/right-angle periodic transport cell with mean pressure-gradient/volume-flux validation.
-3. **XY2:** simple patterned/right-angle geometry refinement as required.
-4. **XY3:** EC1XT240 representative-cell permeability tensor.
-5. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
-6. **Z0--Z3:** only after XY passes: fully-liquid vertical flow, vented FreeSurface intrusion, optional reduced trapped-gas closure, then fixed-layout vertical comparison.
+2. **XY0B — PASS:** fixed-domain refinement; original XY0 grid evidence is retained as `XY0_WALL_NORMAL_COMPONENT_CONVERGENCE_PASS`.
+3. **XY1 — NEXT:** simple fixed patterned/right-angle periodic transport cell with mean pressure-gradient/volume-flux validation.
+4. **XY2:** EC1XT240 representative-cell definition, not production calculation.
+5. **XY3:** EC1XT240 permeability tensor.
+6. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
+7. **Z0--Z2:** deferred pending vent topology; a blind incompressible groove has no assumed steady Kz.
 
 `NEXT = XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`.
 

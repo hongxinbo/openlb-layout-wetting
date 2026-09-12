@@ -14,8 +14,12 @@ The installed source is OpenLB `1.9.0-19-g3dedbdd2`. The implementation follows 
 
 ## Reference, gates, and result
 
-For hydraulic spacing `H`: `u(z)=G z(H-z)/(2 mu)`, `J=Umean=G H^2/(12 mu)`, and `R_analytic=12 mu L/(W H^3)`. `Q=J*(W*H)`, `R=Delta_p/Q`, `Re=rho*J*H/mu`. Four gradients are fit as unconstrained `Delta_p=R Q+b`; a through-origin value is reported only after inspecting `b`.
+For hydraulic spacing `H`: `u(z)=G z(H-z)/(2 mu)`, `J=Umean=G H^2/(12 mu)`, and `R_analytic=12 mu L/(W H^3)`. In a periodic body-force cell, `Delta_p_eq=|G|L` is an **equivalent pressure drop**, not a measured inlet-to-outlet drop.
+
+The future-layout convention is superficial/Darcy flux: `J_i=(1/V_REV) integral_fluid u_i dV`, i.e. velocity is zero-extended into solid and averaged over the complete REV. Intrinsic fluid-average velocity and raw `Q` are reported separately; `Q` uses the stated gross reference cross-section.
 
 Predeclared gates: mean-flow and resistance errors <=2%, normalized velocity-profile L2 <=3%, `R2>=0.999`, Mach <0.1, absolute mass drift <=1e-8, and 1,000-step flux change <=1e-6. Coarse/medium/fine are 12/24/36 gap cells. Finest-grid errors are 0.0216%, 0.0216%, and 0.0549%; all gates pass.
+
+The former 12/24/36 study held `y_periodic_cells=5`, so its changing physical width permits only `XY0_WALL_NORMAL_COMPONENT_CONVERGENCE_PASS`, not raw-Q/R fixed-domain convergence. The new XY0B study fixes `H=10 um`, `Lx=20 um`, `Wy=5 um` and uses 12/24/36 gap cells with Ny=6/12/18: `XY0B_FIXED_DOMAIN_GRID_REFINEMENT_PASS`.
 
 This releases XY1 only. It does not validate capillarity, intrusion, gas displacement, trapped air, punch motion, or EC1XT240 resistance.
