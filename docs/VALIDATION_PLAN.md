@@ -1,10 +1,22 @@
 # 验证计划
 
-> V0--V8 保留为组件/历史验证证据。当前生产顺序为：单相/自由表面公式审计、
-> 首周期固定几何、移动冲头单液体填充、再到空气/困气与两相验证；
-> `docs/ACTIVE_PROJECT_SCOPE.md`、`docs/OPENLB_3D_API_AUDIT.md` 和
-> `docs/3D_GEOMETRY_AUDIT.md` 控制。任何二维前沿只能是
-> `PRELIMINARY_REDUCED_MODEL` 指标。
+> V0--V8 remain historical/component evidence. The active release order is `XY0 -> XY1 -> XY2 -> XY3 -> XY4 -> Z0--Z3`, controlled by `docs/ACTIVE_PROJECT_SCOPE.md`. Continuous punch is deferred; no Z physics is active before XY passes.
+
+## Active XY gates
+
+### XY0: canonical 3-D single-phase slit
+
+- x/y periodicity, stationary no-slip z walls, one liquid only;
+- OpenLB source-backed `ForcedBGKdynamics` plus `fields::set<FORCE>` sweep of at least four low-Re drives;
+- record `G`, `Delta_p`, `Q`, `J`, mean velocity, Re, lattice Mach, mass drift, steady criterion, and R;
+- three grids; compare profile, mean flow, and R to the exact hydraulic wall spacing;
+- accept only if mean-flow/R errors <=2%, profile L2 <=3%, `R2 >= 0.999`, negligible mass drift, low Mach, and the declared steady gate pass.
+
+Result: `XY0_SINGLE_PHASE_HYDRAULIC_RESISTANCE_PASS`.
+
+### XY1: periodic fixed-geometry transport
+
+After XY0 only, use a simple patterned/right-angle periodic component and the same constant mean-gradient/volume-flux measurement. It is not EC1XT240 production geometry. Status: `NOT_RUN`; `NEXT=XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`.
 
 正式版图结果必须按以下顺序放行。
 

@@ -24,6 +24,8 @@
 | 气体出口 | null | DEFERRED | 首周期单液体基线不含物理气体；后续两相阶段另行定义 |
 | 理想狭缝渗透率 | 1.2e-15 m2 | DERIVED_START | `b^2/12`, `b=120 nm` |
 | 理想逆渗透率 | 8.3e14 m-2 | DERIVED_START | `12/b^2` |
+| XY0 狭缝液压间隙 | 10 um | NUMERICAL_COMPONENT_GEOMETRY | 固定几何 Poiseuille 验证；不是 EC1/OAS 尺寸 |
+| XY0 密度与动力黏度 | 1510 kg/m3; 1e-3 Pa s | OF350_TRANSFER_BASELINE | 只用于单相数值组件的量纲一致性 |
 
 ## OF350转移基线
 

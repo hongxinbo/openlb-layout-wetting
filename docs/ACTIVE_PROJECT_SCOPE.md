@@ -1,181 +1,40 @@
-# Active project scope — periodic pre-press and wetting benchmark
+# Active project scope — fixed-layout hydraulic transport characterization
 
-This document is the active scope authority for PR #6 on
-`codex/3d-periodic-prepress`. Historical PR #5 geometry and open-boundary
-investigations remain evidence, not the active physical stack.
+This is the active-scope authority for PR #6 on `codex/3d-periodic-prepress`. It supersedes earlier active-roadmap text but does not alter or delete historical evidence.
 
-**Active stack:** two single-phase component tracks. Track A is quasi-static
-fixed-gap right-angle validation; each punch position is a new static Eulerian
-lattice with geometry and Bouzidi links frozen after initialization. Track B
-audits continuous moving-boundary mechanics before any interface coupling.
-The patterned TOP punch is above a flat substrate and cavities open downward;
-physical cavity depth remains 100 um. Neither track has free surface, wetting
-dynamics, droplet, physical air, trapped-air closure, macro droplet, lateral
-inlet, or layout comparison.
+## Active scientific target
 
-The corrected local diagnostic validated the official 100-degree 3-D wetting
-benchmark as `CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`: it converged at step
-24000 to 99.4454 degrees, independently checked as 99.447840 degrees. The
-project substitutions then passed B1/B2 as
-`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`. The project-local translating
-reference-lattice writer now passes official static parity and serial
-multi-cuboid field communication as `TRANSLATING_REEMBEDDING_RUNTIME_PASS`.
-`RESOLVED_MOVING_PUNCH_ROUTE_PASS_SINGLE_PHASE` remains unreleased because no
-hydrodynamic collision/stream validation has run. `NEXT =
-BUILD_R0A_PRESCRIBED_LATERAL_TRANSLATION_HYDRODYNAMIC_COMPONENT`. Meanwhile
-`FIXED_GAP_DRIVING_MODE_HOLD_INPUT` remains open for Track A.
+`FIXED_LAYOUT_HYDRAULIC_TRANSPORT_CHARACTERIZATION`
 
-## Retained
+The patterned geometry is fixed. Track XY measures single-phase lateral transport, `J_xy = -(1/mu) K_xy grad(p)`, including the full 2x2 effective permeability tensor. Track Z will later measure fully-liquid `Kz`, capillary `p_entry`, and `Delta_p_z(Jz,S)`. Layout comparison uses superficial flux `J=Q/A_reference`; raw `R=Delta_p/Q` is only a fixed-domain diagnostic. This reduced program does not reproduce the complete moving-punch nanoimprint process.
 
-- OF350 source verification, frozen QoI data, parameter extraction, mapping
-  analysis, C0--C6, Darcy implementation, gas experiments, and all FAIL/PASS
-  reports remain intact as reference, diagnostics, and future comparison data.
-- `r1TensorDarcy.h` remains the validated stiff tensor-Darcy candidate.
-- `r1DepthFlux.h` and C3/C5/C6 evidence remain diagnostic research assets; no
-  old result is relabelled or deleted.
-- `SIM-EC1XT240.OAS` remains the sole XY authority for active EC1 geometry.
-- The confirmed physical wall/groove depth is **100 um** and remains fixed.
-  Provenance is `SENIOR_CONFIRMED_INPUT`; it is the top-mold cavity depth.
-  OF350's 1 um initializer is a cylinderToCell patch, not a resolved sessile
-  droplet volume and not this cavity depth.
-- All 2-D EC1XT240 and SIM-H results are retained as
-  `PRELIMINARY_REDUCED_MODEL`; their former labels describe their historical
-  numerical gates, not final groove-filling validity.
+## Frozen and retained moving-punch work
 
-## Archived, not deleted
+All translated-embedding and moving-boundary records remain intact, including `TRANSLATING_REEMBEDDING_STATIC_PARITY_PASS`, `PRESCRIBED_TRANSLATING_EMBEDDING_FIELD_PASS_RUNTIME`, `TRANSLATING_REEMBEDDING_RUNTIME_PASS`, and historical HOLDs. They are now `CONTINUOUS_MOVING_PUNCH = DEFERRED_TECHNICAL_ASSET`.
 
-The following retain their original claims as historical records: OF350
-regression reports, `docs/OF350_TO_OPENLB_*`,
-`docs/OPENLB350_REGRESSION_CRITERIA.md`, R1 component tests, gas closure
-experiments, the obsolete 100 nm smoke, and their results. They are not active
-release gates for EC1XT240.
+Do not run R0A, R0B, continuous moving punch, moving geometry, or translated HLBM hydrodynamic validation unless a later scope decision restores that route. No existing result is relabelled as physical filling validation.
 
-## Dropped as mandatory prerequisites
+## Active release order
 
-- `OPENLB350_REGRESSION_PASS` before EC1XT240;
-- full 525 x 300 OpenLB350 reproduction and 16-region quantitative tolerance;
-- local `perfectGas`/open-boundary gas equivalence;
-- strict OpenFOAM--OpenLB time/QoI reproduction before layout work.
+1. **XY0 — PASS:** canonical 3-D single-phase parallel-plate Poiseuille resistance validation; see `docs/XY_SINGLE_PHASE_RESISTANCE_METHOD.md`.
+2. **XY1 — NEXT:** simple fixed patterned/right-angle periodic transport cell with mean pressure-gradient/volume-flux validation.
+3. **XY2:** simple patterned/right-angle geometry refinement as required.
+4. **XY3:** EC1XT240 representative-cell permeability tensor.
+5. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
+6. **Z0--Z3:** only after XY passes: fully-liquid vertical flow, vented FreeSurface intrusion, optional reduced trapped-gas closure, then fixed-layout vertical comparison.
 
-These are not declared scientifically false; they are deferred research work.
+`NEXT = XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`.
 
-## Historical PR #5 roadmap
+## XY0 claim boundary
 
-1. **Phase A — historical/reference evidence:** retain OF350, R1, Darcy, gas
-   and moving-depth work as provenance and diagnostics. The source-backed
-   liquid, gas, temperature and surface-tension inputs are frozen for this
-   stage as `OF350_TRANSFER_BASELINE`; they are not universal measured EC1
-   material properties.
-2. **Phase B — 3-D API and geometry gate:** audit the installed OpenLB source,
-   then verify an explicit 600 nm x 240 nm x 101 um two-groove volume at 20 nm.
-3. **Phase C — fixed-geometry vertical baseline:** upper film initially liquid,
-   groove initially gas, -z top pressure/loading, and a declared longitudinal
-   gas vent. Main QoIs are penetration depth and groove liquid volume.
-4. **Phase D — moving-template component:** only after vertical intrusion
-   passes, test the 1.0 um to approximately 65 nm quintic template motion in a
-   simple 3-D box with conservative displacement accounting.
-5. **Phase E — full minimal squeeze:** couple moving template, wetting,
-   surface tension, gas vent and the fixed 100 um groove.
-6. **Phase F — real OAS:** find the minimum representative EC1XT240 repeat
-   unit, extrude white pixels as fluid grooves and pink layer-1/0 pixels as
-   fixed solid columns; SIM-H and parameter sweeps remain later work.
+XY0 establishes only fixed-geometry, single-phase, low-Re hydraulic transport accuracy for a numerical slit. It establishes neither nanoimprint filling, capillary entry, gas displacement, trapped air, moving-punch dynamics, nor real EC1XT240 layout resistance.
 
-The sequence above records PR #5 history and is no longer the active physical
-route after the corrected top-mold stack was accepted.
+## Retained evidence and inputs
 
-## Active roadmap after wetting isolation
+- `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`, `sigma=0.0309 N/m`, and `theta=60 deg` are retained for future Z1; the angle remains a `LITERATURE_ASSUMPTION`, not a measured material value.
+- OF350 extraction/mapping, OAS and geometry audits, 3-D API audit, reduced-model results, and every historical PASS/HOLD/FAIL remain provenance.
+- The confirmed 100 um cavity depth remains a later Z input; XY0's slit is explicitly `NUMERICAL_COMPONENT_GEOMETRY`.
 
-1. Retain the OpenLB 3-D API, geometry, and completed wetting audits as
-   provenance.
-2. Track A: retain M0 and, after group driving-mode confirmation, validate M1
-   single-phase hydrodynamics and the M2 quasi-static gap sequence.
-3. Track B: retain the ordinary-Bouzidi q/topology HOLDs. The centrifugal-pump
-   HLBM route proves prescribed rotation, but requires a source-backed
-   translating-reference-lattice re-embedding lifecycle before any continuous
-   single-phase punch component.
-4. Move to one/few-period patterned geometry only after both component tracks
-   have source-backed conservative paths.
-5. Add free surface/wetting/droplet/air, then validate two-phase filling.
-6. Only then compare OAS/layout variants.
+## Future tensor and vertical procedures (documentation only)
 
-`MINIMAL_240_SMOKE_PASS` is a numerical pipeline/geometry/stability result.
-Its reported inventory residual is diagnostic, not a formal conservation gate;
-the label is neither physical validation nor experimental validation.
-
-## Parameter roles
-
-| Parameter | Baseline source | Role | Can sweep later? |
-| --- | --- | --- | --- |
-| liquid density 1510 kg/m3 | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
-| liquid viscosity 1e-3 Pa s | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
-| surface tension 0.0309 N/m | OF350 | `OF350_TRANSFER_BASELINE` | Yes |
-| contact angle 60 deg, through liquid | literature anchors | `LITERATURE_ASSUMPTION` | 30/60/85/120 deg |
-| top-mold cavity depth 100 um | senior-confirmed input | `SENIOR_CONFIRMED_INPUT` | No current sweep |
-| later mold displacement | OF350 reference only; active schedule UNKNOWN | deferred pressing input | No current run |
-| gas representation | pre-press unvented; later trapped/compressed air | closure validation required | Deferred |
-| Darcy tensor | OF350 diagnostic/reference only | `STUDY_VARIABLE` after double-count audit | Yes |
-| dx, tau, interface width | implementation | `NUMERICAL` | sensitivity only |
-
-`OF350_TRANSFER_BASELINE` means source-backed values transferred from the
-successful OF350 calculation. It does not mean an independently measured,
-universally applicable EC1XT240 material property.
-
-## Historical release labels (not active benchmark gates)
-
-- `PROJECT_SCOPE_RESET_PASS`
-- `PASS_GEOMETRY_AUDIT`
-- `MINIMAL_240_SMOKE_PASS`
-- `P0_PRESSING_PASS` — candidate moving-depth conservation algorithm test;
-  its 100-to-80 um schedule is a numerical stress test, not physical groove
-  compression or the real upper-film trajectory.
-- `P1_OAS_DEPTH_TRANSPORT_PASS` — P1A applies the conservative depth transport
-  to the real OAS crop as an independent numerical sidecar. If reused, its
-  `h` denotes an upper-film/reduced control-volume thickness, never the 100 um
-  groove depth.
-- `OPENLB_3D_API_AUDIT_HOLD` — core 3-D types exist, but the audited checkout's
-  3-D multiphase inlet/outlet implementation is commented out.
-- `3D_GEOMETRY_PASS` — explicit 100 um groove plus 1 um upper film passes
-  geometry, connectivity and installed-ParaView checks.
-- Historical PR #5 next step was `RESOLVE_VALIDATED_3D_PHASE_OPEN_BOUNDARIES`;
-  this is archived and is not the active NEXT.
-
-## Preserved multiscale inputs and active next step
-
-OF350 regular initializer: radius 52 um, footprint diameter 104 um, 15 x 9 =
-135 patches, pitch 350 um x 350 um. It is a 1 um-thick cylinderToCell patch,
-not a resolved 3-D sessile-droplet volume. Macro droplet + micro OAS scale
-separation is required; one-scale 20 nm macro+micro DNS remains rejected.
-No real OAS geometry or flow is changed by this diagnostic task.
-
-Historical unmodified-reporter evidence remains `OFFICIAL_EXAMPLE_REPRODUCTION_HOLD`.
-The corrected local observable resolves that diagnostic limitation:
-`CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`.
-
-Historical text above is retained as evidence. The continuous moving/free-surface
-limitation is `CONTINUOUS_MOVING_FREESURFACE_ROUTE_HOLD_API`. Fixed-gap work is
-`COMPONENT_VALIDATION_ONLY`; the final pressing target remains
-`CONTINUOUS_MOVING_PUNCH`. The ordinary Track-B results remain
-`CONTINUOUS_SUBGRID_MOVING_WALL_HOLD_API` and
-`CONTINUOUS_TOPOLOGY_CHANGING_BOUNDARY_HOLD_API`. The resolved-object audit
-scopes the generic resolved-particle evidence as
-`FORCE_DRIVEN_RESOLVED_PARTICLE_EXAMPLES_DO_NOT_ESTABLISH_PRESCRIBED_TRAJECTORY`.
-`centrifugalPump3d` additionally proves external HLBM rotation and reaction
-torque measurement without force feedback into the trajectory. It does not
-prove translation: `ELEMENT_U_TRANSLATION` supplies wall velocity only and
-`UpdatePorosityO` does not scan untagged newly reached cells. The active result
-is `TRANSLATING_REEMBEDDING_RUNTIME_PASS`; the next required evidence is
-`BUILD_R0A_PRESCRIBED_LATERAL_TRANSLATION_HYDRODYNAMIC_COMPONENT`. Track A
-retains `FIXED_GAP_DRIVING_MODE_HOLD_INPUT`.
-
-This releases only the isolated sessile-droplet wetting component. It does not
-release a macro periodic cell, infer a 3-D droplet volume, or validate trapped
-air, mold motion, or OAS flow.
-
-The isolation gate is `PROJECT_WETTING_PARAMETER_ISOLATION_PASS`: B1
-validates the provisional 60-degree wetting component, and B2 validates the
-frozen converter-V1 physical-surface-tension mapping. `NEXT =
-CONTINUOUS_SINGLE_PHASE_MOVING_BOUNDARY_AUDIT`. The active sequence is:
-validated wetting/material mapping -> fixed-gap and continuous-moving-boundary
-single-phase component validation -> quasi-static gap sweep and source-backed
-continuous topology path -> one/few-period patterned geometry ->
-free-surface/wetting/droplet/air -> two-phase filling -> layout comparison.
+For a periodic layout, force with `grad(p)=(G,0)` and `(0,G)`, measure both flux components, then recover every `K_xy` element; off-diagonal entries require demonstrated symmetry, not assumption. Z0 is fully liquid; Z1 should prefer a source-supported one-liquid FreeSurface model at ambient gas pressure; Z2 must audit a reduced isothermal `p_g V_g = constant` closure before full gas LBM.

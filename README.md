@@ -2,13 +2,14 @@
 
 这是研究14个OAS微/纳米版图中液体浸润与压力挤入过程的长期Git项目。
 
-当前阶段有两条单相组件线：固定间隙只用于组件验证，连续移动冲头仍是最终压印目标。Track A
-的每个冲头位置是独立初始化的静态格子；Track B 先隔离连续 Bouzidi 边界机制。上方图案化
-模具、下方平基底、模具腔向下开口且深度固定为 100 um；本阶段不引入自由表面、润湿动力学、
-液滴、物理空气、困气、宏观液滴、全尺寸 EC1 或版图比较。旧二维模型只作为
-`PRELIMINARY_REDUCED_MODEL` 保留。
+当前阶段是 `FIXED_LAYOUT_HYDRAULIC_TRANSPORT_CHARACTERIZATION`：先以 XY 单相侧向输运建立 `K_xy`、单位参考面积导纳或归一化阻力，再在 XY 通过后进入 Z 向黏性/毛细输运。比较变量是 `J=Q/A_reference`，而非不同版图的原始 Q。XY0 已通过，当前 `NEXT=XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`；不启动 Z、FreeSurface、空气、润湿、表面张力、移动壁、HLBM 或 EC1XT240 生产几何。
+
+连续移动冲头的已完成实现和全部 HOLD 仍保留，但正式分类为 `CONTINUOUS_MOVING_PUNCH = DEFERRED_TECHNICAL_ASSET`。本阶段不运行 R0A、R0B、连续移动几何或 translated-HLBM 流体动力学验证。旧二维模型仍仅为 `PRELIMINARY_REDUCED_MODEL`。
 
 ## 当前状态
+
+- 活动范围：固定版图水力输运表征；XY0 3-D 单相平行板基准为 `XY0_SINGLE_PHASE_HYDRAULIC_RESISTANCE_PASS`。四档压强梯度的 `Delta_p-Q` 拟合 `R2=1.0`，最细网格平均流/阻力/速度剖面误差为 0.0216%/0.0216%/0.0549%。方法见 `docs/XY_SINGLE_PHASE_RESISTANCE_METHOD.md`。
+- 连续移动冲头：`DEFERRED_TECHNICAL_ASSET`，而不是当前关键路径。
 
 - PR #6 官方 3-D 润湿基准：`CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`。在不改变
   官方求解器物理的前提下，项目本地修正了诊断缓冲区和顶部坐标；100 度 A0C 于
