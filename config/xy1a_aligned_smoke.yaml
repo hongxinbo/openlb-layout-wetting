@@ -1,0 +1,25 @@
+component: XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT
+geometry_class: NUMERICAL_COMPONENT_GEOMETRY
+fluid:
+  rho_kg_m3: 1510.0
+  mu_pa_s: 0.001
+solver:
+  descriptor: D3Q19<FORCE>
+  dynamics: ForcedBGKdynamics
+  forcing: fields::set<FORCE>
+  tau: 0.8
+  body_force_equivalent_pressure_gradient_pa_per_m: 120000.0
+  steps: 8000
+grid:
+  dx_m: 2.5e-7
+  nx: 32
+  ny: 32
+  nz_fluid: 24
+geometry:
+  rev_dimensions_m: [8.0e-6, 8.0e-6, 12.0e-6]
+  base_gap_m: 4.0e-6
+  base_gap_cells: 16
+  recess_dimensions_m: [8.0e-6, 4.0e-6, 8.0e-6]
+  recess_alignment: x
+  periodic: [x, y]
+flux_convention: J_i=(1/V_REV) integral_fluid u_i dV; solid velocity is zero

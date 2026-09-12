@@ -18,13 +18,15 @@ Do not run R0A, R0B, continuous moving punch, moving geometry, or translated HLB
 
 1. **XY0 — PASS:** canonical 3-D single-phase parallel-plate Poiseuille resistance validation; see `docs/XY_SINGLE_PHASE_RESISTANCE_METHOD.md`.
 2. **XY0B — PASS:** fixed-domain refinement; original XY0 grid evidence is retained as `XY0_WALL_NORMAL_COMPONENT_CONVERGENCE_PASS`.
-3. **XY1 — NEXT:** simple fixed patterned/right-angle periodic transport cell with mean pressure-gradient/volume-flux validation.
-4. **XY2:** EC1XT240 representative-cell definition, not production calculation.
-5. **XY3:** EC1XT240 permeability tensor.
-6. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
-7. **Z0--Z2:** deferred pending vent topology; a blind incompressible groove has no assumed steady Kz.
+3. **XY1A — PASS:** aligned anisotropic periodic-component smoke, with separate x/y forcing and full-REV flux measurement; see `docs/XY1A_ALIGNED_COMPONENT_DESIGN.md`.
+4. **XY1B:** rotated/off-axis component, deferred.
+5. **XY1A next:** full forcing sweep and fixed-geometry grid refinement.
+6. **XY2:** EC1XT240 representative-cell definition, not production calculation.
+7. **XY3:** EC1XT240 permeability tensor.
+8. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
+9. **Z0--Z2:** deferred pending vent topology; a blind incompressible groove has no assumed steady Kz.
 
-`NEXT = XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`.
+`NEXT = XY1A_FULL_FORCING_SWEEP_AND_GRID_REFINEMENT`.
 
 ## XY0 claim boundary
 
