@@ -51,3 +51,4 @@ results/figures/**/*.vtp
 
 # Case-local executables without filename extensions
 src/vertical_squeeze_3d/apiAudit3d
+src/xy0_poiseuille3d/xy0Poiseuille3d
