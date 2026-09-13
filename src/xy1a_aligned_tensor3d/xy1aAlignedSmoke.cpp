@@ -61,24 +61,26 @@ static Sample measureFlux(SuperLattice<T,DESCRIPTOR>& lattice,
 
 int main(int argc, char* argv[])
 {
-  if (argc != 5) {
-    std::cerr << "usage: xy1aAlignedSmoke x|y G_Pa_per_m steps summary.json\\n";
+  if (argc != 6) {
+    std::cerr << "usage: xy1aAlignedSmoke base_gap_cells x|y G_Pa_per_m steps summary.json\\n";
     return 2;
   }
   initialize(&argc,&argv);
-  const std::string direction = argv[1];
-  const T gradient = std::stod(argv[2]);
-  const int steps = std::stoi(argv[3]);
-  const std::string summaryPath = argv[4];
-  if ((direction != "x" && direction != "y") || gradient <= 0 || steps < 1000) return 2;
+  const int nBase = std::stoi(argv[1]);
+  const std::string direction = argv[2];
+  const T gradient = std::stod(argv[3]);
+  const int steps = std::stoi(argv[4]);
+  const std::string summaryPath = argv[5];
+  if ((nBase != 8 && nBase != 16 && nBase != 24) || (direction != "x" && direction != "y") || gradient <= 0 || steps < 1000) return 2;
 
   // NUMERICAL_COMPONENT_GEOMETRY.  A 4-um base gap spans the full periodic
   // cell.  The 8x4x8-um x-periodic, downward-opening recess adds a
   // low-resistance x corridor while leaving a transverse constriction.
-  const T dx = 0.25e-6, baseGap = 4.e-6, recessDepth = 8.e-6;
+  const T baseGap = 4.e-6, recessDepth = 8.e-6;
+  const T dx = baseGap/T(nBase);
   const T lengthX = 8.e-6, lengthY = 8.e-6, fluidHeight = baseGap + recessDepth;
   const T recessX = 8.e-6, recessY = 4.e-6;
-  const int nBase = 16, nx = 32, ny = 32, nzFluid = 48;
+  const int nx = 2*nBase, ny = 2*nBase, nzFluid = 3*nBase;
   const T rhoPhys = 1510., mu = 1.e-3, nu = mu/rhoPhys, tau = .8, charU = 3.e-4;
   UnitConverterFromResolutionAndRelaxationTime<T,DESCRIPTOR> converter(
     nBase,tau,baseGap,charU,nu,rhoPhys);
