@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "status": "XY1B_ROTATED_TENSOR_SMOKE_PASS",
+  "next": "XY1B_ROTATED_TENSOR_GRID_REFINEMENT",
+  "component": "XY1B_ROTATED_ANISOTROPIC_SMOKE_COMPONENT",
+  "theta_degrees": 36.86989764584402,
+  "rotation": {
+    "cos": 0.8,
+    "sin": 0.6,
+    "stripe_direction": [
+      0.8,
+      0.6
+    ],
+    "stripe_normal": [
+      -0.6,
+      0.8
+    ]
+  },
+  "periodicity_proof": {
+    "normal_period_m": 8e-06,
+    "x_translation_normal_change_m": -8.000000000000001e-06,
+    "y_translation_normal_change_m": 8.000000000000001e-06
+  },
+  "flux_convention": "J_i=(1/V_REV_nominal) integral_fluid u_i dV; solid velocity is zero",
+  "fluid_volume_fraction_semantics": "Historical XY1A fluid_volume_fraction is fluid_cells/(fluid_cells+solid_cells) over enumerated material cells, not discrete_fluid_volume/nominal_REV_volume. It is retained as a cell-count occupancy value. Flux remains normalized by nominal REV volume.",
+  "geometry": {
+    "nominal_rev_volume_m3": 1.6000000000000004e-15,
+    "nominal_fluid_volume_m3": 1.066666666666667e-15,
+    "nominal_fluid_fraction": 0.6666666666666666,
+    "runs": [
+      {
+        "component": "XY1B_ROTATED_ANISOTROPIC_SMOKE_COMPONENT",
+        "direction": "x",
+        "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+        "steps": 11000,
+        "steps_to_steady": 11000,
+        "reached_steady_state": true,
+        "dx_m": 1.6666666666666665e-07,
+        "nx": 80,
+        "ny": 60,
+        "nz_fluid": 72,
+        "rev_dimensions_m": [
+          1.3333333333333333e-05,
+          1e-05,
+          1.2e-05
+        ],
+        "base_gap_m": 4e-06,
+        "base_gap_cells": 24,
+        "stripe_normal_period_m": 8e-06,
+        "stripe_normal_width_m": 4e-06,
+        "recess_depth_m": 8e-06,
+        "fluid_cells": 234673,
+        "solid_cells": 130961,
+        "cell_count_occupancy_fraction": 0.6418248849942839,
+        "discrete_fluid_volume_m3": 1.0864490740740736e-15,
+        "nominal_rev_volume_m3": 1.6000000000000002e-15,
+        "minimum_throat_cells": 24,
+        "periodic_x_y_continuity": true,
+        "connected_by_full_base_gap": true,
+        "upper_recess_opens_downward": true,
+        "J_m_per_s": [
+          9.558507578999098e-05,
+          3.0023235947858877e-05,
+          1.2766801533461868e-13
+        ],
+        "mean_speed_m_per_s": 0.0001533348001536582,
+        "re": 0.0009261421929280955,
+        "max_lattice_mach": 1.308943362843275e-05,
+        "mass_drift_fraction": 7.682743330406083e-13,
+        "steady_relative_change_over_1000_steps": 5.165433609461711e-07
+      },
+      {
+        "component": "XY1B_ROTATED_ANISOTROPIC_SMOKE_COMPONENT",
+        "direction": "y",
+        "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+        "steps": 11000,
+        "steps_to_steady": 11000,
+        "reached_steady_state": true,
+        "dx_m": 1.6666666666666665e-07,
+        "nx": 80,
+        "ny": 60,
+        "nz_fluid": 72,
+        "rev_dimensions_m": [
+          1.3333333333333333e-05,
+          1e-05,
+          1.2e-05
+        ],
+        "base_gap_m": 4e-06,
+        "base_gap_cells": 24,
+        "stripe_normal_period_m": 8e-06,
+        "stripe_normal_width_m": 4e-06,
+        "recess_depth_m": 8e-06,
+        "fluid_cells": 234673,
+        "solid_cells": 130961,
+        "cell_count_occupancy_fraction": 0.6418248849942839,
+        "discrete_fluid_volume_m3": 1.0864490740740736e-15,
+        "nominal_rev_volume_m3": 1.6000000000000002e-15,
+        "minimum_throat_cells": 24,
+        "periodic_x_y_continuity": true,
+        "connected_by_full_base_gap": true,
+        "upper_recess_opens_downward": true,
+        "J_m_per_s": [
+          3.0023236410425128e-05,
+          7.834840986139516e-05,
+          2.2591482663837105e-13
+        ],
+        "mean_speed_m_per_s": 0.00013373990846548485,
+        "re": 0.0008077890471315284,
+        "max_lattice_mach": 1.1516796165077101e-05,
+        "mass_drift_fraction": 1.5130119379591633e-12,
+        "steady_relative_change_over_1000_steps": 4.239803297394891e-07
+      }
+    ]
+  },
+  "measured_smoke_tensor_m2": {
+    "Kxx_m2": 7.965422982499248e-13,
+    "Kyx_m2": 2.5019363289882394e-13,
+    "Kxy_m2": 2.5019363675354275e-13,
+    "Kyy_m2": 6.529034155116264e-13
+  },
+  "predicted_rotated_tensor_m2": {
+    "Kxx_m2": 8.394183349324622e-13,
+    "Kxy_m2": 2.683930757232983e-13,
+    "Kyx_m2": 2.683930757232983e-13,
+    "Kyy_m2": 6.828557074272048e-13
+  },
+  "componentwise_difference_m2": {
+    "Kxx_m2": -4.2876036682537396e-14,
+    "Kyx_m2": -1.8199442824474353e-14,
+    "Kxy_m2": -1.8199438969755547e-14,
+    "Kyy_m2": -2.995229191557836e-14
+  },
+  "cross_term_magnitudes_m2": {
+    "Kxy": 2.5019363675354275e-13,
+    "Kyx": 2.5019363289882394e-13,
+    "normalized_max": 0.31409962446845663
+  },
+  "reciprocity_absolute_error_m2": 3.8547188058919704e-21,
+  "reciprocity_normalized_error": 4.8393146407430405e-09,
+  "covariance_frobenius_relative_error": 0.0508331575810971,
+  "gates": {
+    "geometry": true,
+    "steady": true,
+    "low_re": true,
+    "low_mach": true,
+    "mass": true,
+    "finite": true,
+    "cross_terms_nonzero": true,
+    "reciprocity": true,
+    "covariance_smoke": true
+  },
+  "orientation_discretization_warning": "XY1A boundaries are predominantly lattice-aligned whereas XY1B has oblique stair-stepped boundaries. This smoke result requires a later rotated-grid refinement before a final covariance claim."
+}

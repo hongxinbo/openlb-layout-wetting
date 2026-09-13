@@ -27,3 +27,8 @@ fluid nodes and divides by the complete 8 x 8 x 12 um REV; solid nodes add zero.
 It therefore reports Jx, Jy, and Jz for each forcing direction.  The resulting
 Kxx/Kyy quantities are explicitly one-force smoke estimates, not a recovered
 or converged permeability tensor.
+
+The historical `fluid_volume_fraction` field is instead a count occupancy,
+`fluid_cells/(fluid_cells+solid_cells)`, over material-enumeration locations.
+It is not `fluid_cells*dx^3/V_REV_nominal`; the flux denominator above remains
+the nominal REV volume and is unchanged.
