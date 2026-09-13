@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
   const T gradient = std::stod(argv[3]);
   const int steps = std::stoi(argv[4]);
   const std::string summaryPath = argv[5];
-  if ((nBase != 8 && nBase != 16 && nBase != 24) || (direction != "x" && direction != "y") || gradient <= 0 || steps < 1000) return 2;
+  if ((nBase != 8 && nBase != 16 && nBase != 24 && nBase != 32) || (direction != "x" && direction != "y") || gradient <= 0 || steps < 1000) return 2;
 
   // NUMERICAL_COMPONENT_GEOMETRY.  A 4-um base gap spans the full periodic
   // cell.  The 8x4x8-um x-periodic, downward-opening recess adds a
@@ -110,6 +110,7 @@ int main(int argc, char* argv[])
 
   const Sample initial=measureFlux(lattice,geometry,converter);
   T previous=0., steady=std::numeric_limits<T>::infinity();
+  int stepsToSteady=0, completedSteps=0;
   for (int iT=1; iT<=steps; ++iT) {
     lattice.collideAndStream();
     if (iT%1000==0 || iT==steps) {
@@ -117,7 +118,13 @@ int main(int argc, char* argv[])
       const T magnitude=std::sqrt(now.sumU[0]*now.sumU[0]+now.sumU[1]*now.sumU[1]+now.sumU[2]*now.sumU[2]);
       steady=std::abs(magnitude-previous)/std::max(magnitude,T(1e-30));
       previous=magnitude;
+      if (iT >= 2000 && steady <= 1.e-6) {
+        stepsToSteady=iT;
+        completedSteps=iT;
+        break;
+      }
     }
+    completedSteps=iT;
   }
   const Sample final=measureFlux(lattice,geometry,converter);
   const T revVolume=lengthX*lengthY*fluidHeight;
@@ -132,7 +139,9 @@ int main(int argc, char* argv[])
       << "  \"component\": \"XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT\",\n"
       << "  \"direction\": \"" << direction << "\",\n"
       << "  \"body_force_equivalent_pressure_gradient_pa_per_m\": " << gradient << ",\n"
-      << "  \"steps\": " << steps << ",\n"
+      << "  \"steps\": " << completedSteps << ",\n"
+      << "  \"steps_to_steady\": " << (stepsToSteady ? std::to_string(stepsToSteady) : "null") << ",\n"
+      << "  \"reached_steady_state\": " << (stepsToSteady ? "true" : "false") << ",\n"
       << "  \"dx_m\": " << dx << ",\n"
       << "  \"nx\": " << nx << ", \"ny\": " << ny << ", \"nz_fluid\": " << nzFluid << ",\n"
       << "  \"base_gap_m\": " << baseGap << ", \"base_gap_cells\": " << nBase << ",\n"

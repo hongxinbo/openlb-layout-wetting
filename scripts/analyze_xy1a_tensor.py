@@ -11,9 +11,9 @@ run_dir = Path(sys.argv[1]) if len(sys.argv) == 2 else None
 if run_dir is None or not run_dir.is_dir():
     raise SystemExit("usage: analyze_xy1a_tensor.py RUN_DIRECTORY")
 mu, g0 = 1e-3, 120000.0
-grids = {8: "coarse", 16: "medium", 24: "fine"}
+grids = {8: "coarse", 16: "medium", 24: "fine", 32: "extra_fine"}
 required = [(16, d, g) for d in ("x", "y") for g in (60000., 120000., 180000.)]
-required += [(n, d, g0) for n in (8, 24) for d in ("x", "y")]
+required += [(n, d, g0) for n in (8, 24, 32) for d in ("x", "y")]
 runs = {}
 for n, direction, force in required:
     path = run_dir / f"n{n}_{direction}_{int(force)}.json"
@@ -68,33 +68,66 @@ convergence = {"Kxx_coarse_to_medium_relative_change": relative(tensor["coarse"]
                "Kyy_coarse_to_medium_relative_change": relative(tensor["coarse"]["Kyy_m2"],tensor["medium"]["Kyy_m2"]),
                "Kyy_medium_to_fine_relative_change": relative(tensor["medium"]["Kyy_m2"],tensor["fine"]["Kyy_m2"]),
                "anisotropy_medium_to_fine_absolute_change": abs(tensor["fine"]["anisotropy"]-tensor["medium"]["anisotropy"])}
+convergence.update({"Kxx_fine_to_extra_fine_relative_change": relative(tensor["fine"]["Kxx_m2"],tensor["extra_fine"]["Kxx_m2"]),
+                    "Kyy_fine_to_extra_fine_relative_change": relative(tensor["fine"]["Kyy_m2"],tensor["extra_fine"]["Kyy_m2"]),
+                    "anisotropy_fine_to_extra_fine_absolute_change": abs(tensor["extra_fine"]["anisotropy"]-tensor["fine"]["anisotropy"])})
 def monotonic(key):
-    a,b,c=(tensor[g][key] for g in ("coarse","medium","fine"))
-    return a <= b <= c or a >= b >= c
+    values=[tensor[g][key] for g in ("coarse","medium","fine","extra_fine")]
+    return values == sorted(values) or values == sorted(values,reverse=True)
+def generalized_fit(key):
+    hs=[tensor[g]["dx_m"] for g in ("coarse","medium","fine","extra_fine")]
+    ys=[tensor[g][key] for g in ("coarse","medium","fine","extra_fine")]
+    best=None
+    for i in range(100,8001):
+        p=i/1000.
+        xs=[h**p for h in hs]
+        xm,ym=sum(xs)/len(xs),sum(ys)/len(ys)
+        c=sum((x-xm)*(y-ym) for x,y in zip(xs,ys))/sum((x-xm)**2 for x in xs)
+        kinf=ym-c*xm
+        residual=max(abs(y-(kinf+c*x)) for x,y in zip(xs,ys))/max(abs(y) for y in ys)
+        candidate={"observed_p":p,"K_inf_m2":kinf,"maximum_relative_residual":residual,
+                   "finest_to_extrapolated_relative_difference":abs(ys[-1]-kinf)/abs(kinf)}
+        if best is None or residual < best["maximum_relative_residual"]: best=candidate
+    best["meaningful"] = best["observed_p"] > .1 and best["observed_p"] < 8. and best["maximum_relative_residual"] <= .01
+    return best
+generalized={"Kxx":generalized_fit("Kxx_m2"),"Kyy":generalized_fit("Kyy_m2")}
+nominal_rev=8e-6*8e-6*12e-6
+nominal_fluid=8e-6*8e-6*4e-6 + 8e-6*4e-6*8e-6
+geometry_diagnostics=[]
+for n,label in grids.items():
+    r=runs[n,"x",g0]
+    discrete=r["fluid_cells"]*r["dx_m"]**3
+    geometry_diagnostics.append({"grid":label,"base_gap_cells":n,"dx_m":r["dx_m"],"fluid_cells":r["fluid_cells"],
+      "fluid_volume_fraction":r["fluid_volume_fraction"],"discrete_fluid_volume_m3":discrete,
+      "nominal_fluid_volume_m3":nominal_fluid,"nominal_rev_volume_m3":nominal_rev,
+      "nominal_fluid_volume_fraction":nominal_fluid/nominal_rev,"minimum_throat_cells":r["minimum_throat_cells"],
+      "periodic_x_y_continuity":r["periodic_x_y_continuity"],"connected_by_full_base_gap":r["connected_by_full_base_gap"]})
 all_runs = list(runs.values())
 primary = [regressions["Jx_from_Gx"], regressions["Jy_from_Gy"]]
-gates = {"all_ten_runs_stable": all(math.isfinite(v) for r in all_runs for v in r["J_m_per_s"]),
+gates = {"all_twelve_runs_finite": all(math.isfinite(v) for r in all_runs for v in r["J_m_per_s"]),
          "low_re": max(r["re"] for r in all_runs) < .1,
          "low_mach": max(r["max_lattice_mach"] for r in all_runs) < .1,
          "mass": max(abs(r["mass_drift_fraction"]) for r in all_runs) <= 1e-8,
-         "steady": max(r["steady_relative_change_over_1000_steps"] for r in all_runs) <= 1e-6,
+         "steady": max(r["steady_relative_change_over_1000_steps"] for r in all_runs) <= 1e-6 and all(r.get("reached_steady_state",True) for r in runs.values() if r["base_gap_cells"] == 32),
          "primary_linearity": all(r["r2"] >= .999 and r["intercept_relative_to_flux_scale"] <= .01 for r in primary),
-         "anisotropic": tensor["fine"]["Kxx_m2"] > tensor["fine"]["Kyy_m2"],
+         "anisotropic": tensor["extra_fine"]["Kxx_m2"] > tensor["extra_fine"]["Kyy_m2"],
          "cross_terms_negligible": max(tensor[g]["cross_term_max_normalized"] for g in grids.values()) <= .01,
-         "medium_to_fine_kxx": convergence["Kxx_medium_to_fine_relative_change"] <= .03,
-         "medium_to_fine_kyy": convergence["Kyy_medium_to_fine_relative_change"] <= .03,
+         "Kxx_24_to_32": convergence["Kxx_fine_to_extra_fine_relative_change"] <= .03,
+         "Kyy_24_to_32": convergence["Kyy_fine_to_extra_fine_relative_change"] <= .03,
          "monotonic_grid": monotonic("Kxx_m2") and monotonic("Kyy_m2"),
-         "reciprocity": tensor["fine"]["reciprocity_normalized_error"] <= .01}
+         "reciprocity": tensor["extra_fine"]["reciprocity_normalized_error"] <= .01}
 status = "XY1A_ALIGNED_ANISOTROPIC_TENSOR_PASS" if all(gates.values()) else "XY1A_FULL_TENSOR_HOLD"
 summary = {"schema_version":1, "status":status,
-           "next":"XY1B_ROTATED_TENSOR_COVARIANCE_VALIDATION" if status.endswith("PASS") else "HOLD_RESOLVE_XY1A_TENSOR_GATE",
+           "next":"XY1B_ROTATED_TENSOR_COVARIANCE_VALIDATION" if status.endswith("PASS") else "AUDIT_XY1A_EFFECTIVE_GEOMETRY_AND_BOUNDARY_CONVERGENCE",
            "component":"XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT", "geometry_class":"NUMERICAL_COMPONENT_GEOMETRY",
+           "historical_full_tensor_hold":{"status":"XY1A_FULL_TENSOR_HOLD","reason":"Kyy medium-to-fine relative change was 3.264556439%, above the predeclared 3% gate","fine_grid_base_gap_cells":24},
            "flux_convention":"J_i=(1/V_REV) integral_fluid u_i dV; solid velocity is zero",
-           "grids":{"coarse":{"base_gap_cells":8,"dx_m":.5e-6,"nx":16,"ny":16,"nz":24},"medium":{"base_gap_cells":16,"dx_m":.25e-6,"nx":32,"ny":32,"nz":48},"fine":{"base_gap_cells":24,"dx_m":(1/6)*1e-6,"nx":48,"ny":48,"nz":72}},
+           "grids":{"coarse":{"base_gap_cells":8,"dx_m":.5e-6,"nx":16,"ny":16,"nz":24},"medium":{"base_gap_cells":16,"dx_m":.25e-6,"nx":32,"ny":32,"nz":48},"fine":{"base_gap_cells":24,"dx_m":(1/6)*1e-6,"nx":48,"ny":48,"nz":72},"extra_fine":{"base_gap_cells":32,"dx_m":.125e-6,"nx":64,"ny":64,"nz":96}},
            "medium_forcing_runs":[runs[16,d,g] for d in ("x","y") for g in (60000.,120000.,180000.)],
-           "grid_check_runs":[runs[n,d,g0] for n in (8,24) for d in ("x","y")],
+           "grid_check_runs":[runs[n,d,g0] for n in (8,24,32) for d in ("x","y")],
            "regressions":regressions, "medium_slope_fitted_tensor_m2":fitted, "grid_one_force_tensor_m2":tensor,
-           "convergence":convergence, "grid_uncertainty_m2":{"Kxx":abs(tensor["fine"]["Kxx_m2"]-tensor["medium"]["Kxx_m2"]),"Kyy":abs(tensor["fine"]["Kyy_m2"]-tensor["medium"]["Kyy_m2"])}, "gates":gates}
+           "geometry_discretization_diagnostics":geometry_diagnostics,"generalized_convergence_diagnostic":generalized,
+           "convergence":convergence, "practical_grid_uncertainty":{"Kxx_m2":abs(tensor["extra_fine"]["Kxx_m2"]-tensor["fine"]["Kxx_m2"]),"Kxx_relative":convergence["Kxx_fine_to_extra_fine_relative_change"],"Kyy_m2":abs(tensor["extra_fine"]["Kyy_m2"]-tensor["fine"]["Kyy_m2"]),"Kyy_relative":convergence["Kyy_fine_to_extra_fine_relative_change"]}, "gates":gates}
 (root/"results/summaries/xy1a_aligned_tensor.json").write_text(json.dumps(summary,indent=2)+"\n")
 with (root/"results/tables/xy1a_tensor_forcing_sweep.csv").open("w",newline="") as f:
     fields=["direction","G_pa_per_m","Jx_m_per_s","Jy_m_per_s","Jz_m_per_s","re","max_lattice_mach","mass_drift_fraction","steady_relative_change_over_1000_steps"]

@@ -19,14 +19,14 @@ Do not run R0A, R0B, continuous moving punch, moving geometry, or translated HLB
 1. **XY0 — PASS:** canonical 3-D single-phase parallel-plate Poiseuille resistance validation; see `docs/XY_SINGLE_PHASE_RESISTANCE_METHOD.md`.
 2. **XY0B — PASS:** fixed-domain refinement; original XY0 grid evidence is retained as `XY0_WALL_NORMAL_COMPONENT_CONVERGENCE_PASS`.
 3. **XY1A smoke — PASS:** aligned anisotropic periodic-component smoke, with separate x/y forcing and full-REV flux measurement; see `docs/XY1A_ALIGNED_COMPONENT_DESIGN.md`.
-4. **XY1A full tensor — HOLD:** forcing linearity, stability, and Kxx refinement pass, but the Kyy medium-to-fine change is 3.2646%, above the declared 3% limit; see `docs/XY_PERIODIC_PERMEABILITY_TENSOR_METHOD.md`.
-5. **XY1B:** rotated/off-axis component is deferred until XY1A's Kyy grid gate passes.
+4. **XY1A full tensor — PASS:** the historical 24-cell HOLD (Kyy medium-to-fine 3.2646%) is retained; a 32-cell fixed-geometry check passes the predeclared 24-to-32 Kxx/Kyy 3% gates. See `docs/XY_PERIODIC_PERMEABILITY_TENSOR_METHOD.md`.
+5. **XY1B — NEXT:** rotated/off-axis tensor covariance validation.
 6. **XY2:** EC1XT240 representative-cell definition, not production calculation.
 7. **XY3:** EC1XT240 permeability tensor.
 8. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
 9. **Z0--Z2:** deferred pending vent topology; a blind incompressible groove has no assumed steady Kz.
 
-`NEXT = HOLD_RESOLVE_XY1A_KYY_GRID_CONVERGENCE`.
+`NEXT = XY1B_ROTATED_TENSOR_COVARIANCE_VALIDATION`.
 
 ## XY0 claim boundary
 
