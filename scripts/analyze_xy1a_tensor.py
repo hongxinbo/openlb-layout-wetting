@@ -92,6 +92,7 @@ summary = {"schema_version":1, "status":status,
            "flux_convention":"J_i=(1/V_REV) integral_fluid u_i dV; solid velocity is zero",
            "grids":{"coarse":{"base_gap_cells":8,"dx_m":.5e-6,"nx":16,"ny":16,"nz":24},"medium":{"base_gap_cells":16,"dx_m":.25e-6,"nx":32,"ny":32,"nz":48},"fine":{"base_gap_cells":24,"dx_m":(1/6)*1e-6,"nx":48,"ny":48,"nz":72}},
            "medium_forcing_runs":[runs[16,d,g] for d in ("x","y") for g in (60000.,120000.,180000.)],
+           "grid_check_runs":[runs[n,d,g0] for n in (8,24) for d in ("x","y")],
            "regressions":regressions, "medium_slope_fitted_tensor_m2":fitted, "grid_one_force_tensor_m2":tensor,
            "convergence":convergence, "grid_uncertainty_m2":{"Kxx":abs(tensor["fine"]["Kxx_m2"]-tensor["medium"]["Kxx_m2"]),"Kyy":abs(tensor["fine"]["Kyy_m2"]-tensor["medium"]["Kyy_m2"])}, "gates":gates}
 (root/"results/summaries/xy1a_aligned_tensor.json").write_text(json.dumps(summary,indent=2)+"\n")
