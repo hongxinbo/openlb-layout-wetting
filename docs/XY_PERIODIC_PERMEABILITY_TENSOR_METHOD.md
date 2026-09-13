@@ -22,3 +22,11 @@ difference is the reported practical grid uncertainty.  The 32-cell solver
 stops only after the existing steady criterion is met, or reports HOLD at its
 declared maximum step count. Reciprocity is assessed from raw
 `abs(Kxy-Kyx)` before any possible tensor symmetrization.
+
+For XY1B, the analytical commensurate rotated stripe is checked at 12, 24,
+and 36 base-gap cells. At each grid, x/y single-force tensors are retained in
+raw nonsymmetric form, then reciprocity, symmetric eigenvalues, principal
+angle, trace, determinant, and covariance against rotated XY1A references are
+computed. A generalized unequal-ratio fit may be applied to smooth principal
+values and angle as a diagnostic; it never replaces the declared fine-grid
+reciprocity, angle, tensor-grid-change, and covariance gates.

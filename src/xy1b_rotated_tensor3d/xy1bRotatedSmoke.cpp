@@ -41,12 +41,12 @@ static Sample measure(SuperLattice<T,DESCRIPTOR>& lattice, SuperGeometry<T,3>& g
 }
 
 int main(int argc,char* argv[]) {
-  if(argc!=5) { std::cerr<<"usage: xy1bRotatedSmoke x|y G_Pa_per_m max_steps summary.json\\n"; return 2; }
-  initialize(&argc,&argv); const std::string direction=argv[1]; const T gradient=std::stod(argv[2]);
-  const int maxSteps=std::stoi(argv[3]); const std::string path=argv[4];
-  if((direction!="x"&&direction!="y")||gradient<=0||maxSteps<2000) return 2;
-  const T dx=(1./6.)*1e-6, lx=(40./3.)*1e-6, ly=10.e-6, base=4.e-6, depth=8.e-6, height=base+depth;
-  const int nx=80,ny=60,nz=72,nBase=24; const T rhoPhys=1510.,mu=1.e-3,nu=mu/rhoPhys,tau=.8,charU=3.e-4;
+  if(argc!=6) { std::cerr<<"usage: xy1bRotatedSmoke base_gap_cells x|y G_Pa_per_m max_steps summary.json\\n"; return 2; }
+  initialize(&argc,&argv); const int nBase=std::stoi(argv[1]); const std::string direction=argv[2]; const T gradient=std::stod(argv[3]);
+  const int maxSteps=std::stoi(argv[4]); const std::string path=argv[5];
+  if((nBase!=12&&nBase!=24&&nBase!=36)||(direction!="x"&&direction!="y")||gradient<=0||maxSteps<2000) return 2;
+  const T base=4.e-6, depth=8.e-6, height=base+depth, dx=base/T(nBase), lx=(40./3.)*1e-6, ly=10.e-6;
+  const int nx=10*nBase/3,ny=5*nBase/2,nz=3*nBase; const T rhoPhys=1510.,mu=1.e-3,nu=mu/rhoPhys,tau=.8,charU=3.e-4;
   UnitConverterFromResolutionAndRelaxationTime<T,DESCRIPTOR> converter(nBase,tau,base,charU,nu,rhoPhys);
   IndicatorCuboid3D<T> domain(Vector<T,3>{lx,ly,height+dx},Vector<T,3>{0.,0.,0.});
   CuboidDecomposition3D<T> decomposition(domain,converter.getPhysDeltaX(),singleton::mpi().getSize()); decomposition.setPeriodicity({true,true,false});
