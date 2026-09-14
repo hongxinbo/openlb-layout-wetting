@@ -1,6 +1,11 @@
 {
   "status": "SIM240_FIRST_STAGE_PASS",
   "next": "SIM240_INTERPRET_AND_REPORT_RESULTS",
+  "resistance_definitions": {
+    "primary": "delta_p_boundary_pa / q_in_m3_s",
+    "interior_robustness": "delta_p_interior_pa / q_mid_m3_s",
+    "legacy_resistance_pa_s_m3": "historical delta_p_boundary_pa / q_mean_m3_s, retained without reinterpretation"
+  },
   "velocity_values_label": "NUMERICAL_TEST_VALUES",
   "velocity_values_m_s": [
     0.001,
@@ -12,31 +17,54 @@
     "outlet": "boundary::set<boundary::InterpolatedPressure>",
     "solid": "boundary::set<boundary::BounceBack>"
   },
-  "fits": {
+  "fits_primary": {
     "flat": {
-      "R_fitted_pa_s_m3": 2.772247008380266e+20,
-      "intercept_pa": -0.06406842725752655,
-      "r2": 0.9999999999950516,
-      "conductance_m3_pa_s": 3.607182177407299e-21
+      "R_primary_fitted_pa_s_m3": 2.772247008380266e+20,
+      "intercept_primary_pa": -0.06406842725752655,
+      "r2_primary": 0.9999999999950516,
+      "conductance_primary_m3_pa_s": 3.607182177407299e-21
     },
     "along": {
-      "R_fitted_pa_s_m3": 1.0396870461514323e+20,
-      "intercept_pa": -0.026468104006791154,
-      "r2": 0.9999999999978367,
-      "conductance_m3_pa_s": 9.618278920581532e-21
+      "R_primary_fitted_pa_s_m3": 1.0396870461514323e+20,
+      "intercept_primary_pa": -0.026468104006791154,
+      "r2_primary": 0.9999999999978367,
+      "conductance_primary_m3_pa_s": 9.618278920581532e-21
     },
     "across": {
-      "R_fitted_pa_s_m3": 2.236078046519502e+20,
-      "intercept_pa": -0.0420282862998856,
-      "r2": 0.9999999999967267,
-      "conductance_m3_pa_s": 4.472115817050836e-21
+      "R_primary_fitted_pa_s_m3": 2.236078046519502e+20,
+      "intercept_primary_pa": -0.0420282862998856,
+      "r2_primary": 0.9999999999967267,
+      "conductance_primary_m3_pa_s": 4.472115817050836e-21
     }
   },
-  "ratios": {
+  "ratios_primary": {
     "R_para_over_R0": 0.37503405829586867,
     "R_perp_over_R0": 0.8065940876696878,
     "R_perp_over_R_para": 2.150722233961366
   },
+  "fits_interior": {
+    "flat": {
+      "R_interior_fitted_pa_s_m3": 2.833078656575612e+20,
+      "intercept_interior_pa": -0.031207958106055155,
+      "r2_interior": 0.9999999999987834
+    },
+    "along": {
+      "R_interior_fitted_pa_s_m3": 1.025768864334448e+20,
+      "intercept_interior_pa": -0.013023289601579327,
+      "r2_interior": 0.9999999999994453
+    },
+    "across": {
+      "R_interior_fitted_pa_s_m3": 2.2614248147424543e+20,
+      "intercept_interior_pa": -0.02026209916501937,
+      "r2_interior": 0.9999999999992043
+    }
+  },
+  "ratios_interior": {
+    "R_para_interior_over_R0_interior": 0.36206861463363377,
+    "R_perp_interior_over_R0_interior": 0.798221683500971,
+    "R_perp_interior_over_R_para_interior": 2.204614405224455
+  },
+  "ranking_robust": true,
   "flat_analytical_R_pa_s_m3": 2.8444444444444452e+20,
   "flat_profile_normalized_l2": 0.015197965559151904,
   "case_status": {
@@ -65,7 +93,6 @@
         "p_in_pa": 4989.986955403917,
         "p_out_pa": -1.2335811384723952e-09,
         "delta_p_pa": 4989.98695540515,
-        "resistance_pa_s_m3": 2.8577338040861825e+20,
         "p_interior_in_pa": 4943.1366249426765,
         "p_interior_out_pa": 40.27713637713802,
         "re": 7.211181690324187e-05,
@@ -77,7 +104,14 @@
         "steps_to_steady": 16000,
         "steady_residual": 4.881761787037371e-07,
         "steady": true,
-        "fluid_cells": 345600
+        "fluid_cells": 345600,
+        "legacy_resistance_pa_s_m3": 2.8577338040861825e+20,
+        "resistance_qin_pa_s_m3": 2.7722149752218065e+20,
+        "resistance_qmid_pa_s_m3": 2.8834080581328824e+20,
+        "resistance_qmean_pa_s_m3": 2.8577338040861825e+20,
+        "resistance_qout_pa_s_m3": 2.921852158476967e+20,
+        "delta_p_interior_pa": 4902.859488565538,
+        "resistance_interior_qmid_pa_s_m3": 2.8330624275299972e+20
       },
       {
         "case": "flat",
@@ -98,7 +132,6 @@
         "p_in_pa": 9980.012344259741,
         "p_out_pa": -4.111937128241318e-10,
         "delta_p_pa": 9980.012344260153,
-        "resistance_pa_s_m3": 2.857739502464011e+20,
         "p_interior_in_pa": 9886.311088286098,
         "p_interior_out_pa": 80.55468219671482,
         "re": 0.00014422390868290715,
@@ -110,7 +143,14 @@
         "steps_to_steady": 16000,
         "steady_residual": 4.907388712522683e-07,
         "steady": true,
-        "fluid_cells": 345600
+        "fluid_cells": 345600,
+        "legacy_resistance_pa_s_m3": 2.857739502464011e+20,
+        "resistance_qin_pa_s_m3": 2.7722256511826697e+20,
+        "resistance_qmid_pa_s_m3": 2.8834136606502974e+20,
+        "resistance_qmean_pa_s_m3": 2.857739502464011e+20,
+        "resistance_qout_pa_s_m3": 2.9218524168595774e+20,
+        "delta_p_interior_pa": 9805.756406089384,
+        "resistance_interior_qmid_pa_s_m3": 2.8330678358918735e+20
       },
       {
         "case": "flat",
@@ -131,7 +171,6 @@
         "p_in_pa": 14970.07618555268,
         "p_out_pa": -2.0559685641206582e-09,
         "delta_p_pa": 14970.076185554735,
-        "resistance_pa_s_m3": 2.8577452061053662e+20,
         "p_interior_in_pa": 14829.523410057835,
         "p_interior_out_pa": 120.83263753603492,
         "re": 0.00021633627512052643,
@@ -143,7 +182,14 @@
         "steps_to_steady": 16000,
         "steady_residual": 4.909045895157425e-07,
         "steady": true,
-        "fluid_cells": 345600
+        "fluid_cells": 345600,
+        "legacy_resistance_pa_s_m3": 2.8577452061053662e+20,
+        "resistance_qin_pa_s_m3": 2.772236330660779e+20,
+        "resistance_qmid_pa_s_m3": 2.8834192656196226e+20,
+        "resistance_qmean_pa_s_m3": 2.8577452061053662e+20,
+        "resistance_qout_pa_s_m3": 2.9218526853667963e+20,
+        "delta_p_interior_pa": 14708.690772521799,
+        "resistance_interior_qmid_pa_s_m3": 2.833073246912091e+20
       }
     ],
     "along": [
@@ -166,7 +212,6 @@
         "p_in_pa": 3119.037318934923,
         "p_out_pa": -8.635067969306767e-10,
         "delta_p_pa": 3119.0373189357865,
-        "resistance_pa_s_m3": 1.0525838086222592e+20,
         "p_interior_in_pa": 3043.781540600484,
         "p_interior_out_pa": 17.833394205061563,
         "re": 7.37506538608457e-05,
@@ -178,7 +223,14 @@
         "steps_to_steady": 16000,
         "steady_residual": 7.87262544449058e-08,
         "steady": true,
-        "fluid_cells": 576000
+        "fluid_cells": 576000,
+        "legacy_resistance_pa_s_m3": 1.0525838086222592e+20,
+        "resistance_qin_pa_s_m3": 1.0396791063112594e+20,
+        "resistance_qmid_pa_s_m3": 1.0573211501236191e+20,
+        "resistance_qmean_pa_s_m3": 1.0525838086222592e+20,
+        "resistance_qout_pa_s_m3": 1.0609993200442455e+20,
+        "delta_p_interior_pa": 3025.948146395422,
+        "resistance_interior_qmid_pa_s_m3": 1.0257648906403191e+20
       },
       {
         "case": "along",
@@ -199,7 +251,6 @@
         "p_in_pa": 6238.09051163882,
         "p_out_pa": -3.700743415417186e-10,
         "delta_p_pa": 6238.0905116391905,
-        "resistance_pa_s_m3": 1.0525852485840978e+20,
         "p_interior_in_pa": 6087.5783621670935,
         "p_interior_out_pa": 35.666899566145794,
         "re": 0.00014750148655204464,
@@ -211,7 +262,14 @@
         "steps_to_steady": 16000,
         "steady_residual": 8.402159225774307e-08,
         "steady": true,
-        "fluid_cells": 576000
+        "fluid_cells": 576000,
+        "legacy_resistance_pa_s_m3": 1.0525852485840978e+20,
+        "resistance_qin_pa_s_m3": 1.0396817519396022e+20,
+        "resistance_qmid_pa_s_m3": 1.0573225563635239e+20,
+        "resistance_qmean_pa_s_m3": 1.0525852485840978e+20,
+        "resistance_qout_pa_s_m3": 1.0609995379975723e+20,
+        "delta_p_interior_pa": 6051.911462600948,
+        "resistance_interior_qmid_pa_s_m3": 1.0257662158931259e+20
       },
       {
         "case": "along",
@@ -232,7 +290,6 @@
         "p_in_pa": 9357.159595837495,
         "p_out_pa": -2.467162276944791e-10,
         "delta_p_pa": 9357.159595837742,
-        "resistance_pa_s_m3": 1.0525866881914243e+20,
         "p_interior_in_pa": 9131.390483199359,
         "p_interior_out_pa": 53.50051639806263,
         "re": 0.00022125249865147177,
@@ -244,7 +301,14 @@
         "steps_to_steady": 16000,
         "steady_residual": 8.432919688206488e-08,
         "steady": true,
-        "fluid_cells": 576000
+        "fluid_cells": 576000,
+        "legacy_resistance_pa_s_m3": 1.0525866881914243e+20,
+        "resistance_qin_pa_s_m3": 1.0396843995380413e+20,
+        "resistance_qmid_pa_s_m3": 1.0573239610728769e+20,
+        "resistance_qmean_pa_s_m3": 1.0525866881914243e+20,
+        "resistance_qout_pa_s_m3": 1.0609997543656699e+20,
+        "delta_p_interior_pa": 9077.889966801296,
+        "resistance_interior_qmid_pa_s_m3": 1.0257675397726018e+20
       }
     ],
     "across": [
@@ -267,7 +331,6 @@
         "p_in_pa": 4024.9026596992458,
         "p_out_pa": -1.2335811384723952e-09,
         "delta_p_pa": 4024.9026597004795,
-        "resistance_pa_s_m3": 2.29447401446549e+20,
         "p_interior_in_pa": 3967.625848089181,
         "p_interior_out_pa": 34.76461701886793,
         "re": 4.348024065071638e-05,
@@ -279,7 +342,14 @@
         "steps_to_steady": 22000,
         "steady_residual": 2.5169728830047334e-06,
         "steady": true,
-        "fluid_cells": 576000
+        "fluid_cells": 576000,
+        "legacy_resistance_pa_s_m3": 2.29447401446549e+20,
+        "resistance_qin_pa_s_m3": 2.2360570331646758e+20,
+        "resistance_qmid_pa_s_m3": 2.3143385975748192e+20,
+        "resistance_qmean_pa_s_m3": 2.29447401446549e+20,
+        "resistance_qout_pa_s_m3": 2.335441703212871e+20,
+        "delta_p_interior_pa": 3932.8612310703134,
+        "resistance_interior_qmid_pa_s_m3": 2.261414328626021e+20
       },
       {
         "case": "across",
@@ -300,7 +370,6 @@
         "p_in_pa": 8049.830530692867,
         "p_out_pa": -8.223874256482636e-10,
         "delta_p_pa": 8049.830530693689,
-        "resistance_pa_s_m3": 2.2944777577285865e+20,
         "p_interior_in_pa": 7935.276312952818,
         "p_interior_out_pa": 69.52952478705365,
         "re": 8.696061544388571e-05,
@@ -312,7 +381,14 @@
         "steps_to_steady": 22000,
         "steady_residual": 2.5169598434286837e-06,
         "steady": true,
-        "fluid_cells": 576000
+        "fluid_cells": 576000,
+        "legacy_resistance_pa_s_m3": 2.2944777577285865e+20,
+        "resistance_qin_pa_s_m3": 2.2360640363024135e+20,
+        "resistance_qmid_pa_s_m3": 2.3143422662699093e+20,
+        "resistance_qmean_pa_s_m3": 2.2944777577285865e+20,
+        "resistance_qout_pa_s_m3": 2.3354419622012096e+20,
+        "delta_p_interior_pa": 7865.746788165765,
+        "resistance_interior_qmid_pa_s_m3": 2.2614178246632102e+20
       },
       {
         "case": "across",
@@ -333,7 +409,6 @@
         "p_in_pa": 12074.783627154295,
         "p_out_pa": -2.055968564120659e-10,
         "delta_p_pa": 12074.7836271545,
-        "resistance_pa_s_m3": 2.2944815024689575e+20,
         "p_interior_in_pa": 11902.95140984005,
         "p_interior_out_pa": 104.29472317091869,
         "re": 0.00013044112457280928,
@@ -345,7 +420,14 @@
         "steps_to_steady": 22000,
         "steady_residual": 2.5166464605276187e-06,
         "steady": true,
-        "fluid_cells": 576000
+        "fluid_cells": 576000,
+        "legacy_resistance_pa_s_m3": 2.2944815024689575e+20,
+        "resistance_qin_pa_s_m3": 2.2360710420678935e+20,
+        "resistance_qmid_pa_s_m3": 2.314345933312824e+20,
+        "resistance_qmean_pa_s_m3": 2.2944815024689575e+20,
+        "resistance_qout_pa_s_m3": 2.3354422246187555e+20,
+        "delta_p_interior_pa": 11798.656686669132,
+        "resistance_interior_qmid_pa_s_m3": 2.2614213193799264e+20
       }
     ]
   }

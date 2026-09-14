@@ -12,30 +12,49 @@ CASES=['flat','along','across']; LABEL={'flat':'Flat','along':'Along groove','ac
 MU=1e-3; DX=5e-9; H=75e-9; L=2.4e-6
 
 def load():
-    return {c:[json.loads((RAW/f'{c}_u{i}.json').read_text()) for i in (1,2,3)] for c in CASES}
+    data={c:[json.loads((RAW/f'{c}_u{i}.json').read_text()) for i in (1,2,3)] for c in CASES}
+    for rows in data.values():
+        for r in rows:
+            dp=r['delta_p_pa']
+            legacy=r.pop('resistance_pa_s_m3')
+            r['legacy_resistance_pa_s_m3']=legacy
+            r['resistance_qin_pa_s_m3']=dp/r['q_in_m3_s']
+            r['resistance_qmid_pa_s_m3']=dp/r['q_mid_m3_s']
+            r['resistance_qmean_pa_s_m3']=dp/r['q_mean_m3_s']
+            r['resistance_qout_pa_s_m3']=dp/r['q_out_m3_s']
+            r['delta_p_interior_pa']=r['p_interior_in_pa']-r['p_interior_out_pa']
+            r['resistance_interior_qmid_pa_s_m3']=r['delta_p_interior_pa']/r['q_mid_m3_s']
+    return data
 
 def fit(rows):
     q=np.array([r['q_in_m3_s'] for r in rows]); dp=np.array([r['delta_p_pa'] for r in rows])
     slope,intercept=np.polyfit(q,dp,1); pred=slope*q+intercept
     r2=1-float(np.sum((dp-pred)**2))/float(np.sum((dp-dp.mean())**2))
-    return {'R_fitted_pa_s_m3':float(slope),'intercept_pa':float(intercept),'r2':r2,'conductance_m3_pa_s':float(1/slope)}
+    return {'R_primary_fitted_pa_s_m3':float(slope),'intercept_primary_pa':float(intercept),'r2_primary':r2,'conductance_primary_m3_pa_s':float(1/slope)}
+
+def fit_interior(rows):
+    q=np.array([r['q_mid_m3_s'] for r in rows])
+    dp=np.array([r['delta_p_interior_pa'] for r in rows])
+    slope,intercept=np.polyfit(q,dp,1); pred=slope*q+intercept
+    r2=1-float(np.sum((dp-pred)**2))/float(np.sum((dp-dp.mean())**2))
+    return {'R_interior_fitted_pa_s_m3':float(slope),'intercept_interior_pa':float(intercept),'r2_interior':r2}
 
 def write_tables(data,fits):
-    fields=['u_in_m_s','q_in_m3_s','q_mid_m3_s','q_out_m3_s','q_mean_m3_s','mean_u_m_s','p_in_pa','p_out_pa','delta_p_pa','resistance_primary_pa_s_m3','resistance_three_plane_diagnostic_pa_s_m3','re','max_lattice_mach','rho_min','rho_max','mass_drift_fraction','relative_flow_imbalance','steps_to_steady','steady_residual','steady']
+    fields=['u_in_m_s','q_in_m3_s','q_mid_m3_s','q_out_m3_s','q_mean_m3_s','mean_u_m_s','p_in_pa','p_out_pa','delta_p_pa','resistance_qin_pa_s_m3','resistance_qmid_pa_s_m3','resistance_qmean_pa_s_m3','resistance_qout_pa_s_m3','legacy_resistance_pa_s_m3','re','max_lattice_mach','rho_min','rho_max','mass_drift_fraction','relative_flow_imbalance','steps_to_steady','steady_residual','steady']
     for c,rows in data.items():
         with (TABLE/f'sim240_{c if c=="flat" else c+"_groove"}_sweep.csv').open('w',newline='') as f:
             w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n');w.writeheader()
             for r in rows:
-                row={k:r[k] for k in fields if k in r};row['resistance_primary_pa_s_m3']=r['delta_p_pa']/r['q_in_m3_s'];row['resistance_three_plane_diagnostic_pa_s_m3']=r['resistance_pa_s_m3'];w.writerow(row)
-    r0=fits['flat']['R_fitted_pa_s_m3']
+                w.writerow({k:r[k] for k in fields})
+    r0=fits['flat']['R_primary_fitted_pa_s_m3']
     with (TABLE/'sim240_resistance_comparison.csv').open('w',newline='') as f:
-        fields2=['case','geometry','flow_direction','u_values_m_s','R_fitted_pa_s_m3','r2','R_over_R0','conductance_m3_pa_s','re_range','mach_range','max_flow_imbalance','max_abs_mass_drift','steady_status']
+        fields2=['case','geometry','flow_direction','u_values_m_s','R_primary_fitted_pa_s_m3','r2_primary','R_primary_over_R0','conductance_primary_m3_pa_s','R_interior_fitted_pa_s_m3','r2_interior','R_interior_over_R0_interior','re_range','mach_range','max_boundary_interpolation_plane_flow_difference','max_abs_domain_mass_drift','steady_status']
         w=csv.DictWriter(f,fieldnames=fields2,lineterminator='\n');w.writeheader()
         for c in CASES:
-            rows=data[c]; ft=fits[c]
+            rows=data[c]; ft=fits[c]; fi=INTERIOR_FITS[c]
             w.writerow({'case':LABEL[c],'geometry':('75 nm flat film' if c=='flat' else '75 nm film + 100 nm deep, 120 nm groove'),
-              'flow_direction':('x, across ten periods' if c=='across' else 'y'),'u_values_m_s':'0.001;0.002;0.003','R_fitted_pa_s_m3':ft['R_fitted_pa_s_m3'],'r2':ft['r2'],'R_over_R0':ft['R_fitted_pa_s_m3']/r0,'conductance_m3_pa_s':ft['conductance_m3_pa_s'],
-              're_range':f"{min(r['re'] for r in rows):.6g}..{max(r['re'] for r in rows):.6g}",'mach_range':f"{min(r['max_lattice_mach'] for r in rows):.6g}..{max(r['max_lattice_mach'] for r in rows):.6g}",'max_flow_imbalance':max(r['relative_flow_imbalance'] for r in rows),'max_abs_mass_drift':max(abs(r['mass_drift_fraction']) for r in rows),'steady_status':'PASS' if all(r['steady'] for r in rows) else 'HOLD'})
+              'flow_direction':('x, across ten periods' if c=='across' else 'y'),'u_values_m_s':'0.001;0.002;0.003','R_primary_fitted_pa_s_m3':ft['R_primary_fitted_pa_s_m3'],'r2_primary':ft['r2_primary'],'R_primary_over_R0':ft['R_primary_fitted_pa_s_m3']/r0,'conductance_primary_m3_pa_s':ft['conductance_primary_m3_pa_s'],'R_interior_fitted_pa_s_m3':fi['R_interior_fitted_pa_s_m3'],'r2_interior':fi['r2_interior'],'R_interior_over_R0_interior':fi['R_interior_fitted_pa_s_m3']/INTERIOR_FITS['flat']['R_interior_fitted_pa_s_m3'],
+              're_range':f"{min(r['re'] for r in rows):.6g}..{max(r['re'] for r in rows):.6g}",'mach_range':f"{min(r['max_lattice_mach'] for r in rows):.6g}..{max(r['max_lattice_mach'] for r in rows):.6g}",'max_boundary_interpolation_plane_flow_difference':max(r['relative_flow_imbalance'] for r in rows),'max_abs_domain_mass_drift':max(abs(r['mass_drift_fraction']) for r in rows),'steady_status':'PASS' if all(r['steady'] for r in rows) else 'HOLD'})
 
 def grid_slice(path,axis):
     a=np.genfromtxt(path,delimiter=',',names=True); s=a['y_m'] if axis=='y' else a['x_m']; z=a['z_m']; un=a['uy_m_s'] if axis=='y' else a['ux_m_s']
@@ -64,11 +83,13 @@ def figures(data):
     return l2
 
 def main():
-    data=load();fits={c:fit(data[c]) for c in CASES};write_tables(data,fits);profile_l2=figures(data)
-    r0=fits['flat']['R_fitted_pa_s_m3']; rp=fits['along']['R_fitted_pa_s_m3']; rt=fits['across']['R_fitted_pa_s_m3']
-    per_case={c:('PASS' if all(r['steady'] for r in data[c]) and fits[c]['r2']>=.999 and max(r['max_lattice_mach'] for r in data[c])<.1 and max(r['relative_flow_imbalance'] for r in data[c])<.05 else 'HOLD') for c in CASES}
+    global INTERIOR_FITS
+    data=load();fits={c:fit(data[c]) for c in CASES};INTERIOR_FITS={c:fit_interior(data[c]) for c in CASES};write_tables(data,fits);profile_l2=figures(data)
+    r0=fits['flat']['R_primary_fitted_pa_s_m3']; rp=fits['along']['R_primary_fitted_pa_s_m3']; rt=fits['across']['R_primary_fitted_pa_s_m3']
+    per_case={c:('PASS' if all(r['steady'] for r in data[c]) and fits[c]['r2_primary']>=.999 and max(r['max_lattice_mach'] for r in data[c])<.1 and max(r['relative_flow_imbalance'] for r in data[c])<.05 else 'HOLD') for c in CASES}
     status='SIM240_FIRST_STAGE_PASS' if all(v=='PASS' for v in per_case.values()) else 'SIM240_FIRST_STAGE_HOLD'
-    summary={'status':status,'next':'SIM240_INTERPRET_AND_REPORT_RESULTS' if status.endswith('PASS') else 'RESOLVE_SIM240_FIRST_STAGE_BLOCKER','velocity_values_label':'NUMERICAL_TEST_VALUES','velocity_values_m_s':[.001,.002,.003],'boundary_api':{'inlet':'boundary::set<boundary::InterpolatedVelocity>','outlet':'boundary::set<boundary::InterpolatedPressure>','solid':'boundary::set<boundary::BounceBack>'},'fits':fits,'ratios':{'R_para_over_R0':rp/r0,'R_perp_over_R0':rt/r0,'R_perp_over_R_para':rt/rp},'flat_analytical_R_pa_s_m3':12*MU*L/(240e-9*H**3),'flat_profile_normalized_l2':profile_l2,'case_status':per_case,'runs':data}
+    ri0=INTERIOR_FITS['flat']['R_interior_fitted_pa_s_m3']; rip=INTERIOR_FITS['along']['R_interior_fitted_pa_s_m3']; rit=INTERIOR_FITS['across']['R_interior_fitted_pa_s_m3']
+    summary={'status':status,'next':'SIM240_INTERPRET_AND_REPORT_RESULTS' if status.endswith('PASS') else 'RESOLVE_SIM240_FIRST_STAGE_BLOCKER','resistance_definitions':{'primary':'delta_p_boundary_pa / q_in_m3_s','interior_robustness':'delta_p_interior_pa / q_mid_m3_s','legacy_resistance_pa_s_m3':'historical delta_p_boundary_pa / q_mean_m3_s, retained without reinterpretation'},'velocity_values_label':'NUMERICAL_TEST_VALUES','velocity_values_m_s':[.001,.002,.003],'boundary_api':{'inlet':'boundary::set<boundary::InterpolatedVelocity>','outlet':'boundary::set<boundary::InterpolatedPressure>','solid':'boundary::set<boundary::BounceBack>'},'fits_primary':fits,'ratios_primary':{'R_para_over_R0':rp/r0,'R_perp_over_R0':rt/r0,'R_perp_over_R_para':rt/rp},'fits_interior':INTERIOR_FITS,'ratios_interior':{'R_para_interior_over_R0_interior':rip/ri0,'R_perp_interior_over_R0_interior':rit/ri0,'R_perp_interior_over_R_para_interior':rit/rip},'ranking_robust':rip<rit<ri0 and rp<rt<r0,'flat_analytical_R_pa_s_m3':12*MU*L/(240e-9*H**3),'flat_profile_normalized_l2':profile_l2,'case_status':per_case,'runs':data}
     (ROOT/'results/summaries/sim240_first_stage.json').write_text(json.dumps(summary,indent=2)+'\n')
-    print(json.dumps({'status':status,'fits':fits,'ratios':summary['ratios'],'case_status':per_case},indent=2))
+    print(json.dumps({'status':status,'fits_primary':fits,'ratios_primary':summary['ratios_primary'],'fits_interior':INTERIOR_FITS,'ratios_interior':summary['ratios_interior'],'ranking_robust':summary['ranking_robust'],'case_status':per_case},indent=2))
 if __name__=='__main__': main()

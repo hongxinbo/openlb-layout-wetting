@@ -9,6 +9,8 @@ Three liquid-filled, fixed-geometry cases were run at the senior-specified `rho=
 
 The OpenLB 1.9 implementation follows `examples/laminar/poiseuille3d/case.h`: `boundary::set<boundary::InterpolatedVelocity>` at the inlet, `boundary::set<boundary::InterpolatedPressure>` at the outlet, and `boundary::set<boundary::BounceBack>` at solid walls. Pressure is `converter.getPhysPressure((rho-1)/invCs2)`, identical to `SuperLatticePhysPressure3D`. `Pin` and `Pout` are fluid-node averages on the exact boundary planes; two-cell-offset interior pressure averages are retained in the JSON. `Q` for the primary fit is the prescribed inlet-plane integral `sum(u_normal dx^2)`. Middle and outlet plane integrals are independent diagnostics.
 
+Resistance names are explicit. Each summarized run contains `resistance_qin_pa_s_m3`, `resistance_qmid_pa_s_m3`, `resistance_qmean_pa_s_m3`, and `resistance_qout_pa_s_m3`. The old ambiguous value is retained as `legacy_resistance_pa_s_m3` and documented as `DeltaP_boundary/Q_mean`; it has not been silently reinterpreted. The fitted primary resistance remains `DeltaP_boundary` versus `Q_in`.
+
 The velocities `[0.001, 0.002, 0.003] m/s` are `NUMERICAL_TEST_VALUES`, chosen as a simple 1:2:3 sweep. They produce `Re < 2.22e-4`, maximum lattice Mach `< 5.55e-6`, visible kPa-scale pressure drops, and no need for further tuning.
 
 Wall shear figures use the explicitly approximate one-sided relation `tau_w=mu du_t/dn` from the nearest resolved fluid velocity; no unsupported OpenLB field is claimed. Streamlines are generated from the actual final two-dimensional velocity slices.
@@ -61,13 +63,36 @@ Primary `R` below is `DeltaP/Q_in`. `Q_mid` and `Q_out` expose interpolation-bou
 
 `R_para/R0=0.375034`, `R_perp/R0=0.806594`, and `R_perp/R_para=2.150722`.
 
+## Interior-plane robustness check
+
+This is a diagnostic for interpolation-boundary effects, not a replacement for the senior-requested primary metric. It fits
+`DeltaP_interior = p_interior_in - p_interior_out` against `Q_mid` using the same existing runs.
+
+| Case | fitted interior R (Pa s/m3) | interior intercept (Pa) | interior R2 | interior R/R0 |
+|---|---:|---:|---:|---:|
+| Flat | 2.833078657e20 | -0.03121 | 0.999999999999 | 1.000000 |
+| Along groove | 1.025768864e20 | -0.01302 | 0.999999999999 | 0.362069 |
+| Across groove | 2.261424815e20 | -0.02026 | 0.999999999999 | 0.798222 |
+
+The recomputed ratios are `Rpara_interior/R0_interior=0.3620686`,
+`Rperp_interior/R0_interior=0.7982217`, and
+`Rperp_interior/Rpara_interior=2.2046144`. Both conventions preserve
+`R_parallel < R_perpendicular < R_flat`; therefore the physical ranking is
+robust to the pressure/flow sampling convention.
+
 The flat analytical resistance is `2.844444e20 Pa s/m3`; the fitted inlet-defined value is 2.538% lower. The mid-length velocity-profile normalized L2 discrepancy is 1.520%. This is a sanity check, not a machine-precision equivalence requirement for the inlet/outlet formulation.
 
-Across all runs: `Re=4.348e-5..2.213e-4`, lattice Mach `1.372e-6..5.546e-6`, density `1.000000..1.00001339`, absolute domain mass drift `<=2.139e-6`, and the reported maximum three-plane flow deviation is 1.241% (along), 2.612% (across), and 3.085% (flat). Every run passed the adaptive middle-plane steady test. Exact values are in the CSV tables and JSON summary.
+Across all runs: `Re=4.348e-5..2.213e-4`, lattice Mach `1.372e-6..5.546e-6`, density `1.000000..1.00001339`, and absolute domain mass drift `<=2.139e-6`. Separately, the maximum inlet/mid/outlet boundary/interpolation-plane flow reconstruction differences are 1.241% (along), 2.612% (across), and 3.085% (flat). These reconstruction differences are kept visible and are not labelled mass-conservation failures. Every run passed the adaptive middle-plane steady test. Exact values are in the CSV tables and JSON summary.
 
 ## Interpretation and claim boundary
 
 Within this idealized, single-phase, liquid-filled comparison, the groove helps transport in both orientations relative to the 75 nm flat film. Along-groove resistance falls by about 62.5%; across-groove resistance falls by about 19.3%. Across-groove transport remains about 2.15 times more resistive than along-groove transport. These results do not validate gas displacement, wetting, real EC1 geometry, or nanoimprint dynamics.
+
+## Senior-facing conclusion
+
+- Primary: `R_parallel/R0=0.375034`, `R_perpendicular/R0=0.806594`, and `R_perpendicular/R_parallel=2.150722`.
+- Interior robustness: `0.362069`, `0.798222`, and `2.204614`, respectively.
+- Conclusion: within this idealized fully liquid-filled single-phase model, the groove reduces hydraulic resistance in both directions, much more strongly along the groove; across-groove resistance remains about twice the along-groove resistance. This does not represent gas-liquid filling or real imprint dynamics.
 
 ## Figures and compact data
 
