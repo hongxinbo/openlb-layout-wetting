@@ -1,0 +1,43 @@
+schema_version: 1
+case_id: xy0_single_phase_hydraulic_resistance_validation
+status_before_run: NOT_RUN
+scope: NUMERICAL_COMPONENT_GEOMETRY
+physics:
+  phase_count: 1
+  liquid_density_kg_m3: 1510.0
+  liquid_dynamic_viscosity_pa_s: 1.0e-3
+  excluded: [FreeSurface, air, wetting, surface_tension, moving_wall, HLBM, OAS_geometry]
+geometry:
+  type: 3d_parallel_plate_slit
+  flow_direction: x
+  hydraulic_gap_m: 1.0e-5
+  streamwise_periods: 2.0
+  y_periodic_cells: 5
+  wall_material: 2
+  fluid_material: 1
+  wall_location: half_way_bounce_back; hydraulic walls lie dx/2 inside material-2 planes
+boundary_conditions:
+  x: periodic
+  y: periodic
+  z_bottom: stationary_no_slip_bounce_back
+  z_top: stationary_no_slip_bounce_back
+forcing:
+  method: uniform_body_force_via_ForcedBGKdynamics_and_fields_set_FORCE
+  source_backed_example: examples/laminar/poiseuille3d
+  pressure_gradient_pa_per_m: [60000.0, 120000.0, 180000.0, 240000.0]
+numerics:
+  descriptor: D3Q19_FORCE
+  collision: ForcedBGKdynamics
+  tau: 0.8
+  characteristic_velocity_m_s: 3.0e-4
+  steps: 24000
+  grid_hydraulic_gap_cells: [12, 24, 36]
+  sweep_grid_hydraulic_gap_cells: 24
+acceptance:
+  mean_flow_relative_error_max: 0.02
+  hydraulic_resistance_relative_error_max: 0.02
+  velocity_profile_normalized_l2_error_max: 0.03
+  delta_p_q_r_squared_min: 0.999
+  max_lattice_mach_max: 0.1
+  steady_relative_change_over_1000_steps_max: 1.0e-6
+  mass_drift_fraction_abs_max: 1.0e-8

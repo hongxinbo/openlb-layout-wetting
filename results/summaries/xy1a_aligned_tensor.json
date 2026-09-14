@@ -1,0 +1,713 @@
+{
+  "schema_version": 1,
+  "status": "XY1A_ALIGNED_ANISOTROPIC_TENSOR_PASS",
+  "next": "XY1B_ROTATED_TENSOR_COVARIANCE_VALIDATION",
+  "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+  "geometry_class": "NUMERICAL_COMPONENT_GEOMETRY",
+  "historical_full_tensor_hold": {
+    "status": "XY1A_FULL_TENSOR_HOLD",
+    "reason": "Kyy medium-to-fine relative change was 3.264556439%, above the predeclared 3% gate",
+    "fine_grid_base_gap_cells": 24
+  },
+  "flux_convention": "J_i=(1/V_REV) integral_fluid u_i dV; solid velocity is zero",
+  "grids": {
+    "coarse": {
+      "base_gap_cells": 8,
+      "dx_m": 5e-07,
+      "nx": 16,
+      "ny": 16,
+      "nz": 24
+    },
+    "medium": {
+      "base_gap_cells": 16,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz": 48
+    },
+    "fine": {
+      "base_gap_cells": 24,
+      "dx_m": 1.6666666666666665e-07,
+      "nx": 48,
+      "ny": 48,
+      "nz": 72
+    },
+    "extra_fine": {
+      "base_gap_cells": 32,
+      "dx_m": 1.25e-07,
+      "nx": 64,
+      "ny": 64,
+      "nz": 96
+    }
+  },
+  "medium_forcing_runs": [
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 60000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        6.428770606409217e-05,
+        -6.139204030480528e-16,
+        -5.757411466127703e-16
+      ],
+      "mean_speed_m_per_s": 9.067577274053772e-05,
+      "re": 0.0005476816673528478,
+      "max_lattice_mach": 1.153500009284599e-05,
+      "mass_drift_fraction": 0,
+      "steady_relative_change_over_1000_steps": 3.599207999581612e-10
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        0.0001285754121378819,
+        -5.770479057557556e-16,
+        1.1546573963180106e-15
+      ],
+      "mean_speed_m_per_s": 0.00018135154549475354,
+      "re": 0.0010953633347883112,
+      "max_lattice_mach": 2.3070000188141635e-05,
+      "mass_drift_fraction": 1.9984014443252818e-15,
+      "steady_relative_change_over_1000_steps": 3.689897295738108e-10
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 180000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        0.00019286311820858768,
+        -8.969571332365598e-16,
+        -6.23159589798104e-16
+      ],
+      "mean_speed_m_per_s": 0.0002720273182446195,
+      "re": 0.0016430450021975018,
+      "max_lattice_mach": 3.460500028174064e-05,
+      "mass_drift_fraction": 8.659739592076221e-15,
+      "steady_relative_change_over_1000_steps": 3.6367500802902845e-10
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 60000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        -1.4490416835301602e-16,
+        2.7543486952118406e-05,
+        2.498732853864161e-13
+      ],
+      "mean_speed_m_per_s": 3.964007639193827e-05,
+      "re": 0.00023942606140730708,
+      "max_lattice_mach": 8.118807422028145e-06,
+      "mass_drift_fraction": -2.2093438190040615e-14,
+      "steady_relative_change_over_1000_steps": 1.70738255883545e-12
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        -1.0384337336201699e-18,
+        5.508697389806346e-05,
+        1.0002157385275816e-12
+      ],
+      "mean_speed_m_per_s": 7.928015277579236e-05,
+      "re": 0.0004788521227657858,
+      "max_lattice_mach": 1.6237614896117805e-05,
+      "mass_drift_fraction": -3.1086244689504383e-15,
+      "steady_relative_change_over_1000_steps": 2.128569726325616e-12
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 180000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        5.848770709699959e-17,
+        8.263046082903421e-05,
+        2.2498130372024357e-12
+      ],
+      "mean_speed_m_per_s": 0.00011892022913782423,
+      "re": 0.0007182781839924584,
+      "max_lattice_mach": 2.4356422419535374e-05,
+      "mass_drift_fraction": -2.631228568361621e-14,
+      "steady_relative_change_over_1000_steps": 2.2806650927931338e-12
+    }
+  ],
+  "grid_check_runs": [
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 8000,
+      "dx_m": 5e-07,
+      "nx": 16,
+      "ny": 16,
+      "nz_fluid": 24,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 8,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 4624,
+      "solid_cells": 2890,
+      "fluid_volume_fraction": 0.6153846153846154,
+      "minimum_throat_cells": 8,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        0.00013741734279995016,
+        -1.2426201066347244e-17,
+        3.1162527796377035e-16
+      ],
+      "mean_speed_m_per_s": 0.00018258913368574825,
+      "re": 0.0011028383674619193,
+      "max_lattice_mach": 4.5977510443585095e-05,
+      "mass_drift_fraction": -3.774758283725532e-15,
+      "steady_relative_change_over_1000_steps": 8.678834602923841e-15
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 8000,
+      "dx_m": 5e-07,
+      "nx": 16,
+      "ny": 16,
+      "nz_fluid": 24,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 8,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 4624,
+      "solid_cells": 2890,
+      "fluid_volume_fraction": 0.6153846153846154,
+      "minimum_throat_cells": 8,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        4.7225005926727674e-18,
+        4.9723393349971076e-05,
+        5.480884877945097e-12
+      ],
+      "mean_speed_m_per_s": 6.771677985099997e-05,
+      "re": 0.00040900935030003984,
+      "max_lattice_mach": 2.9482405518031867e-05,
+      "mass_drift_fraction": 2.1316282072803006e-14,
+      "steady_relative_change_over_1000_steps": 1.257220918570501e-12
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 16000,
+      "dx_m": 1.6666666666666665e-07,
+      "nx": 48,
+      "ny": 48,
+      "nz_fluid": 72,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 24,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 115248,
+      "solid_cells": 62426,
+      "fluid_volume_fraction": 0.6486486486486487,
+      "minimum_throat_cells": 24,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        0.00012606233547675678,
+        -6.890386912819394e-16,
+        -1.0541441246181304e-15
+      ],
+      "mean_speed_m_per_s": 0.0001814541571877016,
+      "re": 0.0010959831094137177,
+      "max_lattice_mach": 1.544146726982732e-05,
+      "mass_drift_fraction": 0,
+      "steady_relative_change_over_1000_steps": 8.929632541487064e-10
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 16000,
+      "dx_m": 1.6666666666666665e-07,
+      "nx": 48,
+      "ny": 48,
+      "nz_fluid": 72,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 24,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 115248,
+      "solid_cells": 62426,
+      "fluid_volume_fraction": 0.6486486486486487,
+      "minimum_throat_cells": 24,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        5.837646513283018e-18,
+        5.688531925162615e-05,
+        3.950798672234329e-13
+      ],
+      "mean_speed_m_per_s": 8.34432391134612e-05,
+      "re": 0.0005039971642453057,
+      "max_lattice_mach": 1.1165926826659056e-05,
+      "mass_drift_fraction": 4.0190073491430667e-14,
+      "steady_relative_change_over_1000_steps": 8.681879557679319e-12
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 19000,
+      "steps_to_steady": 19000,
+      "reached_steady_state": true,
+      "dx_m": 1.25e-07,
+      "nx": 64,
+      "ny": 64,
+      "nz_fluid": 96,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 32,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 270400,
+      "solid_cells": 143650,
+      "fluid_volume_fraction": 0.6530612244897959,
+      "minimum_throat_cells": 32,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        0.00012488557700699227,
+        -2.4106653104042517e-16,
+        5.048215926098431e-16
+      ],
+      "mean_speed_m_per_s": 0.00018160875387715042,
+      "re": 0.0010969168734179884,
+      "max_lattice_mach": 1.1621424685715164e-05,
+      "mass_drift_fraction": -2.220446049250313e-16,
+      "steady_relative_change_over_1000_steps": 5.581656602201476e-07
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 16000,
+      "steps_to_steady": 16000,
+      "reached_steady_state": true,
+      "dx_m": 1.25e-07,
+      "nx": 64,
+      "ny": 64,
+      "nz_fluid": 96,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 32,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 270400,
+      "solid_cells": 143650,
+      "fluid_volume_fraction": 0.6530612244897959,
+      "minimum_throat_cells": 32,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        1.3494207094063454e-16,
+        5.778730807616772e-05,
+        2.084478727096134e-13
+      ],
+      "mean_speed_m_per_s": 8.558764920345027e-05,
+      "re": 0.0005169494011888396,
+      "max_lattice_mach": 8.503793289501401e-06,
+      "mass_drift_fraction": 2.3092638912203256e-14,
+      "steady_relative_change_over_1000_steps": 4.5400921462819207e-07
+    }
+  ],
+  "regressions": {
+    "Jx_from_Gx": {
+      "slope_m2_pa_s": 1.0714617678707961e-09,
+      "intercept_m_per_s": -7.641592436949396e-15,
+      "r2": 1.0,
+      "maximum_relative_residual": 5.329993595126093e-12,
+      "intercept_relative_to_flux_scale": 3.9621844279655205e-11
+    },
+    "Jy_from_Gx": {
+      "slope_m2_pa_s": -2.3586394182375586e-21,
+      "intercept_m_per_s": -4.1293841715828237e-16,
+      "r2": 0.6537394350620527,
+      "maximum_relative_residual": 0.13258966029056418,
+      "intercept_relative_to_flux_scale": 0.4603769810807399
+    },
+    "Jy_from_Gy": {
+      "slope_m2_pa_s": 4.5905811564096503e-10,
+      "intercept_m_per_s": 1.615621834450201e-14,
+      "r2": 1.0,
+      "maximum_relative_residual": 6.04067357132268e-11,
+      "intercept_relative_to_flux_scale": 1.9552375942728776e-10
+    },
+    "Jx_from_Gy": {
+      "slope_m2_pa_s": 1.6949322954167966e-21,
+      "intercept_m_per_s": -2.325435071132278e-16,
+      "r2": 0.9457911966159867,
+      "maximum_relative_residual": 0.19401234794780076,
+      "intercept_relative_to_flux_scale": 1.60480895585215
+    }
+  },
+  "medium_slope_fitted_tensor_m2": {
+    "Kxx_m2": 1.0714617678707962e-12,
+    "Kyx_m2": -2.3586394182375586e-24,
+    "Kxy_m2": 1.6949322954167967e-24,
+    "Kyy_m2": 4.59058115640965e-13
+  },
+  "grid_one_force_tensor_m2": {
+    "coarse": {
+      "Kxx_m2": 1.145144523332918e-12,
+      "Kyx_m2": -1.035516755528937e-25,
+      "Kxy_m2": 3.9354171605606395e-26,
+      "Kyy_m2": 4.1436161124975895e-13,
+      "grid": "coarse",
+      "base_gap_cells": 8,
+      "dx_m": 5e-07,
+      "anisotropy": 2.7636356560132094,
+      "cross_term_max_normalized": 9.04267308125518e-14,
+      "reciprocity_absolute_error_m2": 1.429058471585001e-25,
+      "reciprocity_normalized_error": 1.2479284862890125e-13
+    },
+    "medium": {
+      "Kxx_m2": 1.0714617678156823e-12,
+      "Kyx_m2": -4.8087325479646306e-24,
+      "Kxy_m2": -8.65361444683475e-27,
+      "Kyy_m2": 4.590581158171955e-13,
+      "grid": "medium",
+      "base_gap_cells": 16,
+      "dx_m": 2.5e-07,
+      "anisotropy": 2.334043840850765,
+      "cross_term_max_normalized": 4.4880113247231146e-12,
+      "reciprocity_absolute_error_m2": 4.8000789335177956e-24,
+      "reciprocity_normalized_error": 4.4799348681413026e-12
+    },
+    "fine": {
+      "Kxx_m2": 1.0505194623063066e-12,
+      "Kyx_m2": -5.7419890940161615e-24,
+      "Kxy_m2": 4.8647054277358483e-26,
+      "Kyy_m2": 4.740443270968845e-13,
+      "grid": "fine",
+      "base_gap_cells": 24,
+      "dx_m": 1.6666666666666665e-07,
+      "anisotropy": 2.216078544257324,
+      "cross_term_max_normalized": 5.4658569403466546e-12,
+      "reciprocity_absolute_error_m2": 5.79063614829352e-24,
+      "reciprocity_normalized_error": 5.512164558646804e-12
+    },
+    "extra_fine": {
+      "Kxx_m2": 1.0407131417249358e-12,
+      "Kyx_m2": -2.00888775867021e-24,
+      "Kxy_m2": 1.1245172578386212e-24,
+      "Kyy_m2": 4.81560900634731e-13,
+      "grid": "extra_fine",
+      "base_gap_cells": 32,
+      "dx_m": 1.25e-07,
+      "anisotropy": 2.1611246684546086,
+      "cross_term_max_normalized": 1.930299213230428e-12,
+      "reciprocity_absolute_error_m2": 3.1334050165088313e-24,
+      "reciprocity_normalized_error": 3.010824876598898e-12
+    }
+  },
+  "geometry_discretization_diagnostics": [
+    {
+      "grid": "coarse",
+      "base_gap_cells": 8,
+      "dx_m": 5e-07,
+      "fluid_cells": 4624,
+      "fluid_volume_fraction": 0.6153846153846154,
+      "discrete_fluid_volume_m3": 5.779999999999999e-16,
+      "nominal_fluid_volume_m3": 5.119999999999999e-16,
+      "nominal_rev_volume_m3": 7.68e-16,
+      "nominal_fluid_volume_fraction": 0.6666666666666666,
+      "minimum_throat_cells": 8,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true
+    },
+    {
+      "grid": "medium",
+      "base_gap_cells": 16,
+      "dx_m": 2.5e-07,
+      "fluid_cells": 34848,
+      "fluid_volume_fraction": 0.64,
+      "discrete_fluid_volume_m3": 5.445e-16,
+      "nominal_fluid_volume_m3": 5.119999999999999e-16,
+      "nominal_rev_volume_m3": 7.68e-16,
+      "nominal_fluid_volume_fraction": 0.6666666666666666,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true
+    },
+    {
+      "grid": "fine",
+      "base_gap_cells": 24,
+      "dx_m": 1.6666666666666665e-07,
+      "fluid_cells": 115248,
+      "fluid_volume_fraction": 0.6486486486486487,
+      "discrete_fluid_volume_m3": 5.335555555555553e-16,
+      "nominal_fluid_volume_m3": 5.119999999999999e-16,
+      "nominal_rev_volume_m3": 7.68e-16,
+      "nominal_fluid_volume_fraction": 0.6666666666666666,
+      "minimum_throat_cells": 24,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true
+    },
+    {
+      "grid": "extra_fine",
+      "base_gap_cells": 32,
+      "dx_m": 1.25e-07,
+      "fluid_cells": 270400,
+      "fluid_volume_fraction": 0.6530612244897959,
+      "discrete_fluid_volume_m3": 5.28125e-16,
+      "nominal_fluid_volume_m3": 5.119999999999999e-16,
+      "nominal_rev_volume_m3": 7.68e-16,
+      "nominal_fluid_volume_fraction": 0.6666666666666666,
+      "minimum_throat_cells": 32,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true
+    }
+  ],
+  "generalized_convergence_diagnostic": {
+    "Kxx": {
+      "observed_p": 1.254,
+      "K_inf_m2": 1.0184704900101505e-12,
+      "maximum_relative_residual": 9.748568582938569e-05,
+      "finest_to_extrapolated_relative_difference": 0.0218392697019268,
+      "meaningful": true
+    },
+    "Kyy": {
+      "observed_p": 0.99,
+      "K_inf_m2": 5.043809123104939e-13,
+      "maximum_relative_residual": 2.6713755652447427e-06,
+      "finest_to_extrapolated_relative_difference": 0.04524360680349265,
+      "meaningful": true
+    }
+  },
+  "convergence": {
+    "Kxx_coarse_to_medium_relative_change": 0.06434363000993411,
+    "Kxx_medium_to_fine_relative_change": 0.019545546223333186,
+    "Kyy_coarse_to_medium_relative_change": 0.10786835303740396,
+    "Kyy_medium_to_fine_relative_change": 0.03264556439223654,
+    "anisotropy_medium_to_fine_absolute_change": 0.1179652965934408,
+    "Kxx_fine_to_extra_fine_relative_change": 0.009334734798574868,
+    "Kyy_fine_to_extra_fine_relative_change": 0.015856267247999902,
+    "anisotropy_fine_to_extra_fine_absolute_change": 0.05495387580271549
+  },
+  "practical_grid_uncertainty": {
+    "Kxx_m2": 9.80632058137084e-15,
+    "Kxx_relative": 0.009334734798574868,
+    "Kyy_m2": 7.516573537846483e-15,
+    "Kyy_relative": 0.015856267247999902
+  },
+  "gates": {
+    "all_twelve_runs_finite": true,
+    "low_re": true,
+    "low_mach": true,
+    "mass": true,
+    "steady": true,
+    "primary_linearity": true,
+    "anisotropic": true,
+    "cross_terms_negligible": true,
+    "Kxx_24_to_32": true,
+    "Kyy_24_to_32": true,
+    "monotonic_grid": true,
+    "reciprocity": true
+  }
+}

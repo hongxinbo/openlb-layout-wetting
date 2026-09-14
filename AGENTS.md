@@ -6,12 +6,9 @@
 
 ## 项目目标
 
-使用本机 OpenLB 研究液体进入初始含气微/纳米结构的浸润与压力挤入过程。第一目标是 `SIM-EC1XT240.OAS` 沟槽，随后研究 `SIM-H.OAS` 回字形结构，并在模型通过验证后比较沟槽尺寸、间距和排列方式。
+使用本机 OpenLB 研究固定版图的水力输运描述符。活动权威为 `docs/ACTIVE_PROJECT_SCOPE.md`：当前目标是 `FIXED_LAYOUT_HYDRAULIC_TRANSPORT_CHARACTERIZATION`，先完成 XY 单相侧向渗透率/水力阻力路线，再在 XY 通过后启动 Z 向黏性、毛细和可选困气路线。
 
-当前物理权威是 `docs/ACTIVE_PROJECT_SCOPE.md` 的 3-D vertical-squeeze
-reset：x/y 是 OAS 平面，z 是固定 100 um 沟槽深度和模板下压方向。液体从
-z=0 上方进入沟槽；不得再把左到右的二维推进称为真实压印过程。已有二维代码和
-结果保留为 `PRELIMINARY_REDUCED_MODEL`，不得删除或改写历史。
+XY0 已通过 3-D 平行板单相基准；当前 `NEXT=XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`。XY0/XY1 阶段不启动 FreeSurface、空气、润湿、表面张力、移动壁、HLBM 多孔移动物体、Z 物理或 EC1XT240 生产几何。连续移动冲头及其历史证据保留为 `CONTINUOUS_MOVING_PUNCH = DEFERRED_TECHNICAL_ASSET`，不得运行 R0A/R0B 或连续移动几何，除非研究范围再次正式修改。
 
 本项目与 `$HOME/Projects/nanochannel-openlb` 不同。旧仓库研究 `20 x 20 x 100 nm` 封闭端方管；不得把旧仓库的几何、参数或动态结论自动带入本项目。
 
@@ -35,8 +32,7 @@ z=0 上方进入沟槽；不得再把左到右的二维推进称为真实压印�
 
 ## 物理建模规则
 
-- 首个生产基线是显式 z 的三维双沟槽代表体；二维竖直狭缝和plan-view案例
-  仅保留为组件验证/`PRELIMINARY_REDUCED_MODEL`。
+- 当前先完成固定几何 XY 单相输运验证；历史润湿、双沟槽、二维和移动冲头案例仅保留为组件/几何/基础设施证据。
 - 显式墙体模型依靠无滑移壁面、黏性、毛细作用和气相边界产生阻力；默认不得再加入 Darcy 阻力，以免双重计数。
 - 等效多孔模型必须作为独立对照案例。其渗透率需要由解析式、单相压降-流量计算或实验标定，不得直接复制旧 OpenFOAM 的 `d=(5e16 0 0)`。
 - `gasStorage2d` 和 `bubbleChannel2d` 仅作为 OpenLB API 与数值模型参考，例程参数不是本项目物性。
@@ -44,7 +40,7 @@ z=0 上方进入沟槽；不得再把左到右的二维推进称为真实压印�
 - 接触角从液相内部测量；若使用不同约定，必须在配置、代码和报告中同时注明转换。
 - 默认关闭重力，除非尺度分析显示需要保留。
 
-## 实施顺序
+## 历史 PR #5 实施顺序（活动顺序以 ACTIVE_PROJECT_SCOPE.md 为准）
 
 1. 审计本机 OpenLB 1.9 的 3-D 相场、润湿、开放边界和移动壁 API。
 2. 先通过 600 nm x 240 nm x 101 um 双沟槽几何与 ParaView 门。
@@ -66,7 +62,8 @@ z=0 上方进入沟槽；不得再把左到右的二维推进称为真实压印�
 
 至少检查：
 
-- 单相狭缝速度/流量与平行板解析解；
+- XY0 单相狭缝速度/流量/阻力与平行板解析解，至少三档网格和四档驱动；
+- XY1 周期固定图案在恒定平均压强梯度下的体积通量；
 - Young-Laplace 压力跳和表面张力标度；
 - 接触角从目标无关初态松弛，而非只保持目标角初态；
 - 相变量范围、质量守恒、虚假流和最大 lattice Mach；

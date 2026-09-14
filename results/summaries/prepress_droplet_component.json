@@ -1,0 +1,53 @@
+{
+  "steps": 3000,
+  "phase_convention": "phi=0 liquid, phi=1 gas in the selected official model",
+  "phase_range": [
+    -0.02851478010416031,
+    1.003449559211731
+  ],
+  "pressure_range_lattice": [
+    -0.00020074390340596437,
+    0.0011043465929105878
+  ],
+  "max_velocity_lattice": 0.0008117937832139432,
+  "max_velocity_m_s": 0.0032256707155384357,
+  "liquid_inventory_initial": 5459.36279296875,
+  "liquid_inventory_final": 5444.935546875,
+  "liquid_inventory_relative_drift": -0.002642661100253463,
+  "periodic_max_abs_difference": {
+    "physical_x": 0.0,
+    "physical_y": 0.0
+  },
+  "droplet_bbox": {
+    "solver_xyz_min": [
+      14,
+      1,
+      14
+    ],
+    "solver_xyz_max": [
+      46,
+      11,
+      46
+    ]
+  },
+  "circle_fit": {
+    "contact_angle_deg": 67.31137331801446,
+    "circle_center_lattice": [
+      29.999999999999993,
+      -6.258228236264806
+    ],
+    "circle_radius_lattice": 17.520940745081674,
+    "interface_points": 20
+  },
+  "fitted_footprint_diameter_m": 3.233015407938639e-05,
+  "fitted_height_m": 1.0762712508816868e-05,
+  "checks": {
+    "finite": true,
+    "phase_bounded_minus_0p02_to_1p02": false,
+    "mass_drift_le_0p5_percent": true,
+    "max_lattice_velocity_le_0p01": true,
+    "contact_angle_within_5_deg": false,
+    "periodic_edge_difference_le_1e_8": true
+  },
+  "status": "PREPRESS_DROPLET_COMPONENT_FAIL"
+}

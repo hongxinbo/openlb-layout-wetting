@@ -1,8 +1,17 @@
 # 物理模型规格
 
-> 2026-09-03 scope note: 本文件中二维候选路径现仅用于组件验证。生产物理以
-> `docs/ACTIVE_PROJECT_SCOPE.md` 的三维竖直挤压重置为准：x/y为OAS平面，z为
-> 固定100 um沟槽深度，液体从上方进入，主驱动为-z。
+> Active 2026-09-12 scope note: `docs/ACTIVE_PROJECT_SCOPE.md` now controls a fixed-layout hydraulic-transport program. XY is single-phase lateral transport first; Z intrusion is deferred until XY passes. Earlier vertical-punch wording below is historical context, not an active instruction.
+
+## CURRENT ACTIVE PHYSICS
+
+The active model is fixed-geometry, single Newtonian liquid transport. For a periodic XY layout, `J_xy=-(1/mu)K_xy grad(p)` and layouts are compared through superficial flux/permeability rather than raw Q. XY0 uses x/y periodicity, stationary z walls, and a source-backed uniform body force; it contains no interface, air, wetting, surface tension, moving solid, Darcy term, or OAS geometry. `rho=1510 kg/m3` and `mu=1e-3 Pa s` are `OF350_TRANSFER_BASELINE` values, not universal measured EC1 properties.
+
+Z0 (fully liquid), Z1 (vented FreeSurface), Z2 (optional trapped gas), and Z3 (layout comparison) are documentation-only until the XY route passes.
+
+图案化模具在上方，平基底在下方；模具腔向下开口并由模具向下运动驱动液体进入。
+腔深固定为 100 um，腔本身不被压缩。首周期单相基线将空气/困气物理延后，不将空腔
+称为真实空气。已验证的 `contactAngle3d` 组件中液滴为 phi≈0、环境为 phi≈1；这是
+该公式专用约定，不能覆盖本文件的历史二维公式或未来自由表面公式。
 
 ## 1. 第一阶段物理问题
 

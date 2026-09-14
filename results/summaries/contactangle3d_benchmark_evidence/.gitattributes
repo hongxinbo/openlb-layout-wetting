@@ -1,0 +1,2 @@
+# Preserve original diagnostic logs byte-for-byte, including trailing spaces.
+*.log -whitespace

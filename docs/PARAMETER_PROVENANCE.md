@@ -20,10 +20,12 @@
 | 墙体材料 | null | UNKNOWN | 决定接触角和滑移 |
 | 温度 | 293 K | OF350_TRANSFER_BASELINE | `0.org/T` |
 | 接触角 | 60 deg, liquid-measured | LITERATURE_ASSUMPTION | 不是本项目实测；30/60/85/120 deg 敏感性 |
-| 驱动方式 | moving upper film -> pressure-driven reduced plan-view | CONFIRMED_GROUP_INPUT | 上模板向下挤压上方液膜进入固定深度沟槽 |
-| 气体出口 | reduced vented gas | MODEL_ASSUMPTION | 不声明复现OF350 local perfectGas |
+| 驱动方式 | top punch downward motion | REFERENCE / transferred schedule evidence | OF350 的 1 um、-0.935 um/1 s quintic 仅作首个数值组件参考，不是最终 EC1 轨迹 |
+| 气体出口 | null | DEFERRED | 首周期单液体基线不含物理气体；后续两相阶段另行定义 |
 | 理想狭缝渗透率 | 1.2e-15 m2 | DERIVED_START | `b^2/12`, `b=120 nm` |
 | 理想逆渗透率 | 8.3e14 m-2 | DERIVED_START | `12/b^2` |
+| XY0 狭缝液压间隙 | 10 um | NUMERICAL_COMPONENT_GEOMETRY | 固定几何 Poiseuille 验证；不是 EC1/OAS 尺寸 |
+| XY0 密度与动力黏度 | 1510 kg/m3; 1e-3 Pa s | OF350_TRANSFER_BASELINE | 只用于单相数值组件的量纲一致性 |
 
 ## OF350转移基线
 
@@ -43,7 +45,7 @@
 | 液滴半径 | 52 um | REFERENCE_ONLY | `system/setFieldsDict` |
 | 旧计算层厚度 | 1 um | REFERENCE_ONLY | `system/blockMeshDict` |
 | 初始上方液膜 | 1.0 um | OF350_TRANSFER_BASELINE | `system/blockMeshDict`；不是沟槽深度 |
-| EC1XT240压板位移 | -0.935 um / 1 s quintic | CONFIRMED_GROUP_INPUT | 模板下降挤压上方液膜；不是100 um沟槽压缩 |
+| EC1XT240压板位移 | -0.935 um / 1 s quintic | REFERENCE_ONLY | OF350 转移日程；仅在公式通过后作为命名的数值组件参考，不是最终 EC1 轨迹 |
 
 这些转移值由成功OF350源例程支撑，但仍不能被表述为普适、独立实测的EC1材料性质。旧网格、运动和阻力不能代表当前100 um显式沟槽；100 um沟槽固定，移动的是上方液膜/间隙。
 

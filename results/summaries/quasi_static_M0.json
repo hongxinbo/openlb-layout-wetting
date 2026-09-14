@@ -1,0 +1,46 @@
+{
+  "status": "QUASI_STATIC_M0_GEOMETRY_PASS",
+  "case_id": "quasi_static_M0_right_angle",
+  "driving_mode": "UNKNOWN",
+  "geometry_status": "NUMERICAL_COMPONENT_GEOMETRY",
+  "orientation": "TOP_PUNCH_CAVITY_OPENS_DOWNWARD",
+  "lattice": {
+    "nx": 32,
+    "ny": 24,
+    "nz": 40,
+    "total_cells": 30720,
+    "dx_m": 2.5e-07
+  },
+  "material_cell_counts": {
+    "fluid": 16760,
+    "bottom_substrate": 768,
+    "top_punch": 13192
+  },
+  "q": {
+    "count": 9944,
+    "min": 0.10000000000000021,
+    "max": 0.6999999999999967,
+    "mean": 0.2954947707159888,
+    "standard_interpolated_links": 9768,
+    "halfway_fallback_links": 176
+  },
+  "planned_gap_sequence_m": [5.2e-06, 4.95e-06, 4.7e-06],
+  "checks": {
+    "top_punch_cavity_opens_downward": true,
+    "cavity_has_solid_roof": true,
+    "bottom_substrate_present": true,
+    "top_punch_present": true,
+    "fluid_connected": true,
+    "periodic_x_geometry": true,
+    "periodic_y_geometry": true,
+    "q_links_present": true,
+    "q_finite": true,
+    "q_in_source_valid_range": true,
+    "no_material_overlap": true,
+    "no_in_run_topology_update": true,
+    "paraview_readable": true
+  },
+  "paraview_validation": "ParaView 6.1.1 XMLImageDataReader read 30720 cells.",
+  "artifact_policy": "The generated VTI was verified in a transient external directory and is not committed.",
+  "claim_boundary": "Static geometry and Bouzidi-link regression only; no flow, pressure, wall motion, free surface, wetting, droplet, or air physics."
+}

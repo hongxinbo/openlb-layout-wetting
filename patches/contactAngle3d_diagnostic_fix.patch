@@ -1,0 +1,92 @@
+--- contactAngle3d.cpp
++++ contactAngle3d.cpp
+@@ -318,6 +318,13 @@
+ 
+     // function to interpolate phi at a given position
+     AnalyticalFfromSuperF3D<T,T> interpolPhi( phi, true, 1 );
++    // STATISTIC has two components: [0] is rho/phase and [1] is uSqr.
++    // The wetting postprocessor copies phase into component 0.
++    auto samplePhi = [&interpolPhi](const T samplePosition[3]) {
++      T statistic[2] = { T(), T() };
++      interpolPhi(statistic, samplePosition);
++      return statistic[0];
++    };
+     T point1 = 0, point2 = 0, point3 = 0;
+ 
+     // contact angle fitting, will be done by finding three points on the circlular droplet
+@@ -327,11 +334,11 @@
+     for (int ix=0; ix<0.5*extent[0]; ix++) {
+       T phi1, phi2;
+       pos[0] = ix;
+-      interpolPhi( &phi1, pos );
++      phi1 = samplePhi(pos);
+       // if phi at ix is greater than 0.5, we have passed the interface of the liquid phase
+       if (phi1 < 0.5) {
+         pos[0] = (ix-1); // check the value at the previous point
+-        interpolPhi( &phi2, pos );
++        phi2 = samplePhi(pos);
+         point1 = ix - 1 + (0.5-phi2)/(phi1-phi2); // interpolate between these values
+         break;
+       }
+@@ -341,10 +348,10 @@
+     for (int ix=0.5*extent[0]; ix<extent[0]; ix++) {
+       T phi1, phi2;
+       pos[0] = ix;
+-      interpolPhi( &phi1, pos );
++      phi1 = samplePhi(pos);
+       if (phi1 > 0.5) {
+         pos[0] = (ix-1);
+-        interpolPhi( &phi2, pos );
++        phi2 = samplePhi(pos);
+         point2 = ix - 1 + (0.5-phi2)/(phi1-phi2);
+         break;
+       }
+@@ -355,10 +362,10 @@
+     for (int iy=3; iy<extent[1]; iy++) {
+       T phi1, phi2;
+       pos[1] = iy;
+-      interpolPhi( &phi1, pos );
++      phi1 = samplePhi(pos);
+       if (phi1 > 0.5) {
+-        pos[0] = (iy-1);
+-        interpolPhi( &phi2, pos );
++        pos[1] = (iy-1);
++        phi2 = samplePhi(pos);
+         point3 = iy - 1 + (0.5-phi2)/(phi1-phi2);
+         break;
+       }
+@@ -386,6 +393,10 @@
+ 
+     clout << "Numerical Contact angle: " << contact_angle << std::endl;
+     clout << "Analytical contact angle: " << theta <<  std::endl;
++    clout << "Corrected diagnostic: step=" << iT
++          << "; left=" << point1 << "; right=" << point2 << "; top=" << point3
++          << "; center=(" << xc << "," << yc << "); radius=" << r
++          << "; theta_corrected_deg=" << contact_angle << std::endl;
+   }
+   return contact_angle;
+ }
+@@ -411,6 +422,7 @@
+   std::ofstream outfile;
+   outfile.open ("contactAngleVsTime.dat");
+   T old_angle = 1.;
++  int consecutiveAngleConvergence = 0;
+ 
+   for (std::size_t iT=0; iT <= iTmax; ++iT) {
+     /// === Step 8.1: Update the Boundary Values and Fields at Times ===
+@@ -433,7 +445,14 @@
+     if ( iT%saveIter == 0 ) {
+       outfile << iT*converter.getPhysDeltaT() << "," ;
+       outfile << angle << "\n";
+-      if ( fabs(angle-old_angle)/fabs(old_angle) < 5e-4 ) {
++      outfile.flush();
++      if (std::isfinite(angle) && std::isfinite(old_angle)
++          && fabs(angle-old_angle)/fabs(old_angle) < 5e-4) {
++        ++consecutiveAngleConvergence;
++      } else {
++        consecutiveAngleConvergence = 0;
++      }
++      if (consecutiveAngleConvergence >= 3) {
+         clout << "contact angle converged..." << std::endl;
+         break;
+       }

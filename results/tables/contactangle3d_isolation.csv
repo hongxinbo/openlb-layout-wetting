@@ -1,0 +1,7 @@
+case_id,changed_parameter,theta_target_deg,theta_official_deg,theta_circle_deg,theta_tangent_deg,phase_min_fluid,phase_max_fluid,mass_drift,max_velocity_lattice,late_theta_range_deg,late_velocity_trend,runtime_s,status
+A0,none: OFFICIAL_DEFAULT,100,nan,91.16250096039207,89.21860073494028,-0.016413304954767227,1.004284381866455,-0.0005571291553313501,0.0010197353549301624,,NOT_EVALUATED_TRANSIENT_ONLY,573.8076363749999,HOLD
+A1,PLANNED_ONLY THETA 100 -> 60,60,,,,,,,,,,,NOT_RUN_A0_HOLD
+A2,PLANNED_ONLY NU_LIQUID -> 1e-3/1510; converter only,60,,,,,,,,,,,NOT_RUN_A0_HOLD
+A3,PLANNED_ONLY C_RHO -> 1510; converter only,60,,,,,,,,,,,NOT_RUN_A0_HOLD
+A4,PLANNED_ONLY sigma physical 0.0309 requires lattice conversion,60,,,,,,,,,,,NOT_RUN_A0_HOLD
+A5,PLANNED_ONLY resolution/physical length mapping,60,,,,,,,,,,,NOT_RUN_A0_HOLD

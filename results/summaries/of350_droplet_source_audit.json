@@ -1,0 +1,60 @@
+{
+  "status": "OF350_DROPLET_SOURCE_AUDIT_HOLD",
+  "regular_array_status": "PASS",
+  "set_fields_sha256": "60d05f9c79aa899a65ff53200854dfd6d1820b6716c6b235d23b1e0f33b54667",
+  "initializer": "cylinderToCell",
+  "radius_m": [
+    5.2e-05
+  ],
+  "diameter_m": [
+    0.000104
+  ],
+  "count": 135,
+  "regular_grid": {
+    "nx": 15,
+    "ny": 9
+  },
+  "pitch_x_m": [
+    0.00035
+  ],
+  "pitch_y_m": [
+    0.00035
+  ],
+  "x_coordinates_m": [
+    0.0002,
+    0.00055,
+    0.0009,
+    0.00125,
+    0.0016,
+    0.00195,
+    0.0023,
+    0.00265,
+    0.003,
+    0.00335,
+    0.0037,
+    0.00405,
+    0.0044,
+    0.00475,
+    0.0051
+  ],
+  "y_coordinates_m": [
+    0.0001,
+    0.00045,
+    0.0008,
+    0.00115,
+    0.0015,
+    0.00185,
+    0.0022,
+    0.00255,
+    0.0029
+  ],
+  "z_coordinates_m": [
+    1e-07
+  ],
+  "complete_cartesian_regular_array": true,
+  "openfoam_layer_thickness_m": 1.0000000000000002e-06,
+  "staggered_coordinates": null,
+  "staggered_status": "HOLD_NOT_PRESENT_IN_FROZEN_SOURCE",
+  "initial_precontact_gap_status": "HOLD_NOT_ESTABLISHED_FOR_DISCRETE_DROPLET_STACK",
+  "claim_boundary": "radius is the cylinderToCell footprint radius in a one-cell-thick layer; source does not establish a 3-D sessile-droplet volume or spherical radius"
+}

@@ -1,0 +1,81 @@
+{
+  "status": "PRESCRIBED_TRANSLATING_EMBEDDING_FIELD_PASS_ALGORITHMIC_ONLY",
+  "translation_cells": 4.0,
+  "checkpoints": [
+    {
+      "target_position": [
+        6.0,
+        6.0,
+        5.0
+      ],
+      "measured_porosity_centroid": [
+        6.0,
+        6.0,
+        5.0
+      ],
+      "position_error": 0.0,
+      "integrated_solid_volume": 64.0,
+      "solid_volume_drift": 0.0,
+      "min_porosity": 0.0,
+      "max_porosity": 1.0,
+      "count_nonzero_embedding_cells": 64,
+      "wall_velocity_error": 0.0,
+      "stale_old_footprint_cells": 0,
+      "missing_new_footprint_cells": 0,
+      "fields_finite": true
+    },
+    {
+      "target_position": [
+        8.0,
+        6.0,
+        5.0
+      ],
+      "measured_porosity_centroid": [
+        8.0,
+        6.0,
+        5.0
+      ],
+      "position_error": 0.0,
+      "integrated_solid_volume": 64.0,
+      "solid_volume_drift": 0.0,
+      "min_porosity": 0.0,
+      "max_porosity": 1.0,
+      "count_nonzero_embedding_cells": 64,
+      "wall_velocity_error": 0.0,
+      "stale_old_footprint_cells": 0,
+      "missing_new_footprint_cells": 0,
+      "fields_finite": true
+    },
+    {
+      "target_position": [
+        10.0,
+        6.0,
+        5.0
+      ],
+      "measured_porosity_centroid": [
+        10.0,
+        6.0,
+        5.0
+      ],
+      "position_error": 0.0,
+      "integrated_solid_volume": 64.0,
+      "solid_volume_drift": 0.0,
+      "min_porosity": 0.0,
+      "max_porosity": 1.0,
+      "count_nonzero_embedding_cells": 64,
+      "wall_velocity_error": 0.0,
+      "stale_old_footprint_cells": 0,
+      "missing_new_footprint_cells": 0,
+      "fields_finite": true
+    }
+  ],
+  "communication": {
+    "status": "TRANSLATING_REEMBEDDING_COMMUNICATION_HOLD",
+    "logical_cuboids": 2,
+    "crossed_boundary": true,
+    "overlap_mismatches": 0,
+    "method": "full-domain authoritative rewrite followed by one-cell overlap copy; MPI transport is not exercised"
+  },
+  "no_material_relabel": true,
+  "no_population_reconstruction": true
+}

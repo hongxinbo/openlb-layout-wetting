@@ -2,11 +2,35 @@
 
 这是研究14个OAS微/纳米版图中液体浸润与压力挤入过程的长期Git项目。
 
-首个目标是 `SIM-EC1XT240.OAS` 的真实三维竖直挤压/沟槽灌注：模板沿 -z
-下压上方液膜，液体从 z=0 上方进入固定 100 um 沟槽。旧二维横向模型只作为
-`PRELIMINARY_REDUCED_MODEL` 保留。
+2026-09-14 senior scope reset 后，当前阶段为
+`SIM240_FIRST_STAGE_SINGLE_PHASE_RESISTANCE_COMPARISON`。平板、顺槽与横槽的
+`dx=5 nm` 速度入口/压力出口计算均已通过，见
+`docs/SIM240_FIRST_STAGE_REPORT.md`；当前
+`NEXT=SIM240_INTERPRET_AND_REPORT_RESULTS`，不自动启动下一轮模拟。历史 XY
+张量与 EC1XT240 路线保留为基础设施，不是当前任务。
+
+连续移动冲头的已完成实现和全部 HOLD 仍保留，但正式分类为 `CONTINUOUS_MOVING_PUNCH = DEFERRED_TECHNICAL_ASSET`。本阶段不运行 R0A、R0B、连续移动几何或 translated-HLBM 流体动力学验证。旧二维模型仍仅为 `PRELIMINARY_REDUCED_MODEL`。
 
 ## 当前状态
+
+- 活动范围：固定版图水力输运表征；XY0 3-D 单相平行板基准为 `XY0_SINGLE_PHASE_HYDRAULIC_RESISTANCE_PASS`。四档压强梯度的 `Delta_p-Q` 拟合 `R2=1.0`，最细网格平均流/阻力/速度剖面误差为 0.0216%/0.0216%/0.0549%。方法见 `docs/XY_SINGLE_PHASE_RESISTANCE_METHOD.md`。
+- 连续移动冲头：`DEFERRED_TECHNICAL_ASSET`，而不是当前关键路径。
+
+- PR #6 官方 3-D 润湿基准：`CORRECTED_OFFICIAL_CONTACTANGLE3D_PASS`。在不改变
+  官方求解器物理的前提下，项目本地修正了诊断缓冲区和顶部坐标；100 度 A0C 于
+  24000 步收敛至 99.4454 度，独立圆拟合为 99.447840 度。详见
+  `docs/CORRECTED_CONTACTANGLE3D_SOURCE_PARITY.md`、`results/summaries/` 和
+  `results/tables/`。历史组件 FAIL 标签保持不变；参数隔离已通过，当前 NEXT 为
+  `RESOLVE_SOURCE_BACKED_TRANSLATING_REFERENCE_LATTICE_REEMBEDDING_API`；固定间隙
+  M0 已通过，但 M1 仍等待组内驱动方式确认。centrifugalPump3d 已证明 HLBM 转子的
+  外部规定旋转和反力矩仅记录、不反馈轨迹；但其 `ELEMENT_U_TRANSLATION` 只设置壁速度，
+  不移动 reference-porosity footprint，且更新算子不扫描新进入的未标记格点。因此
+  `PRESCRIBED_TRANSLATION_HOLD_API`，未释放连续冲头路线，亦未构建或运行 R0。
+- PR #6 参数隔离：`PROJECT_WETTING_PARAMETER_ISOLATION_PASS`。B1 的 60 度
+  科学润湿门通过（其超出原运行预算单列为执行政策偏差）；冻结 phi≈0 液滴转换器后，
+  B2 用 `sigma_LB=0.002073733333` 映射 0.0309 N/m，并于 101000 步收敛到
+  61.7938 度。宏观周期单元、真实空气和压印案例均未启动。
+
 
 - 项目骨架：已建立。
 - 14个OAS输入：已复制并记录SHA-256。
@@ -19,6 +43,15 @@
 - 固定几何流动：`3D_VERTICAL_INTRUSION_HOLD_NOT_RUN_API_LIMITATION`。
 - 移动模板与真实 OAS：HOLD/NOT_RUN；没有用封闭不可压气体、横向入口或删除格子层绕过。
 - 旧 2-D baseline 和 production study 全部保留，不能作为最终压印物理结果。
+- OF350 液滴审计：对齐阵列为 15 x 9、半径 52 um、节距 350 um；冻结源中未找到
+  交错阵列坐标，后者 HOLD。
+- 预压多尺度审计：20 nm 统一网格约 1.84e12 cells / 559--735 TB，明确采用宏观液滴
+  与微观 OAS 分离。
+- 3-D 液滴组件：`PREPRESS_DROPLET_COMPONENT_FAIL`；run3 修正复核和唯一一次
+  48格直径、10,000步加密验证均未通过物理流体相场下界，后者也未通过角度/稳态门。
+  结果见 `results/summaries/`，物理周期单元未继续运行。
+- 上模具 OAS 方向预览：ParaView 读取通过；层极性与真实初始间隙未冻结，保持
+  `TOP_MOLD_OAS_GEOMETRY_HOLD`。
 
 ## 先读这些文件
 
@@ -39,6 +72,8 @@
   - `examples/multiComponent/contactAngle3d/contactAngle3d.cpp`
   - `examples/multiComponent/rayleighTaylor3d/rayleighTaylor3d.cpp`
   - `examples/fsi/taylorCouette3d/taylorCouette3d.cpp`
+  - `examples/fsi/rigidValve2d/rigidValve2d.cpp`
+  - `examples/particles/hinderedSettling3d/hinderedSettling3d.cpp`
 
 不要直接修改OpenLB源码；研究案例留在本仓库。
 
@@ -56,12 +91,13 @@ $HOME/ResearchData/openlb-layout-wetting/
 
 ```text
 OpenLB 3-D API审计
-  -> 显式双沟槽3-D几何/ParaView
-  -> 固定几何自上而下排气基线
-  -> 移动模板组件
-  -> 最小3-D squeeze filling
-  -> EC1XT240真实OAS三维代表单元
-  -> SIM-H和其他版图
+  -> 3-D几何方向审计
+  -> x/y周期的3-D静置液滴润湿组件验证
+  -> 首周期单液体自由表面/移动冲头公式审计
+  -> 固定首周期几何与M0静态身份检查
+  -> M1平壁移动与M2图案化首周期液体填充
+  -> 空气/困气两相压印模型
+  -> 版图比较
 ```
 
 ## Git规则

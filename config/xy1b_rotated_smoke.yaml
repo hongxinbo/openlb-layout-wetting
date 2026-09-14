@@ -1,0 +1,12 @@
+component: XY1B_ROTATED_ANISOTROPIC_SMOKE_COMPONENT
+theta_degrees: 36.86989764584402
+rotation: {cos: 0.8, sin: 0.6, stripe_direction: [0.8, 0.6], stripe_normal: [-0.6, 0.8]}
+geometry:
+  rev_dimensions_m: [1.3333333333333333e-5, 1.0e-5, 1.2e-5]
+  base_gap_m: 4.0e-6
+  recess_normal_width_m: 4.0e-6
+  normal_period_m: 8.0e-6
+  recess_depth_m: 8.0e-6
+grid: {dx_m: 1.6666666666666667e-7, nx: 80, ny: 60, nz: 72, base_gap_cells: 24}
+forcing: {gradient_pa_per_m: 120000.0, directions: [x, y], maximum_steps: 60000}
+physics: {descriptor: D3Q19<FORCE>, dynamics: ForcedBGKdynamics, forcing_api: fields::set<FORCE>, rho_kg_m3: 1510.0, mu_pa_s: 0.001}

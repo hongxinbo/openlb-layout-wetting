@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+  "geometry_class": "NUMERICAL_COMPONENT_GEOMETRY",
+  "status": "XY1A_GEOMETRY_AND_TRANSPORT_SMOKE_PASS",
+  "next": "XY1A_FULL_FORCING_SWEEP_AND_GRID_REFINEMENT",
+  "flux_convention": "J_i=(1/V_REV) integral_fluid u_i dV; solid velocity is zero",
+  "preliminary_smoke_only": true,
+  "Kxx_smoke_m2": 1.0714617678156823e-12,
+  "Kyy_smoke_m2": 4.590581158171955e-13,
+  "anisotropy_ratio": 2.334043840850765,
+  "cross_ratio_x": 4.488011324723114e-12,
+  "cross_ratio_y": 1.885080374067662e-14,
+  "gates": {
+    "periodic_x_y": true,
+    "connected": true,
+    "x_steady": true,
+    "y_steady": true,
+    "low_mach": true,
+    "mass": true,
+    "anisotropy": true,
+    "cross_flow": true
+  },
+  "runs": [
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "x",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        0.0001285754121378819,
+        -5.770479057557556e-16,
+        1.1546573963180106e-15
+      ],
+      "mean_speed_m_per_s": 0.00018135154549475354,
+      "re": 0.0010953633347883112,
+      "max_lattice_mach": 2.3070000188141635e-05,
+      "mass_drift_fraction": 1.9984014443252818e-15,
+      "steady_relative_change_over_1000_steps": 3.689897295738108e-10
+    },
+    {
+      "component": "XY1A_ALIGNED_ANISOTROPIC_PERIODIC_COMPONENT",
+      "direction": "y",
+      "body_force_equivalent_pressure_gradient_pa_per_m": 120000,
+      "steps": 8000,
+      "dx_m": 2.5e-07,
+      "nx": 32,
+      "ny": 32,
+      "nz_fluid": 48,
+      "base_gap_m": 4e-06,
+      "base_gap_cells": 16,
+      "recess_dimensions_m": [
+        8e-06,
+        4e-06,
+        8e-06
+      ],
+      "rev_dimensions_m": [
+        8e-06,
+        8e-06,
+        1.2e-05
+      ],
+      "fluid_cells": 34848,
+      "solid_cells": 19602,
+      "fluid_volume_fraction": 0.64,
+      "minimum_throat_cells": 16,
+      "periodic_x_y_continuity": true,
+      "connected_by_full_base_gap": true,
+      "upper_recess_opens_downward": true,
+      "J_m_per_s": [
+        -1.0384337336201699e-18,
+        5.508697389806346e-05,
+        1.0002157385275816e-12
+      ],
+      "mean_speed_m_per_s": 7.928015277579236e-05,
+      "re": 0.0004788521227657858,
+      "max_lattice_mach": 1.6237614896117805e-05,
+      "mass_drift_fraction": -3.1086244689504383e-15,
+      "steady_relative_change_over_1000_steps": 2.128569726325616e-12
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "status": "TRANSLATING_REEMBEDDING_STATIC_PARITY_HOLD_OFFICIAL_RUNTIME",
+  "max_abs_difference": 0.0,
+  "L1_difference": 0.0,
+  "mismatched_cells": 0,
+  "integrated_solid_volume": 64.0,
+  "embedding_centroid": [
+    6.0,
+    6.0,
+    5.0
+  ],
+  "tolerance": 0.0,
+  "reference": "independent sharp-cuboid formula; official SuperPorousElementEmbeddingO runtime not exercised"
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PRESCRIBED_TRANSLATING_EMBEDDING_FIELD_PASS",
+  "communication_status": "TRANSLATING_REEMBEDDING_COMMUNICATION_PASS_SERIAL_MULTICUBOID",
+  "cuboids": 2,
+  "mpi_ranks": 1,
+  "translation_cells": 4,
+  "guarded_full_overlap_mismatches": [0,0,96],
+  "max_position_error": 8.8817841970012523e-15,
+  "max_solid_fraction_drift": 0,
+  "fractional_interface_cells": 116,
+  "old_footprint_clear_fail_count": 0,
+  "stale_footprint_error": 0,
+  "missing_footprint_error": 0,
+  "communication_seam_error": 0,
+  "velocity_error": 0
+}
