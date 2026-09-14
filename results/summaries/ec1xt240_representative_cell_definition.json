@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "XY2_EC1XT240_GEOMETRY_PASS_INPUT_HOLD",
+  "next": "RESOLVE_EC1XT240_PHYSICAL_INPUTS",
+  "claim_boundary": "OAS representative-cell and feasibility definition only. No EC1 flow solve, forcing sweep, grid convergence, permeability tensor, FreeSurface/gas/Z, or moving-punch calculation was run.",
+  "source": {
+    "layout": "inputs/layouts/SIM-EC1XT240.OAS",
+    "sha256": "209fbd4b907dc591c8786035face94de7df05fd10debf7e73dfc51a186ac0bfc",
+    "dbu_um": 0.001,
+    "top_cell": "TOP",
+    "cell_count": 1,
+    "top_instance_count": 0,
+    "layers": ["1/0"],
+    "top_bbox_um": [-2600.0, -13500.0, -1600.2, -12500.08],
+    "merged_polygon_count": 83200
+  },
+  "planar_pattern": {
+    "audited_layer": "1/0",
+    "primitive_vectors_um": [[50.0, 0.0], [0.0, 50.0]],
+    "period_validation": "exact merged-region equality after integer-DBU translation over interior overlap",
+    "polygon_rectangle_um": [0.120, 49.920],
+    "adjacent_edge_gaps_um": {"x": [0.120, 0.200], "y": [0.080, 49.920]},
+    "polarity": "EC1XT240_POLARITY_HOLD_INPUT"
+  },
+  "coordinate_convention": {
+    "plane": "OAS x/y",
+    "vertical": "z",
+    "substrate": "z=0",
+    "top_mold_land": "z=h",
+    "recess": "from the mold land upward through Hg and open downward toward the gap",
+    "Hg_um": 100.0,
+    "Hg_status": "SENIOR_CONFIRMED_INPUT",
+    "h": null,
+    "h_status": "EC1XT240_FIXED_GAP_HOLD_INPUT"
+  },
+  "xy_models_audited": [
+    {"id": "XY-A", "definition": "land-gap-only fluid slab 0<z<h; recess excluded", "status": "XY_EC1_CAVITY_TREATMENT_HOLD_INPUT"},
+    {"id": "XY-B", "definition": "fluid gap plus a fully liquid polarity-resolved recess through Hg", "status": "XY_EC1_CAVITY_TREATMENT_HOLD_INPUT"},
+    {"id": "XY-C", "definition": "fluid gap plus a finite truncated recess depth D with explicit D-convergence", "status": "XY_EC1_CAVITY_TREATMENT_HOLD_INPUT"}
+  ],
+  "unresolved_inputs": [
+    "fabrication-authoritative layer 1/0 polarity: mold land/solid or downward-opening cavity",
+    "fixed operating land gap h for the requested Kxy(h)",
+    "authorized XY cavity treatment (A, B, or C); for C, D values and convergence tolerance"
+  ]
+}

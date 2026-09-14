@@ -21,13 +21,12 @@ Do not run R0A, R0B, continuous moving punch, moving geometry, or translated HLB
 3. **XY1A smoke — PASS:** aligned anisotropic periodic-component smoke, with separate x/y forcing and full-REV flux measurement; see `docs/XY1A_ALIGNED_COMPONENT_DESIGN.md`.
 4. **XY1A full tensor — PASS:** the historical 24-cell HOLD (Kyy medium-to-fine 3.2646%) is retained; a 32-cell fixed-geometry check passes the predeclared 24-to-32 Kxx/Kyy 3% gates. See `docs/XY_PERIODIC_PERMEABILITY_TENSOR_METHOD.md`.
 5. **XY1B covariance — PASS:** 12/24/36-cell rotated refinement passes reciprocity, principal-axis, practical tensor-grid-change, and finite/continuum-oriented covariance gates.
-6. **XY2 — NEXT:** EC1XT240 representative-cell definition only; no production calculation yet.
-6. **XY2:** EC1XT240 representative-cell definition, not production calculation.
-7. **XY3:** EC1XT240 permeability tensor.
+6. **XY2 geometry — PASS / physical-input HOLD:** the exact EC1XT240 planar 50 x 50 um OAS tile is defined, but polarity, fixed gap, and XY cavity treatment are not authorized; see `docs/EC1XT240_REPRESENTATIVE_CELL_DEFINITION.md`.
+7. **XY3:** EC1XT240 permeability tensor, blocked by the XY2 physical-input HOLD.
 8. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
 9. **Z0--Z2:** deferred pending vent topology; a blind incompressible groove has no assumed steady Kz.
 
-`NEXT = XY2_EC1XT240_REPRESENTATIVE_CELL_DEFINITION`.
+`NEXT = RESOLVE_EC1XT240_PHYSICAL_INPUTS`.
 
 ## XY0 claim boundary
 

@@ -1,0 +1,7 @@
+model,planar_cell_um,vertical_extent,dx_nm,nx,ny,nz_or_formula,maximum_lattice_sites,estimated_memory_TiB_at_192_to_320_B_per_site,status
+XY-A_land_gap_only,50 x 50,h,20,2500,2500,h_nm/20,6250000*h_nm/20,not_evaluable_without_h,XY_EC1_CAVITY_TREATMENT_HOLD_INPUT
+XY-A_land_gap_only,50 x 50,h,10,5000,5000,h_nm/10,25000000*h_nm/10,not_evaluable_without_h,XY_EC1_CAVITY_TREATMENT_HOLD_INPUT
+XY-B_full_recess,50 x 50,100um+h,20,2500,2500,5000+h_nm/20,31250000000_plus_312500*h_nm,5.68_to_9.46_plus_h_term,INPUT_HOLD
+XY-B_full_recess,50 x 50,100um+h,10,5000,5000,10000+h_nm/10,250000000000_plus_2500000*h_nm,45.47_to_75.79_plus_h_term,INPUT_HOLD
+XY-B_full_recess,50 x 50,100um+h,6.667,7500,7500,14999_plus_h_nm/6.667,843693750000_plus_8437500*h_nm,153.47_to_255.78_plus_h_term,INPUT_HOLD
+XY-C_truncated_recess,50 x 50,D_less_than_Hg_plus_h,20,2500,2500,D_nm/20,312500*D_nm,not_evaluable_without_D_and_h,XY_EC1_CAVITY_TREATMENT_HOLD_INPUT

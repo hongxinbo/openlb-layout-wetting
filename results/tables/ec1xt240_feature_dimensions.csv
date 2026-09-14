@@ -1,0 +1,11 @@
+feature_id,value_um,source_or_method,status,modelling_use
+oas_dbu,0.001,KLayout read of SIM-EC1XT240.OAS,RESOLVED,exact planar coordinate unit
+primitive_period_x,50.0,integer-DBU translated merged-region equality,RESOLVED,representative-cell a1
+primitive_period_y,50.0,integer-DBU translated merged-region equality,RESOLVED,representative-cell a2
+wall_rectangle_width,0.120,KLayout merged-polygon bounding-box histogram,RESOLVED,minimum wall-width audit
+wall_rectangle_length,49.920,KLayout merged-polygon bounding-box histogram,RESOLVED,long-wall feature
+regular_adjacent_x_gap,0.120,KLayout adjacent x-edge histogram,RESOLVED,regular planar opening scale
+row_separation_gap,0.080,KLayout adjacent y-edge histogram,RESOLVED,transverse opening scale
+rare_adjacent_x_gap,0.200,KLayout adjacent x-edge histogram,RESOLVED,join-space feature retained in 50um cell
+cavity_depth_Hg,100.0,docs/PARAMETER_PROVENANCE.md senior-confirmed input,SENIOR_CONFIRMED_INPUT,vertical recess depth only
+fixed_land_gap_h,,no active project source,EC1XT240_FIXED_GAP_HOLD_INPUT,required before any XY domain is selected
