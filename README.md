@@ -2,7 +2,12 @@
 
 这是研究14个OAS微/纳米版图中液体浸润与压力挤入过程的长期Git项目。
 
-当前阶段是 `FIXED_LAYOUT_HYDRAULIC_TRANSPORT_CHARACTERIZATION`：先以 XY 单相侧向输运建立 `K_xy`、单位参考面积导纳或归一化阻力，再在 XY 通过后进入 Z 向黏性/毛细输运。比较变量是 `J=Q/A_reference`，而非不同版图的原始 Q。XY0 已通过，当前 `NEXT=XY1_PERIODIC_SINGLE_PHASE_TRANSPORT_COMPONENT`；不启动 Z、FreeSurface、空气、润湿、表面张力、移动壁、HLBM 或 EC1XT240 生产几何。
+2026-09-14 senior scope reset 后，当前阶段为
+`SIM240_FIRST_STAGE_SINGLE_PHASE_RESISTANCE_COMPARISON`。平板、顺槽与横槽的
+`dx=5 nm` 速度入口/压力出口计算均已通过，见
+`docs/SIM240_FIRST_STAGE_REPORT.md`；当前
+`NEXT=SIM240_INTERPRET_AND_REPORT_RESULTS`，不自动启动下一轮模拟。历史 XY
+张量与 EC1XT240 路线保留为基础设施，不是当前任务。
 
 连续移动冲头的已完成实现和全部 HOLD 仍保留，但正式分类为 `CONTINUOUS_MOVING_PUNCH = DEFERRED_TECHNICAL_ASSET`。本阶段不运行 R0A、R0B、连续移动几何或 translated-HLBM 流体动力学验证。旧二维模型仍仅为 `PRELIMINARY_REDUCED_MODEL`。
 

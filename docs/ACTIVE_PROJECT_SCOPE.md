@@ -1,5 +1,13 @@
 # Active project scope — fixed-layout hydraulic transport characterization
 
+> 2026-09-14 senior scope reset: the immediate target is
+> `SIM240_FIRST_STAGE_SINGLE_PHASE_RESISTANCE_COMPARISON`. Flat, along-groove,
+> and across-groove velocity-inlet/pressure-outlet cases have all passed at
+> `dx=5 nm`; see `docs/SIM240_FIRST_STAGE_REPORT.md`. All older XY2/XY3 roadmap
+> entries below are retained as historical infrastructure, not the active next
+> action. `NEXT = SIM240_INTERPRET_AND_REPORT_RESULTS`; do not automatically
+> start another campaign.
+
 This is the active-scope authority for PR #6 on `codex/3d-periodic-prepress`. It supersedes earlier active-roadmap text but does not alter or delete historical evidence.
 
 ## Active scientific target
@@ -26,7 +34,8 @@ Do not run R0A, R0B, continuous moving punch, moving geometry, or translated HLB
 8. **XY4:** layout comparison by permeability, conductance per reference area, or normalized resistance.
 9. **Z0--Z2:** deferred pending vent topology; a blind incompressible groove has no assumed steady Kz.
 
-`NEXT = RESOLVE_EC1XT240_PHYSICAL_INPUTS`.
+Historical next before the senior scope reset was
+`RESOLVE_EC1XT240_PHYSICAL_INPUTS`; it is no longer active.
 
 ## XY0 claim boundary
 

@@ -1,0 +1,17 @@
+case: flat
+status_target: SIM240_FLAT_PASS
+provenance: senior_SIM240_first_stage
+rho_kg_m3: 1000
+mu_pa_s: 1.0e-3
+dx_m: 5.0e-9
+flow_axis: y
+periodic_axis: x
+physical_dimensions_m: [2.40e-7, 2.40e-6, 7.50e-8]
+nominal_fluid_cells: [48, 480, 15]
+inlet_velocities_m_s: [1.0e-3, 2.0e-3, 3.0e-3]
+velocity_label: NUMERICAL_TEST_VALUES
+boundary: {inlet: InterpolatedVelocity, outlet: InterpolatedPressure, solid: BounceBack}
+max_steps: 60000
+check_every_steps: 2000
+steady_relative_q_tolerance: 5.0e-5
+steady_consecutive_checks: 3
